@@ -31,7 +31,7 @@
 							formatMessage(messages.loadingVersions)
 						}}</span>
 					</div>
-					<template v-else>
+					<div v-else class="min-h-full">
 						<div class="flex flex-col gap-1.5" role="listbox">
 							<button
 								v-for="version in filteredVersions"
@@ -87,7 +87,7 @@
 						>
 							{{ formatMessage(messages.noVersionsFound) }}
 						</div>
-					</template>
+					</div>
 				</div>
 
 				<div
@@ -120,8 +120,8 @@
 
 			<div class="w-px bg-divider" />
 
-			<div class="flex-1 flex flex-col min-w-0 relative bg-surface-1" aria-live="polite">
-				<template v-if="selectedVersion">
+			<div class="flex-1 flex flex-col min-w-0 min-h-0 relative bg-surface-1" aria-live="polite">
+				<div v-if="selectedVersion" class="flex-1 flex flex-col min-w-0 min-h-0 relative">
 					<div class="bg-bg p-4">
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between">
@@ -157,7 +157,7 @@
 
 					<div class="h-px bg-divider" />
 
-					<div class="flex-1 bg-bg p-4 overflow-y-auto">
+					<div class="flex-1 min-h-0 bg-bg p-4 overflow-y-auto">
 						<div
 							v-if="loadingChangelog"
 							class="flex flex-col items-center justify-center h-full gap-2"
@@ -180,7 +180,14 @@
 					<div
 						class="absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-bg to-transparent pointer-events-none"
 					/>
-				</template>
+				</div>
+				<div
+					v-else-if="loading || loadingChangelog || props.versions.length > 0"
+					class="flex-1 flex flex-col items-center justify-center h-full gap-2 text-secondary bg-bg"
+				>
+					<SpinnerIcon class="h-6 w-6 animate-spin" />
+					<span class="text-sm">{{ formatMessage(messages.loadingChangelog) }}</span>
+				</div>
 				<div v-else class="flex-1 flex items-center justify-center text-secondary bg-bg">
 					{{ formatMessage(messages.selectVersionPrompt) }}
 				</div>
@@ -284,7 +291,7 @@ import {
 	renderHighlightedString,
 } from '@modrinth/utils'
 import { useTimeoutFn } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, toRef } from 'vue'
 
 import Avatar from '#ui/components/base/Avatar.vue'
 import ButtonStyled from '#ui/components/base/ButtonStyled.vue'
@@ -300,6 +307,9 @@ import {
 	versionChangesGameVersion,
 	versionMatchesCompatibilityTarget,
 } from '#ui/utils/version-compatibility'
+
+import { useContentUpdaterFiltering } from './use-content-updater-filtering'
+import { useContentUpdaterSelection } from './use-content-updater-selection'
 
 const { formatMessage } = useVIntl()
 const debug = useDebugLogger('ContentUpdaterModal')
@@ -473,52 +483,19 @@ const incompatibleUpdateModal = ref<InstanceType<typeof ConfirmModal>>()
 const searchQuery = ref('')
 const hideIncompatibleState = ref(true)
 const switchMode = ref(false)
-const selectedVersion = ref<Labrinth.Versions.v2.Version | null>(null)
 const pendingIncompatibleUpdate = ref<{
 	version: Labrinth.Versions.v2.Version
 	event: MouseEvent
 } | null>(null)
 const suppressCancelOnHide = ref(false)
-// Store the initial version ID to select when versions become available
-const pendingInitialVersionId = ref<string | undefined>(undefined)
-const pinnedInitialVersionId = ref<string | undefined>(undefined)
 
-watch(
-	() => props.versions,
-	(newVersions) => {
-		// If we have a selected version, check if it was updated with new data (e.g., changelog)
-		if (selectedVersion.value) {
-			const updatedVersion = newVersions.find((v) => v.id === selectedVersion.value?.id)
-			if (updatedVersion && updatedVersion !== selectedVersion.value) {
-				selectedVersion.value = updatedVersion
-			}
-		}
-
-		// Handle initial selection when versions first arrive
-		if (newVersions.length > 0 && !selectedVersion.value && pendingInitialVersionId.value) {
-			const pendingFound = newVersions.find((v) => v.id === pendingInitialVersionId.value)
-			debug('versions watcher: initial selection', {
-				pendingInitialVersionId: pendingInitialVersionId.value,
-				foundPending: !!pendingFound,
-				currentVersionId: props.currentVersionId,
-				currentInList: newVersions.some((v) => v.id === props.currentVersionId),
-				totalVersions: newVersions.length,
-				loaderDistribution: [...new Set(newVersions.flatMap((v) => v.loaders))],
-				gameVersionDistribution: [...new Set(newVersions.flatMap((v) => v.game_versions))].slice(
-					0,
-					10,
-				),
-			})
-			const version = pendingFound ?? newVersions[0]
-			selectedVersion.value = version
-			if (version) {
-				emit('versionSelect', version)
-			}
-			pendingInitialVersionId.value = undefined
-		}
-	},
-	{ deep: true },
-)
+const { selectedVersion, pinnedInitialVersionId, selectVersion, resetInitialSelection } =
+	useContentUpdaterSelection({
+		versions: toRef(props, 'versions'),
+		currentVersionId: toRef(props, 'currentVersionId'),
+		onVersionSelect: (version) => emit('versionSelect', version),
+		debug,
+	})
 
 function isVersionCompatible(version: Labrinth.Versions.v2.Version): boolean {
 	const compatible = versionMatchesCompatibilityTarget(version, {
@@ -551,41 +528,17 @@ const isDowngrade = computed(() => {
 	)
 })
 
-const filteredVersions = computed(() => {
-	let versions = [...props.versions]
-
-	if (searchQuery.value) {
-		const query = searchQuery.value.toLowerCase()
-		versions = versions.filter(
-			(v) =>
-				v.name.toLowerCase().includes(query) ||
-				v.version_number.toLowerCase().includes(query) ||
-				(incompatibilityWarningMode.value &&
-					[...v.loaders, ...v.game_versions].some((value) => value.toLowerCase().includes(query))),
-		)
-	}
-
-	const beforeFilterCount = versions.length
-	if (!incompatibilityWarningMode.value && !isModpack.value && hideIncompatibleState.value) {
-		versions = versions.filter(
-			(version) =>
-				version.id === props.currentVersionId ||
-				version.id === selectedVersion.value?.id ||
-				version.id === pinnedInitialVersionId.value ||
-				isVersionCompatible(version),
-		)
-	}
-
-	debug('filteredVersions computed', {
-		totalVersions: props.versions.length,
-		afterSearchFilter: beforeFilterCount,
-		afterCompatibilityFilter: versions.length,
-		hiddenByCompatibility: beforeFilterCount - versions.length,
-		hideIncompatible: hideIncompatibleState.value,
-		filteringCompatibility: !isModpack.value && hideIncompatibleState.value,
-	})
-
-	return versions
+const filteredVersions = useContentUpdaterFiltering({
+	versions: toRef(props, 'versions'),
+	searchQuery,
+	isModpack,
+	incompatibilityWarningMode,
+	hideIncompatibleState,
+	selectedVersion,
+	pinnedInitialVersionId,
+	currentVersionId: toRef(props, 'currentVersionId'),
+	isVersionCompatible,
+	debug,
 })
 
 function shouldShowBadge(version: Labrinth.Versions.v2.Version): boolean {
@@ -682,9 +635,7 @@ function handleVersionMouseLeave() {
 
 function handleVersionSelect(version: Labrinth.Versions.v2.Version) {
 	if (prefetchTimeout) prefetchTimeout.stop()
-	selectedVersion.value = version
-	// Emit event so parent can fetch full version data with changelog
-	emit('versionSelect', version)
+	selectVersion(version)
 }
 
 function handleUpdate(event: MouseEvent) {
@@ -772,7 +723,6 @@ function show(initialVersionId?: string, options?: { switchMode?: boolean }) {
 	searchQuery.value = ''
 	hideIncompatibleState.value = incompatibilityWarningMode.value ? false : !isModpack.value
 	pendingIncompatibleUpdate.value = null
-	pinnedInitialVersionId.value = initialVersionId
 	switchMode.value = options?.switchMode ?? false
 
 	debug('show() called', {
@@ -791,25 +741,9 @@ function show(initialVersionId?: string, options?: { switchMode?: boolean }) {
 			foundInList: !!currentInList,
 			allVersionIds: props.versions.map((v) => v.id),
 		})
-
-		if (initialVersionId) {
-			selectedVersion.value =
-				props.versions.find((v) => v.id === initialVersionId) ?? props.versions[0]
-		} else {
-			selectedVersion.value = props.versions[0]
-		}
-		pendingInitialVersionId.value = undefined
-		if (selectedVersion.value) {
-			emit('versionSelect', selectedVersion.value)
-		}
-	} else {
-		selectedVersion.value = null
-		pendingInitialVersionId.value = initialVersionId
-		debug('show(): no versions yet, deferring selection', {
-			pendingInitialVersionId: initialVersionId,
-		})
 	}
 
+	resetInitialSelection(initialVersionId)
 	modal.value?.show()
 }
 
