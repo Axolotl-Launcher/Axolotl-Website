@@ -17,8 +17,6 @@ import Checkbox from '@modrinth/ui/src/components/base/Checkbox.vue'
 import IntlFormatted from '@modrinth/ui/src/components/base/IntlFormatted.vue'
 import { defineMessages, useVIntl } from '@modrinth/ui/src/composables/i18n.ts'
 
-import { homePageProjects } from '~/generated/state.json'
-
 interface GitHubReleaseAsset {
 	browser_download_url: string
 	name: string
@@ -45,16 +43,6 @@ const linuxLinks = reactive({
 const macLinks = reactive({
 	universal: null as string | null,
 })
-
-const newProjects = homePageProjects.slice(0, 40)
-const val = Math.ceil(newProjects.length / 6)
-const rows = [
-	newProjects.slice(0, val),
-	newProjects.slice(val, val * 2),
-	newProjects.slice(val * 2, val * 3),
-	newProjects.slice(val * 3, val * 4),
-	newProjects.slice(val * 4, val * 5),
-]
 
 const { data: launcherRelease } = await useFetch<GitHubRelease>(
 	'https://api.github.com/repos/Mystic-Stars/Axolotl/releases/latest',
@@ -173,6 +161,25 @@ const modManagementData = [
 		version: '8.5.2023',
 		iconUrl: 'https://cdn.modrinth.com/data/nrJ2NpD0/4f21214db060ed4542b1f3983c4113d293480a1b.webp',
 	},
+]
+
+const newProjects = Array.from({ length: 40 }, (_, index) => {
+	const project = modManagementData[index % modManagementData.length]
+
+	return {
+		id: `${project.id}-${index}`,
+		icon_url: project.iconUrl,
+		title: project.name,
+		description: `${project.name} is ready to explore on Modrinth.`,
+	}
+})
+const val = Math.ceil(newProjects.length / 6)
+const rows = [
+	newProjects.slice(0, val),
+	newProjects.slice(val, val * 2),
+	newProjects.slice(val * 2, val * 3),
+	newProjects.slice(val * 3, val * 4),
+	newProjects.slice(val * 4, val * 5),
 ]
 
 const downloadLauncher = computed(() => {
