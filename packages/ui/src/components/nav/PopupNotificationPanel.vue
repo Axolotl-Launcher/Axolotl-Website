@@ -51,6 +51,8 @@
 							:progress-current="progressItem.progressCurrent"
 							:progress-total="progressItem.progressTotal"
 							:actions="progressItem.buttons"
+							class="cursor-pointer"
+							@click="handleDownloadClick(item, $event)"
 							@dismiss="handleProgressItemDismiss(item, progressItem)"
 							@action="(index) => handleProgressItemAction(progressItem, index)"
 						/>
@@ -218,6 +220,11 @@ function downloadToastItems(item: PopupNotification): PopupNotificationProgressI
 			progressType: 'percentage',
 		},
 	]
+}
+
+function handleDownloadClick(item: PopupNotification, event: MouseEvent) {
+	if ((event.target as HTMLElement).closest('button')) return
+	void item.onClick?.()
 }
 
 async function handleProgressItemDismiss(
