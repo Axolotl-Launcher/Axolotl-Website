@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import ButtonStyled from '../../components/base/ButtonStyled.vue'
 import type { CreationFlowContextValue } from '../../components/flows/creation-flow-modal/creation-flow-context'
 import CreationFlowModal from '../../components/flows/creation-flow-modal/index.vue'
+import { type PickedFile, provideFilePicker } from '../../providers'
 
 const meta = {
 	title: 'Servers/CreationFlowModal',
@@ -94,11 +95,26 @@ export const ServerOnboarding: Story = {
 // Create Instance (App)
 // ============================================
 
-export const Instance: Story = {
-	name: 'Create Instance (App)',
-	render: () => ({
+function createMockIcon(name: string): PickedFile {
+	return {
+		file: new File([''], `${name}.png`, { type: 'image/png' }),
+		previewUrl:
+			'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="12" fill="%231bd96a"/%3E%3C/svg%3E',
+	}
+}
+
+function renderInstanceStory(withDedicatedIconPicker: boolean) {
+	return {
 		components: { CreationFlowModal, ButtonStyled },
 		setup() {
+			provideFilePicker({
+				pickImage: async () => createMockIcon('uploaded-icon'),
+				...(withDedicatedIconPicker
+					? { pickInstanceIcon: async () => createMockIcon('built-in-icon') }
+					: {}),
+				pickModpackFile: async () => null,
+			})
+
 			const modalRef = ref<InstanceType<typeof CreationFlowModal> | null>(null)
 			const lastEvent = ref('')
 			const openModal = () => modalRef.value?.show()
@@ -124,5 +140,15 @@ export const Instance: Story = {
 				/>
 			</div>
 		`,
-	}),
+	}
+}
+
+export const Instance: Story = {
+	name: 'Create Instance (App)',
+	render: () => renderInstanceStory(true),
+}
+
+export const InstanceUploadFallback: Story = {
+	name: 'Create Instance (Upload Fallback)',
+	render: () => renderInstanceStory(false),
 }
