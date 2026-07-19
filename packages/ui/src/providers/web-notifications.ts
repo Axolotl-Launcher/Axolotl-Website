@@ -46,7 +46,7 @@ export abstract class AbstractWebNotificationManager {
 	 */
 	handleError = (error: Error): void => {
 		this.addNotification({
-			title: 'An error occurred',
+			title: '发生错误',
 			text: error.message ?? error,
 			type: 'error',
 		})
