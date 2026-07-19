@@ -1,13 +1,24 @@
 <template>
 	<div class="w-full flex items-center justify-center flex-col gap-2">
-		<div class="title">Loading</div>
+		<div class="title">{{ formatMessage(messages.loadingLabel) }}</div>
 		<div class="placeholder"></div>
 		<div class="placeholder"></div>
 		<div class="placeholder"></div>
 	</div>
 </template>
 
-<script setup></script>
+<script setup>
+import { defineMessages, useVIntl } from '#ui/composables/i18n'
+
+const messages = defineMessages({
+	loadingLabel: {
+		id: 'omorphia.component.loading-indicator.label',
+		defaultMessage: 'Loading',
+	},
+})
+
+const { formatMessage } = useVIntl()
+</script>
 <style scoped>
 .title {
 	position: absolute;
@@ -22,16 +33,22 @@
 }
 
 @keyframes dots {
-	25% {
+	0%,
+	24.99% {
 		content: '';
 	}
-	50% {
+
+	25%,
+	49.99% {
 		content: '.';
 	}
-	75% {
+
+	50%,
+	74.99% {
 		content: '..';
 	}
-	0%,
+
+	75%,
 	100% {
 		content: '...';
 	}
