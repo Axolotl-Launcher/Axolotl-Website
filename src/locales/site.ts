@@ -7,6 +7,10 @@ export const siteLocaleMessages: Record<string, Record<string, string>> = {
 			'下载 Axolotl Launcher：适用于 Windows、macOS 和 Linux 的免费开源、无广告 Minecraft（我的世界）启动器，支持 Modrinth 内容管理、中文翻译与离线账户。',
 		'axolotl-site.seo.social-image-alt':
 			'Axolotl Launcher 正在展示一个 Minecraft 实例及其已安装内容。',
+		'axolotl-site.update-rescue.title': 'v1.2.2 无法通过 CNB 检查更新？',
+		'axolotl-site.update-rescue.description':
+			'请打开启动器的“设置 → 更新”，将渠道切换为 GitHub，再手动检查更新。升级到 v1.2.3 后即可继续正常使用 CNB 渠道。',
+		'axolotl-site.update-rescue.action': '查看最新版本',
 		'axolotl-site.faq.eyebrow': '常见问题',
 		'axolotl-site.faq.title': '关于 Axolotl Launcher，你需要了解的一切',
 		'axolotl-site.faq.description': '了解支持平台、账户类型、内容来源与官方下载方式。',
