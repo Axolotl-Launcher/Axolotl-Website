@@ -595,6 +595,19 @@ const messages = defineMessages({
 		defaultMessage:
 			'Linux packages are published with every release. Check the <issues-link>release page</issues-link> for architecture details or <prism-link>report an issue</prism-link> if your distribution needs extra setup.',
 	},
+	updateRescueTitle: {
+		id: 'axolotl-site.update-rescue.title',
+		defaultMessage: 'Unable to check for updates through CNB on v1.2.2?',
+	},
+	updateRescueDescription: {
+		id: 'axolotl-site.update-rescue.description',
+		defaultMessage:
+			'Open Settings → Updates, switch the channel to GitHub, and check again manually. After upgrading to v1.2.3, you can continue using the CNB channel normally.',
+	},
+	updateRescueAction: {
+		id: 'axolotl-site.update-rescue.action',
+		defaultMessage: 'View the latest release',
+	},
 	seoTitle: {
 		id: 'axolotl-site.seo.title',
 		defaultMessage: 'Axolotl Launcher - Free Open-Source Minecraft Launcher',
@@ -854,6 +867,19 @@ useHead(() => ({
 			/>
 			<div class="bottom-transition" />
 		</div>
+		<aside class="update-rescue" role="status">
+			<div>
+				<strong>{{ formatMessage(messages.updateRescueTitle) }}</strong>
+				<p>{{ formatMessage(messages.updateRescueDescription) }}</p>
+			</div>
+			<a
+				href="https://github.com/Mystic-Stars/Axolotl/releases/latest"
+				target="_blank"
+				rel="noopener"
+			>
+				{{ formatMessage(messages.updateRescueAction) }}
+			</a>
+		</aside>
 		<section class="axolotl-highlights" aria-labelledby="axolotl-highlights-title">
 			<div class="highlights-intro">
 				<span class="section-eyebrow">{{ formatMessage(messages.builtOnModrinth) }}</span>
@@ -1443,6 +1469,45 @@ useHead(() => ({
 </template>
 
 <style scoped lang="scss">
+.update-rescue {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 2rem;
+	width: min(76rem, calc(100% - 3rem));
+	margin: 2rem auto 0;
+	padding: 1.25rem 1.5rem;
+	border: 1px solid color-mix(in srgb, var(--color-brand) 35%, transparent);
+	border-radius: 1rem;
+	background: color-mix(in srgb, var(--color-brand) 10%, var(--surface-2));
+
+	strong {
+		color: var(--color-contrast);
+		font-size: 1.05rem;
+	}
+
+	p {
+		margin: 0.35rem 0 0;
+		color: var(--color-secondary);
+		line-height: 1.6;
+	}
+
+	a {
+		flex-shrink: 0;
+		color: var(--color-brand);
+		font-weight: 700;
+		text-decoration: underline;
+	}
+}
+
+@media (max-width: 700px) {
+	.update-rescue {
+		align-items: flex-start;
+		flex-direction: column;
+		width: calc(100% - 2rem);
+	}
+}
+
 .faq-section {
 	display: grid;
 	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
