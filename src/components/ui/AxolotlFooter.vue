@@ -8,6 +8,7 @@ const { formatMessage } = useVIntl()
 const messages = defineMessages({
 	home: { id: 'axolotl-site.navigation.home', defaultMessage: 'Axolotl Launcher home' },
 	features: { id: 'axolotl-site.navigation.features', defaultMessage: 'Features' },
+	faq: { id: 'axolotl-site.navigation.faq', defaultMessage: 'FAQ' },
 	downloads: { id: 'axolotl-site.footer.downloads', defaultMessage: 'Downloads' },
 	sourceCode: { id: 'axolotl-site.footer.source-code', defaultMessage: 'GitHub' },
 	description: {
@@ -43,6 +44,7 @@ const messages = defineMessages({
 
 				<nav class="footer-links" aria-label="Footer">
 					<a href="#features">{{ formatMessage(messages.features) }}</a>
+					<a href="#faq">{{ formatMessage(messages.faq) }}</a>
 					<a href="#download">{{ formatMessage(messages.downloads) }}</a>
 					<a href="https://github.com/Mystic-Stars/Axolotl" target="_blank" rel="noopener">
 						{{ formatMessage(messages.sourceCode) }}
@@ -55,8 +57,8 @@ const messages = defineMessages({
 				<p class="open-source">
 					{{ formatMessage(messages.openSourcePrefix) }}
 					<a href="https://github.com/Mystic-Stars/Axolotl" target="_blank" rel="noopener">
-						{{ formatMessage(messages.openSourceLink) }}
-					</a>.
+						{{ formatMessage(messages.openSourceLink) }} </a
+					>.
 				</p>
 				<p class="disclaimer">{{ formatMessage(messages.disclaimer) }}</p>
 			</div>

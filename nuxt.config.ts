@@ -1,19 +1,25 @@
 import svgLoader from 'vite-svg-loader'
 
+const SITE_URL = 'https://www.axlmc.org'
+
 export default defineNuxtConfig({
 	srcDir: 'src/',
-	ssr: false,
 	app: {
-			head: {
-				htmlAttrs: {
-					class: 'accent-pink dark-mode',
-					lang: 'en-US',
-				},
-				title: 'Axolotl Launcher — Modern Minecraft Launcher',
-				link: [
-					{ rel: 'icon', type: 'image/png', href: '/axolotl.png' },
-					{ rel: 'apple-touch-icon', type: 'image/png', href: '/axolotl.png' },
-				],
+		head: {
+			htmlAttrs: {
+				class: 'accent-pink dark-mode',
+				lang: 'zh-CN',
+			},
+			title: 'Axolotl Launcher - 免费开源的 Minecraft 启动器',
+			link: [
+				{ rel: 'icon', type: 'image/png', href: '/axolotl.png' },
+				{ rel: 'apple-touch-icon', type: 'image/png', href: '/axolotl.png' },
+			],
+		},
+	},
+	runtimeConfig: {
+		public: {
+			siteUrl: SITE_URL,
 		},
 	},
 	vite: {

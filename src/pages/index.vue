@@ -229,7 +229,7 @@ const scrollToSection = () => {
 	})
 }
 
-const { formatMessage } = useVIntl()
+const { formatMessage, locale } = useVIntl()
 
 const messages = defineMessages({
 	openSourceBadge: {
@@ -293,7 +293,8 @@ const messages = defineMessages({
 	},
 	adFreeDescription: {
 		id: 'axolotl-marketing.highlights.ad-free.description',
-		defaultMessage: 'A focused launcher experience with every screen reserved for your worlds, not advertising.',
+		defaultMessage:
+			'A focused launcher experience with every screen reserved for your worlds, not advertising.',
 	},
 	localized: {
 		id: 'axolotl-marketing.highlights.localized.title',
@@ -407,7 +408,8 @@ const messages = defineMessages({
 	},
 	playWithFavoriteModsDescription: {
 		id: 'app-marketing.features.play.description',
-		defaultMessage: 'Build an instance, add your favorite content, and jump into Minecraft in a few clicks.',
+		defaultMessage:
+			'Build an instance, add your favorite content, and jump into Minecraft in a few clicks.',
 	},
 	shareModpacks: {
 		id: 'app-marketing.features.sharing.title',
@@ -593,6 +595,76 @@ const messages = defineMessages({
 		defaultMessage:
 			'Linux packages are published with every release. Check the <issues-link>release page</issues-link> for architecture details or <prism-link>report an issue</prism-link> if your distribution needs extra setup.',
 	},
+	seoTitle: {
+		id: 'axolotl-site.seo.title',
+		defaultMessage: 'Axolotl Launcher - Free Open-Source Minecraft Launcher',
+	},
+	seoDescription: {
+		id: 'axolotl-site.seo.description',
+		defaultMessage:
+			'Download Axolotl Launcher, a free, open-source and ad-free Minecraft launcher for Windows, macOS, and Linux with Modrinth integration, content translation, and offline accounts.',
+	},
+	socialImageAlt: {
+		id: 'axolotl-site.seo.social-image-alt',
+		defaultMessage: 'Axolotl Launcher showing a Minecraft instance and its installed content.',
+	},
+	faqEyebrow: {
+		id: 'axolotl-site.faq.eyebrow',
+		defaultMessage: 'Frequently asked questions',
+	},
+	faqTitle: {
+		id: 'axolotl-site.faq.title',
+		defaultMessage: 'Everything you need to know about Axolotl',
+	},
+	faqDescription: {
+		id: 'axolotl-site.faq.description',
+		defaultMessage: 'Learn about supported platforms, accounts, content, and downloads.',
+	},
+	faqPlatformsQuestion: {
+		id: 'axolotl-site.faq.platforms.question',
+		defaultMessage: 'Which operating systems does Axolotl Launcher support?',
+	},
+	faqPlatformsAnswer: {
+		id: 'axolotl-site.faq.platforms.answer',
+		defaultMessage:
+			'Axolotl Launcher supports Windows 10 and 11 on x64, macOS on Intel and Apple Silicon, and Linux x64 through AppImage, DEB, and RPM packages.',
+	},
+	faqFreeQuestion: {
+		id: 'axolotl-site.faq.free.question',
+		defaultMessage: 'Is Axolotl Launcher free and open source?',
+	},
+	faqFreeAnswer: {
+		id: 'axolotl-site.faq.free.answer',
+		defaultMessage:
+			'Yes. Axolotl Launcher is free software released under GPL-3.0. Its source code and release history are publicly available on GitHub.',
+	},
+	faqAccountsQuestion: {
+		id: 'axolotl-site.faq.accounts.question',
+		defaultMessage: 'Can I use Microsoft and offline Minecraft accounts?',
+	},
+	faqAccountsAnswer: {
+		id: 'axolotl-site.faq.accounts.answer',
+		defaultMessage:
+			'Yes. Axolotl supports Microsoft Minecraft accounts and local offline accounts, so you can choose the account type that fits how you play.',
+	},
+	faqContentQuestion: {
+		id: 'axolotl-site.faq.content.question',
+		defaultMessage: 'Where does Axolotl get mods and other Minecraft content?',
+	},
+	faqContentAnswer: {
+		id: 'axolotl-site.faq.content.answer',
+		defaultMessage:
+			'Axolotl uses the public Modrinth API to help you discover and manage mods, modpacks, resource packs, shaders, and other community content inside the launcher.',
+	},
+	faqDownloadQuestion: {
+		id: 'axolotl-site.faq.download.question',
+		defaultMessage: 'Where should I download Axolotl Launcher?',
+	},
+	faqDownloadAnswer: {
+		id: 'axolotl-site.faq.download.answer',
+		defaultMessage:
+			'Use the download section on this official website. Installers are delivered from the official Mystic-Stars/Axolotl GitHub Releases page.',
+	},
 	appScreenshotAlt: {
 		id: 'app-marketing.hero.app-screenshot-alt',
 		defaultMessage: `Axolotl Launcher instance content preview.`,
@@ -607,16 +679,134 @@ const messages = defineMessages({
 	},
 })
 
-const title = 'Axolotl Launcher — Modern Minecraft Launcher'
-const description =
-	'A free, open-source Minecraft launcher for Windows, macOS, and Linux.'
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl
+const canonicalUrl = `${siteUrl}/`
+const socialImageUrl = `${siteUrl}/showcase/app-home-dark.webp`
+const githubUrl = 'https://github.com/Mystic-Stars/Axolotl'
+const releasesUrl = `${githubUrl}/releases/latest`
+const licenseUrl = `${githubUrl}/blob/main/LICENSE`
+
+const title = computed(() => formatMessage(messages.seoTitle))
+const description = computed(() => formatMessage(messages.seoDescription))
+const socialImageAlt = computed(() => formatMessage(messages.socialImageAlt))
+const faqItems = computed(() => [
+	{
+		question: formatMessage(messages.faqPlatformsQuestion),
+		answer: formatMessage(messages.faqPlatformsAnswer),
+	},
+	{
+		question: formatMessage(messages.faqFreeQuestion),
+		answer: formatMessage(messages.faqFreeAnswer),
+	},
+	{
+		question: formatMessage(messages.faqAccountsQuestion),
+		answer: formatMessage(messages.faqAccountsAnswer),
+	},
+	{
+		question: formatMessage(messages.faqContentQuestion),
+		answer: formatMessage(messages.faqContentAnswer),
+	},
+	{
+		question: formatMessage(messages.faqDownloadQuestion),
+		answer: formatMessage(messages.faqDownloadAnswer),
+	},
+])
+
+const structuredData = computed(() => ({
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'WebSite',
+			'@id': `${canonicalUrl}#website`,
+			url: canonicalUrl,
+			name: 'Axolotl Launcher',
+			description: description.value,
+			inLanguage: locale.value,
+			publisher: { '@id': `${canonicalUrl}#organization` },
+		},
+		{
+			'@type': 'Organization',
+			'@id': `${canonicalUrl}#organization`,
+			name: 'Mystic Stars',
+			url: canonicalUrl,
+			logo: {
+				'@type': 'ImageObject',
+				url: `${siteUrl}/axolotl.png`,
+				width: 256,
+				height: 256,
+			},
+			sameAs: [githubUrl],
+		},
+		{
+			'@type': 'SoftwareApplication',
+			'@id': `${canonicalUrl}#software`,
+			name: 'Axolotl Launcher',
+			description: description.value,
+			url: canonicalUrl,
+			downloadUrl: releasesUrl,
+			image: socialImageUrl,
+			applicationCategory: 'GameApplication',
+			applicationSubCategory: 'Minecraft Launcher',
+			operatingSystem: 'Windows 10/11, macOS, Linux',
+			isAccessibleForFree: true,
+			license: licenseUrl,
+			softwareHelp: `${githubUrl}#readme`,
+			author: { '@id': `${canonicalUrl}#organization` },
+			inLanguage: ['zh-CN', 'en-US'],
+		},
+		{
+			'@type': 'FAQPage',
+			'@id': `${canonicalUrl}#faq`,
+			inLanguage: locale.value,
+			mainEntity: faqItems.value.map((item) => ({
+				'@type': 'Question',
+				name: item.question,
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: item.answer,
+				},
+			})),
+		},
+	],
+}))
 
 useSeoMeta({
-	title,
-	description,
-	ogTitle: title,
-	ogDescription: description,
+	title: () => title.value,
+	description: () => description.value,
+	robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+	author: 'Mystic Stars',
+	applicationName: 'Axolotl Launcher',
+	themeColor: '#ff82b2',
+	colorScheme: 'dark light',
+	ogTitle: () => title.value,
+	ogDescription: () => description.value,
+	ogType: 'website',
+	ogUrl: canonicalUrl,
+	ogSiteName: 'Axolotl Launcher',
+	ogLocale: () => locale.value.replace('-', '_'),
+	ogLocaleAlternate: () => (locale.value === 'zh-CN' ? 'en_US' : 'zh_CN'),
+	ogImage: socialImageUrl,
+	ogImageAlt: () => socialImageAlt.value,
+	ogImageWidth: 1600,
+	ogImageHeight: 871,
+	twitterCard: 'summary_large_image',
+	twitterTitle: () => title.value,
+	twitterDescription: () => description.value,
+	twitterImage: socialImageUrl,
+	twitterImageAlt: () => socialImageAlt.value,
 })
+
+useHead(() => ({
+	link: [{ rel: 'canonical', href: canonicalUrl }],
+	script: [
+		{
+			key: 'axolotl-structured-data',
+			type: 'application/ld+json',
+			innerHTML: JSON.stringify(structuredData.value).replace(/</g, '\\u003c'),
+		},
+	],
+}))
 </script>
 
 <template>
@@ -634,9 +824,9 @@ useSeoMeta({
 						: formatMessage(messages.downloadAxolotl)
 				}}
 			</h1>
-			<h2 class="main-subheader">
+			<p class="main-subheader">
 				{{ formatMessage(messages.description) }}
-			</h2>
+			</p>
 			<div class="button-group">
 				<ButtonStyled v-if="os" color="brand" size="large">
 					<button rel="noopener nofollow" @click="handleDownload">
@@ -657,6 +847,9 @@ useSeoMeta({
 				class="hero-screenshot"
 				src="/showcase/app-home-dark.webp"
 				:alt="formatMessage(messages.heroScreenshotAlt)"
+				width="1600"
+				height="871"
+				decoding="async"
 				fetchpriority="high"
 			/>
 			<div class="bottom-transition" />
@@ -695,12 +888,18 @@ useSeoMeta({
 							class="showcase-image light-shot"
 							src="/showcase/offline-account-light.webp"
 							:alt="formatMessage(messages.offlineScreenshotAlt)"
+							width="1600"
+							height="871"
+							decoding="async"
 							loading="lazy"
 						/>
 						<img
 							class="showcase-image dark-shot"
 							src="/showcase/offline-account-dark.webp"
 							:alt="formatMessage(messages.offlineScreenshotAlt)"
+							width="1600"
+							height="871"
+							decoding="async"
 							loading="lazy"
 						/>
 					</div>
@@ -717,12 +916,18 @@ useSeoMeta({
 							class="showcase-image light-shot"
 							src="/showcase/theme-customization-light.webp"
 							:alt="formatMessage(messages.themesScreenshotAlt)"
+							width="1600"
+							height="871"
+							decoding="async"
 							loading="lazy"
 						/>
 						<img
 							class="showcase-image dark-shot"
 							src="/showcase/theme-customization-dark.webp"
 							:alt="formatMessage(messages.themesScreenshotAlt)"
+							width="1600"
+							height="871"
+							decoding="async"
 							loading="lazy"
 						/>
 					</div>
@@ -739,17 +944,22 @@ useSeoMeta({
 							class="showcase-image light-shot"
 							src="/showcase/content-translation-light.webp"
 							:alt="formatMessage(messages.translationScreenshotAlt)"
+							width="1600"
+							height="871"
+							decoding="async"
 							loading="lazy"
 						/>
 						<img
 							class="showcase-image dark-shot"
 							src="/showcase/content-translation-dark.webp"
 							:alt="formatMessage(messages.translationScreenshotAlt)"
+							width="1600"
+							height="871"
+							decoding="async"
 							loading="lazy"
 						/>
 					</div>
 				</article>
-
 			</div>
 		</section>
 		<div id="features" class="features">
@@ -888,11 +1098,7 @@ useSeoMeta({
 					<div class="description">
 						<IntlFormatted :message-id="messages.openSourceDescription">
 							<template #github-link="{ children }">
-								<a
-									href="https://github.com/Mystic-Stars/Axolotl"
-									rel="noopener"
-									target="_blank"
-								>
+								<a href="https://github.com/Mystic-Stars/Axolotl" rel="noopener" target="_blank">
 									<component :is="() => children" />
 								</a>
 							</template>
@@ -1066,6 +1272,19 @@ useSeoMeta({
 				</div>
 			</div>
 		</div>
+		<section id="faq" class="faq-section" aria-labelledby="faq-title">
+			<div class="faq-intro">
+				<span class="section-eyebrow">{{ formatMessage(messages.faqEyebrow) }}</span>
+				<h2 id="faq-title">{{ formatMessage(messages.faqTitle) }}</h2>
+				<p>{{ formatMessage(messages.faqDescription) }}</p>
+			</div>
+			<div class="faq-list">
+				<details v-for="item in faqItems" :key="item.question" class="faq-item">
+					<summary>{{ item.question }}</summary>
+					<p>{{ item.answer }}</p>
+				</details>
+			</div>
+		</section>
 		<div id="download" ref="downloadSection" class="footer">
 			<div class="section-badge">{{ formatMessage(messages.downloadOptions) }}</div>
 			<div class="section-subheader">
@@ -1150,10 +1369,10 @@ useSeoMeta({
 						</div>
 					</div>
 					<div class="description apple">
-					<a :href="linuxLinks.appImage || undefined" download="">
-						<DownloadIcon />
-						<span>{{ formatMessage(messages.downloadAppImage) }}</span>
-					</a>
+						<a :href="linuxLinks.appImage || undefined" download="">
+							<DownloadIcon />
+							<span>{{ formatMessage(messages.downloadAppImage) }}</span>
+						</a>
 						<Accordion
 							class="mt-2 flex flex-col items-center"
 							content-class="flex flex-col items-start gap-2 mt-2 text-sm"
@@ -1165,7 +1384,7 @@ useSeoMeta({
 							<span class="grid grid-cols-[auto_1fr] gap-2 text-left text-orange"
 								><IssuesIcon class="mt-1" /> {{ formatMessage(messages.notRecommended) }}</span
 							>
-						<a :href="linuxLinks.deb || undefined" download="" class="text-primary">
+							<a :href="linuxLinks.deb || undefined" download="" class="text-primary">
 								<DownloadIcon />
 								<span>{{ formatMessage(messages.downloadTheDEB) }}</span>
 							</a>
@@ -1180,12 +1399,16 @@ useSeoMeta({
 			<p class="terms">
 				<IntlFormatted :message-id="messages.downloadTerms">
 					<template #terms-link="{ children }">
-						<a href="https://github.com/Mystic-Stars/Axolotl/blob/main/LICENSE" target="_blank">
+						<a
+							href="https://github.com/Mystic-Stars/Axolotl/blob/main/LICENSE"
+							target="_blank"
+							rel="noopener"
+						>
 							<component :is="() => children" />
 						</a>
 					</template>
 					<template #privacy-link="{ children }">
-						<a href="https://github.com/Mystic-Stars/Axolotl#readme" target="_blank">
+						<a href="https://github.com/Mystic-Stars/Axolotl#readme" target="_blank" rel="noopener">
 							<component :is="() => children" />
 						</a>
 					</template>
@@ -1198,6 +1421,7 @@ useSeoMeta({
 							class="underline hover:brightness-[--hover-brightness]"
 							href="https://github.com/Mystic-Stars/Axolotl/releases/latest"
 							target="_blank"
+							rel="noopener"
 						>
 							<component :is="() => children" />
 						</a>
@@ -1207,6 +1431,7 @@ useSeoMeta({
 							class="underline hover:brightness-[--hover-brightness]"
 							href="https://github.com/Mystic-Stars/Axolotl/issues"
 							target="_blank"
+							rel="noopener"
 						>
 							<component :is="() => children" />
 						</a>
@@ -1218,6 +1443,68 @@ useSeoMeta({
 </template>
 
 <style scoped lang="scss">
+.faq-section {
+	display: grid;
+	grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+	gap: 4rem;
+	width: min(76rem, calc(100% - 3rem));
+	margin: 0 auto;
+	padding: 7rem 0;
+}
+
+.faq-intro {
+	h2 {
+		margin: 0.75rem 0 1rem;
+		color: var(--color-contrast);
+		font-size: clamp(2rem, 4vw, 3.25rem);
+		line-height: 1.08;
+	}
+
+	p {
+		max-width: 32rem;
+		margin: 0;
+		color: var(--color-secondary);
+		font-size: 1.05rem;
+		line-height: 1.7;
+	}
+}
+
+.faq-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.faq-item {
+	border: 1px solid var(--color-divider);
+	border-radius: 1rem;
+	background: var(--surface-2);
+
+	summary {
+		padding: 1.15rem 1.25rem;
+		color: var(--color-contrast);
+		font-weight: 700;
+		line-height: 1.4;
+		cursor: pointer;
+	}
+
+	p {
+		margin: 0;
+		padding: 0 1.25rem 1.25rem;
+		color: var(--color-secondary);
+		line-height: 1.7;
+	}
+}
+
+@media (max-width: 800px) {
+	.faq-section {
+		grid-template-columns: 1fr;
+		gap: 2rem;
+		width: calc(100% - 2rem);
+		padding: 5rem 0;
+	}
+}
+
 .landing-hero {
 	position: relative;
 	background:
@@ -1241,9 +1528,6 @@ useSeoMeta({
 
 	.main-subheader {
 		font-size: 1.625rem;
-	}
-
-	h2 {
 		line-height: 125%;
 		margin: 0 0 1.625rem;
 		font-weight: 400;
@@ -1355,10 +1639,10 @@ useSeoMeta({
 		}
 
 		span {
-		color: var(--color-brand);
-		font-size: 0.75rem;
-		font-weight: 800;
-		letter-spacing: 0.09em;
+			color: var(--color-brand);
+			font-size: 0.75rem;
+			font-weight: 800;
+			letter-spacing: 0.09em;
 		}
 	}
 
@@ -2090,7 +2374,6 @@ useSeoMeta({
 				color: var(--landing-color-subheading);
 			}
 		}
-
 	}
 
 	.feature-row {

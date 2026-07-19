@@ -1,21 +1,18 @@
+import { useDebugLogger } from '@modrinth/ui/src/composables/debug-logger.ts'
 import {
 	type CrowdinMessages,
 	LOCALES,
 	transformCrowdinMessages,
 } from '@modrinth/ui/src/composables/i18n.ts'
-import { useDebugLogger } from '@modrinth/ui/src/composables/debug-logger.ts'
 import { uiLocaleModules } from '@modrinth/ui/src/locales.ts'
-import {
-	I18N_INJECTION_KEY,
-	type I18nContext,
-} from '@modrinth/ui/src/providers/i18n.ts'
+import { I18N_INJECTION_KEY, type I18nContext } from '@modrinth/ui/src/providers/i18n.ts'
 import IntlMessageFormat from 'intl-messageformat'
 import { LRUCache } from 'lru-cache'
 
 import { siteLocaleMessages, SUPPORTED_SITE_LOCALES } from '~/locales/site'
 
 const debug = useDebugLogger('i18n')
-const DEFAULT_LOCALE = 'en-US'
+const DEFAULT_LOCALE = 'zh-CN'
 const supportedLocales = LOCALES.filter((locale) =>
 	SUPPORTED_SITE_LOCALES.includes(locale.code as (typeof SUPPORTED_SITE_LOCALES)[number]),
 )
@@ -133,8 +130,7 @@ export default defineNuxtPlugin({
 	async setup(nuxtApp) {
 		const locale = ref(DEFAULT_LOCALE)
 		const savedLocale = useCookie<string | null>('locale').value
-		const initialLocale =
-			savedLocale && isSupportedLocale(savedLocale) ? savedLocale : getBrowserLocale()
+		const initialLocale = DEFAULT_LOCALE
 
 		function t(key: string, values?: Record<string, unknown>): string {
 			const currentLocale = locale.value
@@ -195,8 +191,19 @@ export default defineNuxtPlugin({
 
 		debug('init: complete', { locale: locale.value })
 
+		useHead({
+			htmlAttrs: {
+				lang: () => locale.value,
+			},
+		})
+
 		const context: I18nContext = { locale, t, setLocale }
 		nuxtApp.vueApp.provide(I18N_INJECTION_KEY, context)
 
+		nuxtApp.hook('app:mounted', async () => {
+			const preferredLocale =
+				savedLocale && isSupportedLocale(savedLocale) ? savedLocale : getBrowserLocale()
+			if (preferredLocale !== locale.value) await setLocale(preferredLocale)
+		})
 	},
 })
