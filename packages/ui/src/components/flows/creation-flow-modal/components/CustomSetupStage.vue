@@ -311,7 +311,7 @@ const isPaperLike = computed(
 const filePicker = injectFilePicker()
 
 async function triggerIconInput() {
-	const picked = await filePicker.pickImage()
+	const picked = await (filePicker.pickInstanceIcon?.() ?? filePicker.pickImage())
 	if (picked) {
 		ctx.instanceIcon.value = picked.file
 		ctx.instanceIconUrl.value = picked.previewUrl
