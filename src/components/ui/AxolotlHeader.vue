@@ -21,6 +21,7 @@ const messages = defineMessages({
 	primary: { id: 'axolotl-site.navigation.primary', defaultMessage: 'Primary navigation' },
 	mobile: { id: 'axolotl-site.navigation.mobile', defaultMessage: 'Mobile navigation' },
 	features: { id: 'axolotl-site.navigation.features', defaultMessage: 'Features' },
+	faq: { id: 'axolotl-site.navigation.faq', defaultMessage: 'FAQ' },
 	openSource: { id: 'axolotl-site.navigation.open-source', defaultMessage: 'Open source' },
 	download: { id: 'axolotl-site.navigation.download', defaultMessage: 'Download' },
 	openSettings: {
@@ -53,6 +54,9 @@ function openSettings() {
 					<a href="#features">{{ formatMessage(messages.features) }}</a>
 				</ButtonStyled>
 				<ButtonStyled type="transparent">
+					<a href="#faq">{{ formatMessage(messages.faq) }}</a>
+				</ButtonStyled>
+				<ButtonStyled type="transparent">
 					<a href="https://github.com/Mystic-Stars/Axolotl" target="_blank" rel="noopener">
 						<GithubIcon aria-hidden="true" />
 						{{ formatMessage(messages.openSource) }}
@@ -74,9 +78,7 @@ function openSettings() {
 				</ButtonStyled>
 				<ButtonStyled class="mobile-menu-button" circular type="transparent">
 					<button
-						:aria-label="
-							formatMessage(mobileMenuOpen ? messages.closeMenu : messages.openMenu)
-						"
+						:aria-label="formatMessage(mobileMenuOpen ? messages.closeMenu : messages.openMenu)"
 						:aria-expanded="mobileMenuOpen"
 						@click="mobileMenuOpen = !mobileMenuOpen"
 					>
@@ -95,6 +97,9 @@ function openSettings() {
 			>
 				<a href="#features" @click="mobileMenuOpen = false">
 					{{ formatMessage(messages.features) }}
+				</a>
+				<a href="#faq" @click="mobileMenuOpen = false">
+					{{ formatMessage(messages.faq) }}
 				</a>
 				<a
 					href="https://github.com/Mystic-Stars/Axolotl"

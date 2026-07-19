@@ -6,11 +6,7 @@ import ButtonStyled from '@modrinth/ui/src/components/base/ButtonStyled.vue'
 import Toggle from '@modrinth/ui/src/components/base/Toggle.vue'
 import LanguageSelector from '@modrinth/ui/src/components/settings/LanguageSelector.vue'
 import ThemeSelector from '@modrinth/ui/src/components/settings/ThemeSelector.vue'
-import {
-	defineMessages,
-	LOCALES,
-	useVIntl,
-} from '@modrinth/ui/src/composables/i18n.ts'
+import { defineMessages, LOCALES, useVIntl } from '@modrinth/ui/src/composables/i18n.ts'
 import { injectI18n } from '@modrinth/ui/src/providers/i18n.ts'
 
 type Theme = 'system' | 'light' | 'dark' | 'oled'

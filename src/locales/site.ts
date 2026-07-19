@@ -2,6 +2,29 @@ export const SUPPORTED_SITE_LOCALES = ['en-US', 'zh-CN'] as const
 
 export const siteLocaleMessages: Record<string, Record<string, string>> = {
 	'zh-CN': {
+		'axolotl-site.seo.title': 'Axolotl Launcher - 免费开源的 Minecraft 启动器',
+		'axolotl-site.seo.description':
+			'下载 Axolotl Launcher：适用于 Windows、macOS 和 Linux 的免费开源、无广告 Minecraft（我的世界）启动器，支持 Modrinth 内容管理、中文翻译与离线账户。',
+		'axolotl-site.seo.social-image-alt':
+			'Axolotl Launcher 正在展示一个 Minecraft 实例及其已安装内容。',
+		'axolotl-site.faq.eyebrow': '常见问题',
+		'axolotl-site.faq.title': '关于 Axolotl Launcher，你需要了解的一切',
+		'axolotl-site.faq.description': '了解支持平台、账户类型、内容来源与官方下载方式。',
+		'axolotl-site.faq.platforms.question': 'Axolotl Launcher 支持哪些操作系统？',
+		'axolotl-site.faq.platforms.answer':
+			'Axolotl Launcher 支持 Windows 10/11 x64、搭载 Intel 或 Apple 芯片的 macOS，以及通过 AppImage、DEB 和 RPM 软件包安装的 Linux x64。',
+		'axolotl-site.faq.free.question': 'Axolotl Launcher 免费且开源吗？',
+		'axolotl-site.faq.free.answer':
+			'是。Axolotl Launcher 是基于 GPL-3.0 发布的自由软件，源代码和版本历史均在 GitHub 上公开。',
+		'axolotl-site.faq.accounts.question': '可以使用 Microsoft 正版账户和离线账户吗？',
+		'axolotl-site.faq.accounts.answer':
+			'可以。Axolotl 同时支持 Microsoft Minecraft 正版账户与本地离线账户，你可以根据自己的游玩方式选择账户类型。',
+		'axolotl-site.faq.content.question': 'Axolotl 从哪里获取模组和其他 Minecraft 内容？',
+		'axolotl-site.faq.content.answer':
+			'Axolotl 使用 Modrinth 公共 API，帮助你直接在启动器中发现并管理模组、整合包、资源包、光影及其他社区内容。',
+		'axolotl-site.faq.download.question': '应该从哪里下载 Axolotl Launcher？',
+		'axolotl-site.faq.download.answer':
+			'请使用本官方网站的下载区域。安装程序由官方 Mystic-Stars/Axolotl GitHub Releases 页面提供。',
 		'axolotl-marketing.hero.download': '认识 Axolotl Launcher',
 		'axolotl-marketing.hero.download-for-os': '适用于 {os} 的 Axolotl Launcher',
 		'app-marketing.hero.description':
@@ -113,6 +136,7 @@ export const siteLocaleMessages: Record<string, Record<string, string>> = {
 		'axolotl-site.navigation.primary': '主导航',
 		'axolotl-site.navigation.mobile': '移动端导航',
 		'axolotl-site.navigation.features': '功能',
+		'axolotl-site.navigation.faq': '常见问题',
 		'axolotl-site.navigation.open-source': '开放源代码',
 		'axolotl-site.navigation.download': '下载',
 		'axolotl-site.navigation.open-settings': '打开显示设置',
