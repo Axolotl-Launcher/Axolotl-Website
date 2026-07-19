@@ -2744,6 +2744,9 @@
   "omorphia.component.environment-indicator.label.unsupported": {
     "defaultMessage": "不支持"
   },
+  "omorphia.component.loading-indicator.label": {
+    "defaultMessage": "加载中"
+  },
   "payment-method.amazon_pay": {
     "defaultMessage": "Amazon 支付"
   },
