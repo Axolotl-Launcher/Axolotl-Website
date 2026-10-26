@@ -13,7 +13,7 @@
 
 User-visible copy in shared UI and the desktop frontend must use the localization system from `@modrinth/ui`. This includes Vue templates/scripts and TypeScript or JavaScript modules that supply labels, notifications, status text or message descriptors. Follow visible copy to its source rather than filtering by component extension.
 
-The website has its own locale integration; inspect its current message sources and rendering API before migrating copy. Launcher release announcements use the bilingual catalog described in [announcement instructions](../../apps/app-frontend/src/announcements/AGENTS.md), and must not be rewritten into general locale files. An i18n review does not authorize editing that catalog.
+The website has its own locale integration; inspect its current message sources and rendering API before migrating copy. Launcher release announcements use the bilingual catalog described in [announcement instructions](https://github.com/Axolotl-Launcher/Axolotl/blob/main/apps/app-frontend/src/announcements/AGENTS.md), and must not be rewritten into general locale files. An i18n review does not authorize editing that catalog.
 
 A review stays read-only. For an implementation request, preserve logic, layout, reactivity and bindings, and avoid unrelated locale extraction or pruning.
 
@@ -143,5 +143,5 @@ All i18n utilities come from `@modrinth/ui`:
 
 ## Reference Examples
 
-- Variables and plurals: `apps/app-frontend/src/components/home/HomeDailyChallenge.vue`
-- Rich-text with link tags: `apps/website/src/pages/index.vue`
+- Variables and plurals: `apps/app-frontend/src/components/home/HomeDailyChallenge.vue` in the launcher repository
+- Rich-text with link tags: `src/pages/index.vue`

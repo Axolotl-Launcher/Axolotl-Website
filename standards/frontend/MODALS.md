@@ -359,7 +359,7 @@ Navigate to it with `modal.value?.setStage('edit-loaders')` — it won't affect 
 
 ## Reference Implementation
 
-The desktop onboarding flow is the current reference implementation:
+The desktop onboarding flow in the [launcher repository](https://github.com/Axolotl-Launcher/Axolotl) is the current reference implementation:
 
 | File                                                          | Purpose                           |
 | ------------------------------------------------------------- | --------------------------------- |

@@ -31,7 +31,7 @@ export default defineConfig({
     webServer: process.env.PLAYWRIGHT_BASE_URL
         ? undefined
         : {
-              command: 'pnpm --filter @axolotl/website dev',
+              command: 'pnpm dev',
               url: 'http://localhost:3000',
               reuseExistingServer: !process.env.CI,
               timeout: 180_000,

@@ -1,6 +1,11 @@
 # Axolotl Website
 
-The official website for Axolotl Launcher.
+The official website for Axolotl Launcher, served at <https://axlmc.org>.
+
+The launcher, its release pipeline and the announcement catalog live in
+[Axolotl-Launcher/Axolotl](https://github.com/Axolotl-Launcher/Axolotl). This
+repository was extracted from that repository's `apps/website` directory with its
+history.
 
 ## Download sources
 
@@ -21,86 +26,80 @@ its Chinese translations to introduce a new file source.
 
 ## Development
 
-From the repository root:
-
 ```sh
 pnpm install --frozen-lockfile
-pnpm website:dev
+pnpm dev
 ```
 
-Create the static production output with `pnpm website:build`.
+Create the static production output in `.output/public` with `pnpm build` and
+serve it locally with `pnpm preview`. `pnpm test` runs the unit tests and
+`pnpm lint` checks formatting and lint rules for the site.
 
-## Release deployment
+The shared packages under `packages/` (`@modrinth/ui`, `assets`, `utils`,
+`api-client` and `tooling-config`) are vendored from the launcher repository and
+linked by the pnpm workspace. Each keeps its own `lint` script, for example
+`pnpm --filter @modrinth/ui lint`.
 
-Both beta and stable `v*` tags run the `publish-website` job in
-`.github/workflows/axolotl-release.yml` after every installer has been built,
-verified, and published. The job:
+## Release data
 
-1. Checks out the release tag for the announcement source and `main` for the website.
-2. Generates `releases/catalog.json` from the tagged launcher `catalog.ts`.
-   Stable releases also update `releases/latest.json`; beta releases preserve it.
-3. Installs dependencies and runs `nuxi generate` on GitHub's runner, then checks
-   that the released version appears in the prerendered changelog HTML.
-4. Saves the static output as a GitHub artifact and commits the generated release
-   data to `main` with `[skip ci]`.
-5. Uploads `apps/website/.output/public` directly to Cloudflare Pages using pinned
-   Wrangler CLI with `--branch main`.
+`releases/catalog.json` (changelog announcements) and `releases/latest.json`
+(latest stable tag and asset checksums) are generated files owned by the launcher
+repository. Do not edit them here.
+
+After every published `v*` release, the launcher repository's
+`sync-website-release-data.yml` workflow:
+
+1. Generates `releases/catalog.json` from the launcher's
+   `apps/app-frontend/src/announcements/catalog.ts` on `main`. Stable releases
+   also update `releases/latest.json`; beta releases preserve it.
+2. Commits the files to `main` here as **Axolotl Release Bot** when they changed.
+   Unchanged data creates no commit.
+3. That push triggers the production deployment below. When a release is
+   resumed with unchanged data, the workflow dispatches the deployment instead.
+
+## Deployment
+
+`.github/workflows/deploy-website.yml` builds `main` on GitHub's runner and uploads
+`.output/public` to the Cloudflare Pages **Direct Upload** project with the pinned
+Wrangler CLI and `--branch main`. It runs when a push to `main` changes
+`releases/` and on manual dispatch. Ordinary website commits therefore go live
+with the next launcher release or a manual deployment.
 
 Pages serves only static assets; no Worker adapter or Pages Functions are needed.
-GitHub Actions owns the build and publication order. Pages does not run a hosted build.
+GitHub Actions owns the build and publication order. Pages does not run a hosted
+build. Before uploading, the workflow checks that the homepage exists and that
+every catalog version appears in the prerendered changelog. A missing secret or a
+failed build fails the job without replacing the live site.
 
-### One-time setup
+The deployment needs these Actions settings in this repository:
 
-- Create a **Pages Direct Upload** project named `axolotl-website` in the account
-  that owns `axlmc.org`. Set its production branch to `main`. This is a Pages
-  project, separate from the existing `axolotl` Worker. Direct Upload projects
-  cannot later switch to Pages Git integration without creating a new project.
-- Reuse the repository Actions secret `CLOUDFLARE_API_TOKEN`, shared with the
-  Telemetry Worker. Include **Account > Cloudflare Pages > Edit** permission
-  for the owning account alongside its existing service permissions.
-- Add the repository Actions secret `CLOUDFLARE_ACCOUNT_ID` (the owning
-  Cloudflare account ID) and the variable `CLOUDFLARE_PAGES_PROJECT_NAME` (`axolotl-website`).
-  The workflow maps the shared token and account secrets to Wrangler's
-  `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` environment variables.
-- After the first successful upload, associate `axlmc.org` and `www.axlmc.org`
-  under **Pages > Custom domains**, then confirm the DNS changes. Keep the
-  canonical origin `https://axlmc.org` and redirect `www` to the apex using a
-  Cloudflare Redirect Rule. Check HTTPS, all four pages and a missing path before
-  retiring the previous host. Domain routing changes do not belong in the CI token.
-- Ensure repository branch rules permit the release workflow's `GITHUB_TOKEN`
-  to push generated release data to `main`.
-- Any website build-time environment variables must be provided to the GitHub
-  build step; runtime Pages variables cannot change already generated HTML.
+- Secret `CLOUDFLARE_API_TOKEN`: a Cloudflare API token with
+  **Account > Cloudflare Pages > Edit** for the account that owns `axlmc.org`.
+- Secret `CLOUDFLARE_ACCOUNT_ID`: that Cloudflare account ID.
+- Variable `CLOUDFLARE_PAGES_PROJECT_NAME`: the Pages project name
+  (`axolotl-website`).
+
+Any website build-time environment variables must be provided to the GitHub build
+step; runtime Pages variables cannot change already generated HTML. Domain routing
+(`axlmc.org`, `www` redirect) is configured in Cloudflare, not in the CI token.
 
 See Cloudflare's [Direct Upload CI guide](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/)
 and [custom domain setup](https://developers.cloudflare.com/pages/configuration/custom-domains/).
 
-Push these workflow changes before creating the next release tag. No credentials
-belong in source control. A missing secret or failed website build fails the
-website job without replacing the live site. After correcting a failure, rerun
-the failed job in GitHub Actions; rebuilding installers is unnecessary.
-
-Ordinary website commits go live with the next launcher release, or can be built
-and uploaded using the manual workflow below.
-
 ## Manual website deployment
 
-Push `.github/workflows/deploy-website.yml` to `main` first. In the GitHub
-repository, open **Actions > Deploy website to Cloudflare Pages > Run workflow**, select
+Open **Actions > Deploy website to Cloudflare Pages > Run workflow**, select
 **main**, and click **Run workflow**. Alternatively, run:
 
 ```sh
 gh workflow run deploy-website.yml --ref main
 ```
 
-This workflow builds the latest `main` after obtaining the same production
-deployment concurrency lock used by the release workflow. Other branches are
-skipped. It uses the existing `apps/website/releases/catalog.json` synchronized
-by successful releases; it does not regenerate announcements from potentially
-unreleased `catalog.ts` entries or build launcher installers. It requires the
-same Pages secret and two Actions variables, and uploads to the production branch `main`.
-If installation, building, or static output verification fails, upload is skipped.
+The workflow builds the latest `main` after obtaining the production deployment
+concurrency lock. Other branches are skipped. It uses the release data already in
+`releases/`; it does not regenerate announcements from potentially unreleased
+`catalog.ts` entries.
 
 To roll back site content, select a previous successful production deployment in
-Pages and choose **Rollback**. This does not roll back GitHub's generated release
-catalog; the next workflow run publishes the current `main` again.
+Pages and choose **Rollback**. This does not roll back the synchronized release
+data; the next deployment publishes the current `main` again.
