@@ -238,16 +238,35 @@ onMounted(async () => {
         await nextTask()
         loadingController.signal.throwIfAborted()
         await router.push(state.settings.default_page === 'Library' ? '/library' : '/')
-        await waitUntilReady((value) => emit('progress', 25 + value * 0.35))
-        await preparePrimaryNavigation(router, state, loadingController.signal, (value) =>
-            emit('progress', 60 + value * 35),
-        )
+        await waitUntilReady((value) => emit('progress', 25 + value * 0.7))
         await nextPaint()
-        if (!loadingController.signal.aborted) emit('ready')
+        if (loadingController.signal.aborted) return
+        emit('ready')
+        prepareRestOnInteraction()
     } catch {
         if (!loadingController.signal.aborted) emit('failed')
     }
 })
+
+const INTERACTIONS = ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart', 'focusin']
+
+/**
+ * Only the first screen loads before the window opens. The other screens' code and
+ * data load in the background once the visitor does anything in the window.
+ */
+function prepareRestOnInteraction() {
+    const root = windowEl.value
+    if (!root) return
+    const start = () => {
+        for (const type of INTERACTIONS) root.removeEventListener(type, start, true)
+        preparePrimaryNavigation(router, state, loadingController.signal).catch(() => {
+            // Unmounted, or a screen failed to warm up: it loads again when opened.
+        })
+    }
+    for (const type of INTERACTIONS) {
+        root.addEventListener(type, start, { capture: true, passive: true })
+    }
+}
 
 onBeforeUnmount(() => {
     loadingController.abort()
