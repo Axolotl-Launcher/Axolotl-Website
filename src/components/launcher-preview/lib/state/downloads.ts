@@ -115,7 +115,8 @@ export function createDownloadsState(clock: PreviewClock, instances: InstancesSt
      * its user installed. The list is a separate chunk, read on first use.
      */
     function ensureContents() {
-        contentsPromise ??= loadInstanceContent().then((data) => {
+        if (contentsPromise) return contentsPromise
+        contentsPromise = loadInstanceContent().then((data) => {
             const withoutIcon = new Set(data.withoutIcon)
             const next = { ...contents.value }
             for (const instance of instances.instances.value) {
@@ -175,6 +176,10 @@ export function createDownloadsState(clock: PreviewClock, instances: InstancesSt
             }
             contents.value = next
             contentsLoaded.value = true
+        })
+        // Forget a failure so the next caller retries.
+        contentsPromise.catch(() => {
+            contentsPromise = null
         })
         return contentsPromise
     }
