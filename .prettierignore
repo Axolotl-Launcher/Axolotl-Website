@@ -9,6 +9,8 @@ src/generated/**
 src/locales/**
 src/public/news/feed
 src/assets/**/*.svg
+src/public/launcher-preview/**
+src/components/launcher-preview/data/**
 pnpm-lock.yaml
 # The vendored shared packages run their own `lint` scripts with their own ignores.
 packages/**

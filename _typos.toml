@@ -4,6 +4,9 @@ extend-exclude = [
   "patches/",
   "packages/utils/",
   "packages/ui/",
+  # Launcher preview contains generated preview content.
+  "src/components/launcher-preview/",
+  "src/public/launcher-preview/",
 ]
 
 [default.extend-words]

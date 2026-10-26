@@ -7,6 +7,7 @@ const SITE_URL = 'https://axlmc.org'
 
 export default defineNuxtConfig({
     srcDir: 'src/',
+    devtools: { enabled: false },
     dir: {
         // Nuxt 4 resolves `dir.public` against the project root, while this site
         // keeps every source directory (including its static assets) under `src/`.
