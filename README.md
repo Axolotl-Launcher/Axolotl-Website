@@ -40,6 +40,49 @@ The shared packages under `packages/` (`@modrinth/ui`, `assets`, `utils`,
 linked by the pnpm workspace. Each keeps its own `lint` script, for example
 `pnpm --filter @modrinth/ui lint`.
 
+## Page-level tests
+
+```sh
+pnpm test:e2e
+```
+
+This builds the site, serves `.output/public` through `e2e/static-server.mjs`,
+and drives it with Playwright. The tests run against the build output rather than
+a dev server, because a dev server renders unminified styles, injects its own
+client, and a stale one is indistinguishable from a real regression.
+
+- `e2e/theme.spec.ts` asserts theme resolution across a real page load.
+- `e2e/landing.visual.spec.ts` compares full-page screenshots of the landing page
+  in all three themes. The clock, the update server catalogue, third-party imagery
+  and scripts, the design font and lazy images are all pinned in the spec, so a
+  run that differs means the design changed.
+- `e2e/landing.reduced-motion.spec.ts` checks that the project showcase drops its
+  edge fade when the rows stop scrolling under `prefers-reduced-motion: reduce`,
+  while the normal marquee keeps it.
+
+### Visual baselines are recorded per platform
+
+Baselines live in `e2e/__visual__/`, with the platform in the file name
+(`landing-light-win32.png`). Glyph rasterisation differs between operating
+systems, so a baseline recorded on one platform cannot be compared on another.
+Only the Windows set is committed today.
+
+On a platform without a baseline the visual tests **fail** rather than skip, and
+the failure names the missing file and the command that records it:
+
+```sh
+pnpm test:e2e:update
+```
+
+Review the new PNGs before committing them: `--update-snapshots` rewrites a
+baseline from whatever the current build renders, including a regression.
+
+No workflow runs the end-to-end suite yet. If you add one on `ubuntu-latest`,
+record the Linux baselines on Linux first, using the Playwright version pinned in
+`package.json` so the recording machine and the runner agree
+(`mcr.microsoft.com/playwright:v<version>-noble` is the matching image). Never
+share one `node_modules` between a Linux and a Windows checkout.
+
 ## Launcher demo
 
 `/demo` frames the launcher frontend's web demo build, which each launcher
