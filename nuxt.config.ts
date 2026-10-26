@@ -1,8 +1,28 @@
+import { realpathSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import svgLoader from 'vite-svg-loader'
 
 const UI_PUBLIC_ENTRY = fileURLToPath(new URL('./packages/ui/index.ts', import.meta.url))
+
+/**
+ * The browser build of the vue-router Nuxt itself uses. packages/ui depends on its own
+ * 4.x copy, and its composables (useRoute) read that copy's injection keys, so inside
+ * the launcher preview, whose router comes from Nuxt's copy, they found no route.
+ */
+const NUXT_VUE_ROUTER = join(
+    dirname(
+        createRequire(
+            join(
+                realpathSync(fileURLToPath(new URL('./node_modules/nuxt', import.meta.url))),
+                'package.json',
+            ),
+        ).resolve('vue-router'),
+    ),
+    'dist/vue-router.js',
+)
 const SITE_URL = 'https://axlmc.org'
 
 export default defineNuxtConfig({
@@ -103,6 +123,18 @@ export default defineNuxtConfig({
     compatibilityDate: '2025-01-01',
     telemetry: false,
     hooks: {
+        'vite:extendConfig'(config, { isClient }) {
+            // Client only: server rendering keeps vue-router's Node entry.
+            if (!isClient) return
+            const resolve = (config.resolve ??= {})
+            const alias = resolve.alias ?? []
+            resolve.alias = [
+                { find: /^vue-router$/, replacement: NUXT_VUE_ROUTER },
+                ...(Array.isArray(alias)
+                    ? alias
+                    : Object.entries(alias).map(([find, replacement]) => ({ find, replacement }))),
+            ]
+        },
         'build:manifest'(manifest) {
             // The hero loads the launcher preview itself, and the preview loads its other
             // screens only once the visitor interacts, so the page must not prefetch its
