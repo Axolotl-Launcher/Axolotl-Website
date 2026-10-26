@@ -1,26 +1,24 @@
 # Frontend Development
 
-Applies to frontend work in `apps/` and `packages/`. Package scripts are the executable source of truth; run commands from the repository root.
+Applies to frontend work in `src/` and `packages/`. Package scripts are the executable source of truth; run commands from the repository root.
 
 ## Validation
 
 - During development, use the affected package's existing read-only `lint`, `test`, `test:visual`, or build script as appropriate. Builds may generate output. Do not invoke an undeclared `check` script or invent ad hoc compiler commands.
-- App frontend: `pnpm --filter @modrinth/app-frontend lint`, `pnpm --filter @modrinth/app-frontend test`, `pnpm --filter @modrinth/app-frontend test:visual`, and `pnpm --filter @modrinth/app-frontend build`.
 - Shared UI: `pnpm --filter @modrinth/ui lint` and `pnpm --filter @modrinth/ui test`. API client: `pnpm --filter @modrinth/api-client lint` and `pnpm --filter @modrinth/api-client build`.
-- Website: `pnpm --filter @axolotl/website lint` and `pnpm website:build`.
+- Website: `pnpm lint`, `pnpm test` and `pnpm build`.
 - Choose checks proportional to the changed behavior. Do not run full repository workflows after every prompt. Report what was actually verified and any remaining limitations.
-- Automated app visual and interaction tests used in CI may be run locally. The user still performs acceptance verification.
 - Do not perform excessive website browser automation (interaction flows, theme toggling, responsive checks, screenshots) unless explicitly requested. The user verifies visual and interaction changes.
 
 ## Formatting Before Commits
 
 - Before committing frontend changes, run the affected package's existing `fix` script from the repository root. It runs ESLint with `--fix` followed by Prettier with `--write`, fixing import sorting, Vue attribute order, and formatting together.
-- For app frontend changes, run `pnpm --filter @modrinth/app-frontend fix`. For shared UI changes, run `pnpm --filter @modrinth/ui fix`. Run both when both packages are affected; use the corresponding package's `fix` script for other frontend packages.
+- For website changes, run `pnpm fix`. For shared UI changes, run `pnpm --filter @modrinth/ui fix`. Run both when both packages are affected; use the corresponding package's `fix` script for other frontend packages.
 - Running Prettier alone is insufficient: import sorting and Vue attribute order are ESLint rules.
 - Inspect `git diff` after automatic fixes. Include relevant fixes in the commit, preserve existing user changes, and avoid staging unrelated formatting changes.
 - Resolve any remaining errors before committing. If files were already staged, stage the corrected files again so the commit includes the fixes.
 - This commit-time formatting step is authorized whenever a frontend commit is requested or already authorized. It does not require running the full `prepr` workflow after every prompt.
-- Before a pull request, follow the root `AGENTS.md` pre-PR rules. The `prepr` tasks write files; inspect their diff and run the affected package lint, tests, and build separately as appropriate.
+- Before a pull request, follow the root `AGENTS.md` pre-PR rules. Inspect any files `prepr` changes and run the affected package lint, tests, and build separately as appropriate.
 
 ## Styling
 

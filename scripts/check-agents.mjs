@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import YAML from 'yaml'
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const errors = []
 const ignoredDirectories = new Set([
     '.git',

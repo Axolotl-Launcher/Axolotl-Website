@@ -2,10 +2,17 @@ import config from '@modrinth/tooling-config/eslint/nuxt.mjs'
 
 export default config
     .append({
+        // The vendored packages run their own `lint` scripts with their own configs.
+        ignores: ['packages/**', 'scripts/**'],
+    })
+    .append({
         rules: {
             '@typescript-eslint/no-explicit-any': 'off',
             'import/no-unresolved': 'off',
             'no-undef': 'off',
+            // Environment variables are declared in turbo.json, which this repository
+            // does not use.
+            'turbo/no-undeclared-env-vars': 'off',
         },
     })
     .append({

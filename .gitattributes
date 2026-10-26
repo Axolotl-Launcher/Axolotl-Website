@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# Release data synchronized from Axolotl-Launcher/Axolotl; see README.md.
+/releases/*.json linguist-generated=true
