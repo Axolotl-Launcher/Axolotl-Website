@@ -102,11 +102,14 @@ providePreviewRouter(router)
 
 let resizeObserver: ResizeObserver | null = null
 const loadingController = new AbortController()
+/** The shell renders in its own task, after the launcher state is set up. */
+const shellMounted = ref(false)
 
 function updateScale() {
-    if (!frame.value) return
-    const width = frame.value.clientWidth
-    const height = frame.value.clientHeight
+    if (frame.value) fitWindow(frame.value.clientWidth, frame.value.clientHeight)
+}
+
+function fitWindow(width: number, height: number) {
     if (fullScreen.value) {
         const fit = Math.min(width / WINDOW_WIDTH, height / WINDOW_HEIGHT)
         scale.value = fit
@@ -197,6 +200,10 @@ function nextPaint() {
     )
 }
 
+function nextTask() {
+    return new Promise<void>((resolve) => setTimeout(resolve, 0))
+}
+
 async function waitUntilReady(onProgress: (value: number) => void = () => {}) {
     await router.isReady()
     onProgress(50)
@@ -213,12 +220,23 @@ async function waitUntilReady(onProgress: (value: number) => void = () => {}) {
 }
 
 onMounted(async () => {
-    updateScale()
-    resizeObserver = new ResizeObserver(updateScale)
+    // The observer reports the frame's size after the next layout. Measuring here
+    // would force that layout inside the mounting task, while the startup screen
+    // still covers the window.
+    resizeObserver = new ResizeObserver(([entry]) => {
+        if (entry) fitWindow(entry.contentRect.width, entry.contentRect.height)
+    })
     if (frame.value) resizeObserver.observe(frame.value)
     document.addEventListener('fullscreenchange', onFullScreenChange)
 
     try {
+        // Setting up the launcher, rendering its shell and rendering the first screen
+        // each take a task of their own, so none holds the page's main thread for long.
+        await nextTask()
+        loadingController.signal.throwIfAborted()
+        shellMounted.value = true
+        await nextTask()
+        loadingController.signal.throwIfAborted()
         await router.push(state.settings.default_page === 'Library' ? '/library' : '/')
         await waitUntilReady((value) => emit('progress', 25 + value * 0.35))
         await preparePrimaryNavigation(router, state, loadingController.signal, (value) =>
@@ -264,6 +282,7 @@ onBeforeUnmount(() => {
             :inert="windowState !== 'open' || undefined"
         >
             <PreviewShell
+                v-if="shellMounted"
                 @minimize="setWindowState('minimized')"
                 @zoom="toggleFullScreen"
                 @quit="closeWindow"
