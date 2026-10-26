@@ -102,4 +102,42 @@ export default defineNuxtConfig({
     },
     compatibilityDate: '2025-01-01',
     telemetry: false,
+    hooks: {
+        'build:manifest'(manifest) {
+            // The hero loads the launcher preview itself, and the preview loads its other
+            // screens only once the visitor interacts, so the page must not prefetch its
+            // code, styles or images ahead of that: neither its own modules nor what only
+            // it imports (three.js and the skin renderer reach the page's graph as lazy
+            // exports of the @modrinth/ui barrel).
+            const isPreview = (id: string) => id.includes('components/launcher-preview/')
+            const staticClosure = (roots: string[]) => {
+                const seen = new Set<string>()
+                const visit = (id: string) => {
+                    if (seen.has(id) || !manifest[id]) return
+                    seen.add(id)
+                    for (const dep of manifest[id].imports ?? []) visit(dep)
+                }
+                roots.forEach(visit)
+                return seen
+            }
+            const ids = Object.keys(manifest)
+            const site = staticClosure(
+                ids.filter(
+                    (id) =>
+                        !isPreview(id) && (manifest[id].isEntry || /^(pages|layouts)\//.test(id)),
+                ),
+            )
+            const previewOnly = [...staticClosure(ids.filter(isPreview))].filter(
+                (id) => !site.has(id),
+            )
+            // Assets appear twice: under their source path and under their output file.
+            const previewFiles = new Set(previewOnly.map((id) => manifest[id].file))
+            for (const entry of Object.values(manifest)) {
+                if (entry.dynamicImports) {
+                    entry.dynamicImports = entry.dynamicImports.filter((dep) => !isPreview(dep))
+                }
+                if (previewFiles.has(entry.file)) entry.prefetch = false
+            }
+        },
+    },
 })
