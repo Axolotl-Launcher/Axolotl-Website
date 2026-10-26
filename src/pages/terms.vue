@@ -56,7 +56,7 @@ useHead({
             <li>
                 官方网站源代码采用
                 <a
-                    href="https://github.com/Mystic-Stars/Axolotl/blob/main/apps/website/LICENSE"
+                    href="https://github.com/Axolotl-Launcher/Axolotl-Website/blob/main/LICENSE"
                     target="_blank"
                     rel="noopener"
                     >GNU Affero General Public License Version 3 only（AGPL-3.0-only）</a
@@ -194,7 +194,7 @@ useHead({
             <li>
                 The official website source code is licensed under the
                 <a
-                    href="https://github.com/Mystic-Stars/Axolotl/blob/main/apps/website/LICENSE"
+                    href="https://github.com/Axolotl-Launcher/Axolotl-Website/blob/main/LICENSE"
                     target="_blank"
                     rel="noopener"
                     >GNU Affero General Public License Version 3 only (AGPL-3.0-only)</a
