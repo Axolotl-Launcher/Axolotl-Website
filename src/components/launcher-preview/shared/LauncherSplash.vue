@@ -2,8 +2,8 @@
 import Button from '@modrinth/ui/src/components/base/buttons/Button.vue'
 import ProgressBar from '@modrinth/ui/src/components/base/ProgressBar.vue'
 
-import axolotlLogo from '../screens/settings/categories/updates/splash/axolotl.png'
-import cubeBackground from '../screens/settings/categories/updates/splash/cube.png'
+import axolotlLogo from '../screens/settings/categories/updates/splash/axolotl.webp'
+import cubeBackground from '../screens/settings/categories/updates/splash/cube.webp'
 
 withDefaults(
     defineProps<{
@@ -24,10 +24,17 @@ const emit = defineEmits<{ retry: [] }>()
         class="dark-mode absolute inset-0 isolate overflow-hidden rounded-[inherit] bg-surface-1 text-[var(--color-text-primary)] [container-type:inline-size]"
         :aria-busy="!failed"
     >
-        <div
+        <!-- An image rather than a CSS background, so the server-rendered hero requests
+             it while the HTML parses: it is the page's largest paint. The cube is flattened
+             onto this surface's dark #101215 (no alpha, 1024px wide) so it decodes in time
+             for the first frame. -->
+        <img
+            :src="cubeBackground"
+            alt=""
             aria-hidden="true"
-            class="pointer-events-none absolute left-1/2 top-1/2 h-[180%] w-[180%] -translate-x-1/2 -translate-y-1/2 bg-surface-1 bg-contain bg-center bg-no-repeat opacity-80"
-            :style="{ backgroundImage: `url(${cubeBackground})` }"
+            draggable="false"
+            fetchpriority="high"
+            class="pointer-events-none absolute left-1/2 top-1/2 h-[180%] w-[180%] max-w-none -translate-x-1/2 -translate-y-1/2 bg-surface-1 object-contain opacity-80"
         />
         <div
             aria-hidden="true"
