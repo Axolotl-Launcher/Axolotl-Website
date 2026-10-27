@@ -2,6 +2,7 @@ export const SUPPORTED_SITE_LOCALES = ['en-US', 'zh-CN'] as const
 
 export const siteLocaleMessages: Record<string, Record<string, string>> = {
     'zh-CN': {
+        'axolotl-preview.open': '在浏览器中试用 Axolotl Launcher',
         'axolotl-preview.loading': '正在加载 Axolotl Launcher',
         'axolotl-preview.failed': '启动器加载失败。',
         'axolotl-preview.retry': '重试',

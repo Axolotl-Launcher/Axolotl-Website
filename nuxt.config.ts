@@ -136,11 +136,10 @@ export default defineNuxtConfig({
             ]
         },
         'build:manifest'(manifest) {
-            // The hero loads the launcher preview itself, and the preview loads its other
-            // screens only once the visitor interacts, so the page must not prefetch its
-            // code, styles or images ahead of that: neither its own modules nor what only
-            // it imports (three.js and the skin renderer reach the page's graph as lazy
-            // exports of the @modrinth/ui barrel).
+            // The launcher preview loads only when a visitor opens it, so the page must
+            // not prefetch its code, styles or images ahead of that: neither its own
+            // modules nor what only it imports (three.js and the skin renderer reach the
+            // page's graph as lazy exports of the @modrinth/ui barrel).
             const isPreview = (id: string) => id.includes('components/launcher-preview/')
             const staticClosure = (roots: string[]) => {
                 const seen = new Set<string>()
