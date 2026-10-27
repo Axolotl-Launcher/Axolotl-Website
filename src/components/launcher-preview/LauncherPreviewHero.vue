@@ -29,6 +29,13 @@ const messages = defineMessages({
     retry: { id: 'axolotl-preview.retry', defaultMessage: 'Try again' },
 })
 
+declare global {
+    interface Window {
+        /** Set by the `<head>` script below until the component mounts. */
+        __axolotlPosterClick?: { pending: boolean; stop: () => void }
+    }
+}
+
 /** Phone layouts only ever show the poster: the live launcher is too heavy for them. */
 const PHONE = '(max-width: 767px)'
 
@@ -41,8 +48,12 @@ const PHONE = '(max-width: 767px)'
  * is fetched; `data-launcher-poster` carries the language to the stylesheet. Each
  * comes at 1280×800 and 2560×1600, picked by pixel density like the stylesheet's
  * `image-set`; phones always get the smaller one.
+ *
+ * The page hydrates only after its first paint, so it also remembers a click on the
+ * poster that comes before (`window.__axolotlPosterClick`); the component opens the
+ * launcher for it once mounted.
  */
-const POSTER_PRELOAD = `(function(){try{var t=localStorage.getItem('axolotl-theme');var r=t;if(!r||r==='system'){r=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark'}var g='zh';var c=document.cookie.match(/(?:^|; )locale=([^;]*)/);var v=c?decodeURIComponent(c[1]).trim():'';if(v){g=/^en/i.test(v)?'en':'zh'}else{var n=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language];for(var i=0;i<n.length;i++){var x=String(n[i]||'').trim();if(/^zh/i.test(x))break;if(/^en/i.test(x)){g='en';break}}}document.documentElement.setAttribute('data-launcher-poster',g);var b='/launcher-preview/poster-'+(r==='light'?'light':r==='oled'?'oled':'dark')+'-'+g;var l=document.createElement('link');l.rel='preload';l.as='image';l.href=b+'-1x.webp';if(!window.matchMedia('${PHONE}').matches){l.setAttribute('imagesrcset',b+'-1x.webp 1x, '+b+'-2x.webp 2x')}l.setAttribute('fetchpriority','high');document.head.appendChild(l)}catch(e){}})()`
+const POSTER_PRELOAD = `(function(){try{var q={pending:false};var h=function(e){var p=e.target&&e.target.closest&&e.target.closest('.launcher-preview-poster');if(p)q.pending=true};document.addEventListener('click',h,true);q.stop=function(){document.removeEventListener('click',h,true)};window.__axolotlPosterClick=q}catch(e){}try{var t=localStorage.getItem('axolotl-theme');var r=t;if(!r||r==='system'){r=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark'}var g='zh';var c=document.cookie.match(/(?:^|; )locale=([^;]*)/);var v=c?decodeURIComponent(c[1]).trim():'';if(v){g=/^en/i.test(v)?'en':'zh'}else{var n=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language];for(var i=0;i<n.length;i++){var x=String(n[i]||'').trim();if(/^zh/i.test(x))break;if(/^en/i.test(x)){g='en';break}}}document.documentElement.setAttribute('data-launcher-poster',g);var b='/launcher-preview/poster-'+(r==='light'?'light':r==='oled'?'oled':'dark')+'-'+g;var l=document.createElement('link');l.rel='preload';l.as='image';l.href=b+'-1x.webp';if(!window.matchMedia('${PHONE}').matches){l.setAttribute('imagesrcset',b+'-1x.webp 1x, '+b+'-2x.webp 2x')}l.setAttribute('fetchpriority','high');document.head.appendChild(l)}catch(e){}})()`
 
 useHead({
     script: [{ key: 'launcher-preview-poster', innerHTML: POSTER_PRELOAD }],
@@ -146,6 +157,11 @@ onMounted(() => {
     phoneQuery = window.matchMedia(PHONE)
     syncPhone()
     phoneQuery.addEventListener('change', syncPhone)
+    // A click on the poster before the page hydrated.
+    const earlyClick = window.__axolotlPosterClick
+    earlyClick?.stop()
+    window.__axolotlPosterClick = undefined
+    if (earlyClick?.pending) open()
 })
 
 onBeforeUnmount(() => {
