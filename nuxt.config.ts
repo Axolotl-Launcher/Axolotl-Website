@@ -156,7 +156,7 @@ export default defineNuxtConfig({
     nitro: {
         prerender: {
             crawlLinks: false,
-            routes: ['/', '/changelog', '/terms', '/privacy'],
+            routes: ['/', '/demo', '/changelog', '/terms', '/privacy'],
         },
         hooks: {
             'prerender:generate'(route) {
@@ -171,6 +171,7 @@ export default defineNuxtConfig({
         '/changelog': { static: true },
         '/terms': { static: true },
         '/privacy': { static: true },
+        '/demo': { static: true },
     },
     typescript: {
         shim: false,
@@ -193,8 +194,8 @@ export default defineNuxtConfig({
             ]
         },
         'build:manifest'(manifest) {
-            // The launcher preview loads only when a visitor opens it, so the page must
-            // not prefetch its code, styles or images ahead of that: neither its own
+            // The launcher preview loads only on its own page (/demo), so no page may
+            // prefetch its code, styles or images ahead of that: neither its own
             // modules nor what only it imports (three.js and the skin renderer reach the
             // page's graph as lazy exports of the @modrinth/ui barrel).
             const isPreview = (id: string) => id.includes('components/launcher-preview/')
