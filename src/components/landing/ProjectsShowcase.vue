@@ -169,7 +169,7 @@ const messages = defineMessages({
                     class="project"
                     :aria-hidden="project.isVisualDuplicate ? 'true' : undefined"
                 >
-                    <Avatar :src="project.iconUrl" alt="" size="sm" />
+                    <Avatar :src="project.iconUrl" alt="" size="sm" loading="lazy" />
                     <div class="project-info">
                         <span class="title">{{ project.title }}</span>
                     </div>

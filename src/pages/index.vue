@@ -298,7 +298,8 @@ const modManagementData = [
         name: 'Sodium',
         author: 'jellysquid3',
         version: 'mc1.20.1-0.5.0',
-        iconUrl: 'https://cdn.modrinth.com/data/AANobbMI/icon.png',
+        iconUrl:
+            'https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp',
     },
     {
         id: 'YL57xq9U',
@@ -306,14 +307,15 @@ const modManagementData = [
         author: 'coderbot',
         version: '1.6.5+1.20.1',
         iconUrl:
-            'https://cdn.modrinth.com/data/YL57xq9U/dc558eece920db435f9823ce86de0c4cde89800b.png',
+            'https://cdn.modrinth.com/data/YL57xq9U/18d0e7f076d3d6ed5bedd472b853909aac5da202_96.webp',
     },
     {
         id: 'gvQqBUqZ',
         name: 'Lithium',
         author: 'jellysquid3',
         version: 'mc1.20.1-0.11.2',
-        iconUrl: 'https://cdn.modrinth.com/data/gvQqBUqZ/icon.png',
+        iconUrl:
+            'https://cdn.modrinth.com/data/gvQqBUqZ/bcc8686c13af0143adf4285d741256af824f70b7_96.webp',
     },
     {
         id: 'mOgUt4GM',
@@ -328,14 +330,16 @@ const modManagementData = [
         name: 'Cloth Config API',
         author: 'shedaniel',
         version: '11.1.106+fabric',
-        iconUrl: 'https://cdn.modrinth.com/data/9s6osm5g/icon.png',
+        iconUrl:
+            'https://cdn.modrinth.com/data/9s6osm5g/ed8a2316cbb6f4fc5f510e8e13a59a85cbbbff4d_96.webp',
     },
     {
         id: 'lhGA9TYQ',
         name: 'Architectury API',
         author: 'shedaniel',
         version: '9.1.12+fabric',
-        iconUrl: 'https://cdn.modrinth.com/data/lhGA9TYQ/icon.png',
+        iconUrl:
+            'https://cdn.modrinth.com/data/lhGA9TYQ/05fe3a61c28faaccaec3533b92e1b321edde7bf6_96.webp',
     },
     {
         id: 'nrJ2NpD0',
@@ -1275,7 +1279,12 @@ useHead(() => ({
                     </div>
                     <img
                         class="block h-auto w-full"
-                        src="/showcase/account-login.png"
+                        src="/showcase/account-login-1600.webp"
+                        srcset="
+                            /showcase/account-login-800.webp   800w,
+                            /showcase/account-login-1600.webp 1600w
+                        "
+                        sizes="(max-width: 1024px) 100vw, 640px"
                         :alt="formatMessage(messages.offlineScreenshotAlt)"
                         width="3104"
                         height="1814"
@@ -1294,7 +1303,12 @@ useHead(() => ({
                     </div>
                     <img
                         class="block h-auto w-full"
-                        src="/showcase/theme-accent.png"
+                        src="/showcase/theme-accent-1280.webp"
+                        srcset="
+                            /showcase/theme-accent-640.webp   640w,
+                            /showcase/theme-accent-1280.webp 1280w
+                        "
+                        sizes="(max-width: 1024px) 100vw, 640px"
                         :alt="formatMessage(messages.themesScreenshotAlt)"
                         width="1280"
                         height="743"
@@ -1313,7 +1327,12 @@ useHead(() => ({
                     </div>
                     <img
                         class="block h-auto w-full"
-                        src="/showcase/recent-lab.png"
+                        src="/showcase/recent-lab-1600.webp"
+                        srcset="
+                            /showcase/recent-lab-800.webp   800w,
+                            /showcase/recent-lab-1600.webp 1600w
+                        "
+                        sizes="(max-width: 1024px) 100vw, 640px"
                         :alt="formatMessage(messages.translationScreenshotAlt)"
                         width="3104"
                         height="1802"
@@ -1343,7 +1362,7 @@ useHead(() => ({
                             :class="['row', { first: index === 0 }]"
                         >
                             <div class="cell">
-                                <Avatar size="sm" :src="mod.iconUrl" />
+                                <Avatar size="sm" :src="mod.iconUrl" loading="lazy" />
                             </div>
                             <div class="cell">
                                 <div class="name">{{ mod.name }}</div>
@@ -1437,7 +1456,12 @@ useHead(() => ({
                     </div>
                     <img
                         class="recent-feature-media"
-                        src="/showcase/recent-downloads.png"
+                        src="/showcase/recent-downloads-1280.webp"
+                        srcset="
+                            /showcase/recent-downloads-640.webp   640w,
+                            /showcase/recent-downloads-1280.webp 1280w
+                        "
+                        sizes="(max-width: 1024px) 100vw, 760px"
                         :alt="formatMessage(messages.recentDownloadsScreenshotAlt)"
                         width="1280"
                         height="743"
@@ -1455,7 +1479,12 @@ useHead(() => ({
                     </div>
                     <img
                         class="recent-feature-media"
-                        src="/showcase/recent-backups.png"
+                        src="/showcase/recent-backups-1280.webp"
+                        srcset="
+                            /showcase/recent-backups-640.webp   640w,
+                            /showcase/recent-backups-1280.webp 1280w
+                        "
+                        sizes="(max-width: 1024px) 100vw, 760px"
                         :alt="formatMessage(messages.recentBackupsScreenshotAlt)"
                         width="1280"
                         height="743"
@@ -1471,7 +1500,12 @@ useHead(() => ({
                     </div>
                     <img
                         class="recent-feature-media"
-                        src="/showcase/recent-storage.png"
+                        src="/showcase/recent-storage-1280.webp"
+                        srcset="
+                            /showcase/recent-storage-640.webp   640w,
+                            /showcase/recent-storage-1280.webp 1280w
+                        "
+                        sizes="(max-width: 1024px) 100vw, 760px"
                         :alt="formatMessage(messages.recentStorageScreenshotAlt)"
                         width="1280"
                         height="743"
@@ -1491,7 +1525,12 @@ useHead(() => ({
                     </div>
                     <img
                         class="recent-feature-media"
-                        src="/showcase/recent-lab.png"
+                        src="/showcase/recent-lab-1600.webp"
+                        srcset="
+                            /showcase/recent-lab-800.webp   800w,
+                            /showcase/recent-lab-1600.webp 1600w
+                        "
+                        sizes="(max-width: 1024px) 100vw, 760px"
                         :alt="formatMessage(messages.recentLabScreenshotAlt)"
                         width="3104"
                         height="1802"
