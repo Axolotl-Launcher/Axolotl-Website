@@ -89,6 +89,12 @@ function launcherDemoEntry() {
 }
 
 const SITE_URL = 'https://axlmc.org'
+// The only defaults for infrastructure addresses. Deployments override each one with
+// its NUXT_PUBLIC_* variable; the rest of the source reads runtimeConfig.public.
+const GITHUB_URL = 'https://github.com/Axolotl-Launcher/Axolotl'
+const UPDATE_SERVER_URL = 'https://update.axlmc.org'
+const UPDATE_ARTIFACT_URL = 'https://dist.axlmc.org'
+const GITLINK_RELEASES_URL = 'https://www.gitlink.org.cn/xinvxueyuan/Axolotl/releases/download'
 
 export default defineNuxtConfig({
     srcDir: 'src/',
@@ -124,6 +130,11 @@ export default defineNuxtConfig({
         public: {
             siteUrl: SITE_URL,
             launcherDemo: launcherDemoEntry(),
+            githubUrl: process.env.NUXT_PUBLIC_GITHUB_URL || GITHUB_URL,
+            updateServerUrl: process.env.NUXT_PUBLIC_UPDATE_SERVER_URL || UPDATE_SERVER_URL,
+            updateArtifactUrl: process.env.NUXT_PUBLIC_UPDATE_ARTIFACT_URL || UPDATE_ARTIFACT_URL,
+            gitlinkReleasesUrl:
+                process.env.NUXT_PUBLIC_GITLINK_RELEASES_URL || GITLINK_RELEASES_URL,
         },
     },
     experimental: {
@@ -173,7 +184,18 @@ export default defineNuxtConfig({
     nitro: {
         prerender: {
             crawlLinks: false,
-            routes: ['/', '/demo', '/changelog', '/terms', '/privacy'],
+            // /llms.txt, /robots.txt and /sitemap.xml are server routes, so they need
+            // explicit prerender entries to end up as static files in the generated output.
+            routes: [
+                '/',
+                '/demo',
+                '/changelog',
+                '/terms',
+                '/privacy',
+                '/llms.txt',
+                '/robots.txt',
+                '/sitemap.xml',
+            ],
         },
         hooks: {
             'prerender:generate'(route) {
