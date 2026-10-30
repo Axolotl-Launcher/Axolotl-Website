@@ -3,6 +3,11 @@ import { ref } from 'vue'
 const heads = ref(
     new Map<string, string>([
         ['/launcher-preview/skins/steve.png', '/launcher-preview/skins/heads/steve.png'],
+        // The default Steve skin (DEFAULT_SKINS) is the same texture.
+        [
+            '/launcher-preview/skins/default/b2ba29508efc57a0.png',
+            '/launcher-preview/skins/heads/steve.png',
+        ],
         ['/launcher-preview/skins/herobrine.png', '/launcher-preview/skins/heads/herobrine.png'],
     ]),
 )

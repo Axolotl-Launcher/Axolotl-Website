@@ -45,9 +45,10 @@ function defaultAccounts(): MinecraftAccount[] {
 }
 
 /**
- * The account's own skins (the app's `CustomMinecraftSkin` rows): one custom
- * skin, the app's bundled Herobrine texture, which is equipped. The default
- * skins are listed by the Skins page from the app's DEFAULT_SKINS snapshot.
+ * The account's skins: one saved custom skin, the app's bundled Herobrine
+ * texture, and the equipped default Steve (CLASSIC) from the app's DEFAULT_SKINS
+ * snapshot, so the account named Steve wears Steve's head. The Skins page lists
+ * the other default skins from that snapshot.
  */
 export const defaultSkins: SkinEntry[] = [
     {
@@ -58,6 +59,16 @@ export const defaultSkins: SkinEntry[] = [
         texture: '/launcher-preview/skins/herobrine.png',
         cape_id: null,
         source: 'custom',
+        is_equipped: false,
+    },
+    {
+        texture_key: '31f477eb1a7beee631c2ca64d06f8f68fa93a3386d04452ab27f43acdf1b60cb',
+        name: 'Steve',
+        section: 'Default skins',
+        variant: 'CLASSIC',
+        texture: '/launcher-preview/skins/default/b2ba29508efc57a0.png',
+        cape_id: null,
+        source: 'default',
         is_equipped: true,
     },
 ]
