@@ -112,9 +112,14 @@ function createDiscoverDomain(preview: PreviewState) {
 
     function ensureTags() {
         if (tags.value) return Promise.resolve(tags.value)
-        tagsRequest ??= loadTags().then((value) => {
+        if (tagsRequest) return tagsRequest
+        tagsRequest = loadTags().then((value) => {
             tags.value = value
             return value
+        })
+        // Forget a failure so the next caller retries.
+        tagsRequest.catch(() => {
+            tagsRequest = null
         })
         return tagsRequest
     }
@@ -129,6 +134,7 @@ function createDiscoverDomain(preview: PreviewState) {
                 totals.value = { ...totals.value, [type]: data.total_hits }
                 return data.hits
             })
+            request.catch(() => poolRequests.delete(type))
             poolRequests.set(type, request)
         }
         return request
