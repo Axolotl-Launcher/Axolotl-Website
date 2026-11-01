@@ -61,9 +61,16 @@ After every published `v*` release, the launcher repository's
 
 `.github/workflows/deploy-website.yml` builds `main` on GitHub's runner and uploads
 `.output/public` to the Cloudflare Pages **Direct Upload** project with the pinned
-Wrangler CLI and `--branch main`. It runs when a push to `main` changes
-`releases/` and on manual dispatch. Ordinary website commits therefore go live
-with the next launcher release or a manual deployment.
+Wrangler CLI and `--branch main`. Separate jobs run lint and tests, spelling
+checks, and a single static build in parallel. Deployment eligibility is evaluated
+after all three jobs pass. The deployment job downloads that build artifact and
+uploads it without rebuilding. It only
+runs when a push to `main` changes `releases/` or when manually dispatched on
+`main` with `force-deploy` enabled. Ordinary website commits therefore go live
+with the next launcher release or a manual deployment. If a history rewrite makes
+the pre-push commit unavailable, the workflow tries fetching it. If it cannot be
+recovered, automatic deployment is skipped with a warning; use `force-deploy` to
+publish manually.
 
 Pages serves only static assets; no Worker adapter or Pages Functions are needed.
 GitHub Actions owns the build and publication order. Pages does not run a hosted
@@ -88,17 +95,19 @@ and [custom domain setup](https://developers.cloudflare.com/pages/configuration/
 
 ## Manual website deployment
 
-Open **Actions > Deploy website to Cloudflare Pages > Run workflow**, select
-**main**, and click **Run workflow**. Alternatively, run:
+Open **Actions > Website checks and deployment > Run workflow**, select
+**main**, enable **force-deploy**, and click **Run workflow**. Leave it disabled
+to run checks and build without deploying. Forced deployment still requires all
+checks to pass and only deploys `main`. Alternatively, run:
 
 ```sh
-gh workflow run deploy-website.yml --ref main
+gh workflow run deploy-website.yml --ref main -f force-deploy=true
 ```
 
-The workflow builds the latest `main` after obtaining the production deployment
-concurrency lock. Other branches are skipped. It uses the release data already in
-`releases/`; it does not regenerate announcements from potentially unreleased
-`catalog.ts` entries.
+Runs on `main` build the latest `main` after obtaining the workflow concurrency
+lock. Runs on other branches validate the site without deploying it. The workflow
+uses the release data already in `releases/`; it does not regenerate announcements
+from potentially unreleased `catalog.ts` entries.
 
 To roll back site content, select a previous successful production deployment in
 Pages and choose **Rollback**. This does not roll back the synchronized release

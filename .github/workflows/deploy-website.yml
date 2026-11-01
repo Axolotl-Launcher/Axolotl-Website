@@ -1,51 +1,120 @@
-name: Deploy website to Cloudflare Pages
+name: Website checks and deployment
 
-# Release data pushed by the launcher repository's sync workflow deploys the site.
-# Ordinary website commits go live with the next release or a manual run.
 on:
   push:
     branches: [main]
-    paths:
-      - 'releases/**'
+  pull_request:
   workflow_dispatch:
+    inputs:
+      force-deploy:
+        description: Deploy main even when release data has not changed (checks must pass)
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
 
+concurrency:
+  group: website-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  deploy:
-    name: Build and deploy website
-    if: github.ref == 'refs/heads/main'
+  prepare:
+    name: Determine source commit
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    concurrency:
-      group: website-production
-      cancel-in-progress: false
-    env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
     steps:
-      - name: Check Cloudflare Pages deployment configuration
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" || -z "$CLOUDFLARE_PAGES_PROJECT_NAME" ]]; then
-            echo '::error::Configure the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets and the CLOUDFLARE_PAGES_PROJECT_NAME variable. See README.md.'
-            exit 1
-          fi
-      - name: Check out current production source
+      - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: main
+          ref: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref }}
+          fetch-depth: 0
           persist-credentials: false
-      - uses: pnpm/action-setup@008330803749db0355799c700092d9a85fd074e9 # v6.0.9
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      - name: Record source commit
+        id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  checks:
+    name: Lint and test
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout validated source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@008330803749db0355799c700092d9a85fd074e9 # v6.0.9
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - name: Install website dependencies
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint website
+        run: pnpm lint
+      - name: Test website
+        run: pnpm test
+      - name: Check agents
+        run: pnpm check-agents
+      - name: Check synchronized release data
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict'
+          import fs from 'node:fs'
+          const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))
+          assert(Array.isArray(catalog.announcements) && catalog.announcements.length > 0, 'Empty release catalog')
+          for (const entry of catalog.announcements) {
+            assert(typeof entry.version === 'string' && entry.version, `Catalog entry ${entry.id} has no version`)
+          }
+          const latest = JSON.parse(fs.readFileSync('releases/latest.json', 'utf8'))
+          assert(/^v\d+\.\d+\.\d+$/.test(latest.tag_name), `Unexpected stable tag ${latest.tag_name}`)
+          assert(Array.isArray(latest.assets) && latest.assets.length > 0, 'Latest release lists no assets')
+          NODE
+
+  typos:
+    name: Check spelling
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout validated source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - name: Run typos checks
+        uses: crate-ci/typos@6ac2ebd1b93eade61faf7e12688ad87a073fea59 # v1.46.0
+
+  build:
+    name: Build static website
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout validated source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@008330803749db0355799c700092d9a85fd074e9 # v6.0.9
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Generate static website on GitHub
+        env:
+          NITRO_PRESET: static
         run: pnpm build
       - name: Verify prerendered website
         run: |
@@ -65,10 +134,95 @@ jobs:
         with:
           name: website-static-${{ github.run_id }}
           path: .output/public/
+          include-hidden-files: true
           retention-days: 7
           if-no-files-found: error
+
+  decide-deployment:
+    name: Decide whether to deploy
+    needs: [prepare, checks, typos, build]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      deploy: ${{ steps.deployment.outputs.enabled }}
+    steps:
+      - name: Checkout validated source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Determine whether to deploy
+        id: deployment
+        env:
+          FORCE_DEPLOY: ${{ inputs.force-deploy || false }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          deploy=false
+          if [[ "$REF" == 'refs/heads/main' ]]; then
+            if [[ "$EVENT_NAME" == 'workflow_dispatch' && "$FORCE_DEPLOY" == 'true' ]]; then
+              deploy=true
+            elif [[ "$EVENT_NAME" == 'push' ]]; then
+              if [[ "$BEFORE" == '0000000000000000000000000000000000000000' ]]; then
+                changed=$(git ls-tree -r --name-only "$AFTER" -- releases/)
+              else
+                if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+                  git fetch --no-tags --depth=1 origin "$BEFORE" || true
+                fi
+                if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+                  changed=$(git diff --name-only "$BEFORE" "$AFTER" -- releases/)
+                else
+                  echo '::warning::The pre-push commit is unavailable after a history rewrite. Automatic deployment is skipped; run this workflow with force-deploy to publish.'
+                  changed=''
+                fi
+              fi
+              if [[ -n "$changed" ]]; then
+                deploy=true
+              fi
+            fi
+          fi
+          echo "enabled=$deploy" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy to Cloudflare Pages
+    needs: [prepare, build, decide-deployment]
+    if: needs.decide-deployment.outputs.deploy == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check Cloudflare Pages deployment configuration
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" || -z "$CLOUDFLARE_PAGES_PROJECT_NAME" ]]; then
+            echo '::error::Configure the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets and the CLOUDFLARE_PAGES_PROJECT_NAME variable. See README.md.'
+            exit 1
+          fi
+      - name: Checkout validated source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@008330803749db0355799c700092d9a85fd074e9 # v6.0.9
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Download static website artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: website-static-${{ github.run_id }}
+          path: .output/public/
       - name: Deploy prebuilt website to Cloudflare Pages
         env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           DEPLOY_REASON: ${{ github.event_name == 'push' && 'Release data sync' || 'Manual website deploy' }}
         run: |
