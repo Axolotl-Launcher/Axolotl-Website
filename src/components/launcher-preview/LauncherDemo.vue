@@ -9,11 +9,14 @@ import {
     ref,
 } from 'vue'
 
+import LauncherDemoFrame from './LauncherDemoFrame.vue'
 import LauncherSplash from './shared/LauncherSplash.vue'
 
-defineProps<{
+const props = defineProps<{
     /** Accessible name of the launcher window. */
     label: string
+    /** Entry page of the launcher's web demo build, framed instead of the in-page preview. */
+    src?: string
 }>()
 const emit = defineEmits<{ close: [] }>()
 const { formatMessage } = useVIntl()
@@ -60,6 +63,11 @@ const LauncherPreview = defineAsyncComponent({
 
 function start() {
     started.value = true
+    if (props.src) {
+        progress.value = 25
+        mounted.value = true
+        return
+    }
     progress.value = 5
     loadPreview()
         .then(() => {
@@ -128,7 +136,17 @@ onBeforeUnmount(() => {
             :inert="!ready || undefined"
             :aria-hidden="!ready || undefined"
         >
+            <LauncherDemoFrame
+                v-if="src"
+                :key="launchCount"
+                :src="src"
+                :label="label"
+                @ready="finishLoading"
+                @progress="progress = $event"
+                @failed="failed = true"
+            />
             <LauncherPreview
+                v-else
                 :key="launchCount"
                 @ready="finishLoading"
                 @progress="progress = $event"

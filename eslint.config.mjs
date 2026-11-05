@@ -2,8 +2,14 @@ import config from '@modrinth/tooling-config/eslint/nuxt.mjs'
 export default config
     .append({
         // Vendored packages run their own `lint` scripts; the launcher preview serves
-        // vendored editors (Monaco, Blockbench) and assets as-is.
-        ignores: ['packages/**', 'scripts/**', 'src/public/launcher-preview/**'],
+        // vendored editors (Monaco, Blockbench) and assets as-is, and the launcher demo
+        // is the launcher's own build output.
+        ignores: [
+            'packages/**',
+            'scripts/**',
+            'src/public/launcher-preview/**',
+            'src/public/launcher-demo/**',
+        ],
     })
     .append({
         rules: {

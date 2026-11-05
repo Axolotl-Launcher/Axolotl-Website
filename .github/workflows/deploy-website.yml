@@ -115,6 +115,8 @@ jobs:
       - name: Generate static website on GitHub
         env:
           NITRO_PRESET: static
+          # Looks up the launcher's latest stable release for its web demo package.
+          GITHUB_TOKEN: ${{ github.token }}
         run: pnpm build
       - name: Verify prerendered website
         run: |

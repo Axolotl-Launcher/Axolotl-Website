@@ -7,6 +7,7 @@ import LauncherDemo from '~/components/launcher-preview/LauncherDemo.vue'
 definePageMeta({ layout: 'blank' })
 
 const { formatMessage } = useVIntl()
+const { launcherDemo } = useRuntimeConfig().public
 const messages = defineMessages({
     title: { id: 'axolotl-demo.title', defaultMessage: 'Try Axolotl Launcher' },
     description: {
@@ -51,7 +52,11 @@ useHead({
         </a>
         <!-- The launcher fills the page while keeping its 1280×800 shape. -->
         <div class="w-[min(100%,calc((100svh_-_6rem)_*_1.6))] max-md:hidden">
-            <LauncherDemo :label="formatMessage(messages.window)" @close="navigateTo('/')" />
+            <LauncherDemo
+                :label="formatMessage(messages.window)"
+                :src="launcherDemo || undefined"
+                @close="navigateTo('/')"
+            />
         </div>
         <div
             class="flex max-w-sm flex-1 flex-col items-center justify-center gap-4 text-center md:hidden"

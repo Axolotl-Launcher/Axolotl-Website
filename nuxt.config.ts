@@ -1,4 +1,4 @@
-import { realpathSync } from 'node:fs'
+import { existsSync, readdirSync, realpathSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -72,6 +72,22 @@ const NUXT_VUE_ROUTER = join(
     ),
     'dist/vue-router.js',
 )
+/**
+ * The entry page of the launcher's web demo build that scripts/fetch-launcher-demo.mjs
+ * put in public/launcher-demo/<version>/, which /demo frames; empty when there is none and
+ * /demo runs the hand-ported preview. The script writes the entry page last, so it marks a
+ * complete build.
+ */
+function launcherDemoEntry() {
+    const directory = fileURLToPath(new URL('./src/public/launcher-demo', import.meta.url))
+    const version = existsSync(directory)
+        ? readdirSync(directory).find((name) =>
+              existsSync(join(directory, name, 'demo/index.html')),
+          )
+        : undefined
+    return version ? `/launcher-demo/${version}/demo/index.html` : ''
+}
+
 const SITE_URL = 'https://axlmc.org'
 
 export default defineNuxtConfig({
@@ -107,6 +123,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             siteUrl: SITE_URL,
+            launcherDemo: launcherDemoEntry(),
         },
     },
     experimental: {
