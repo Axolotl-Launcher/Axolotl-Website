@@ -1,9 +1,9 @@
 import config from '@modrinth/tooling-config/eslint/nuxt.mjs'
 export default config
     .append({
-        // Vendored packages run their own `lint` scripts; the launcher preview serves
-        // vendored editors (Monaco, Blockbench) and assets as-is.
-        ignores: ['packages/**', 'scripts/**', 'src/public/launcher-preview/**'],
+        // Vendored packages run their own `lint` scripts; the launcher demo is the
+        // launcher's own build output.
+        ignores: ['packages/**', 'scripts/**', 'src/public/launcher-demo/**'],
     })
     .append({
         rules: {
@@ -35,9 +35,8 @@ export default config
         },
     })
     .append({
-        // Ported launcher screens also consume contracts not exported by the UI barrel.
-        // Keep their direct imports inside the lazy preview boundary: the barrel's
-        // editor/Three.js side effects otherwise enter the initial route bundle.
+        // The launcher's splash screen imports the UI package's Button and ProgressBar
+        // directly, as the ported launcher screens it came from did.
         files: ['src/components/launcher-preview/**/*.{vue,ts}'],
         rules: { 'no-restricted-imports': 'off' },
     })

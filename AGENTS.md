@@ -30,6 +30,7 @@ The website has its own locale integration. Inspect `src/locales/` and the consu
 - `src/layouts/` contains page layouts.
 - `src/locales/` contains website messages.
 - `releases/` contains release data synchronized from the launcher repository. Do not edit it by hand; see [Release data](#release-data).
+- `src/public/launcher-demo/` is the launcher's web demo build, which `scripts/fetch-launcher-demo.mjs` unpacks before `dev` and `build` (see the README). It is ignored; do not edit it.
 - `packages/ui`, `assets`, `utils`, `api-client` and `tooling-config` are shared packages vendored from the launcher repository. Shared components and styles belong there when both the website and the desktop application can use them.
 
 ## Vendored Packages

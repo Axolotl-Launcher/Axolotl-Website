@@ -2,8 +2,8 @@
 import Button from '@modrinth/ui/src/components/base/buttons/Button.vue'
 import ProgressBar from '@modrinth/ui/src/components/base/ProgressBar.vue'
 
-import axolotlLogo from '../screens/settings/categories/updates/splash/axolotl.webp'
-import cubeBackground from '../screens/settings/categories/updates/splash/cube.webp'
+import axolotlLogo from './axolotl.webp'
+import cubeBackground from './cube.webp'
 
 withDefaults(
     defineProps<{

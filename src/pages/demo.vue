@@ -7,6 +7,7 @@ import LauncherDemo from '~/components/launcher-preview/LauncherDemo.vue'
 definePageMeta({ layout: 'blank' })
 
 const { formatMessage } = useVIntl()
+const { launcherDemo } = useRuntimeConfig().public
 const messages = defineMessages({
     title: { id: 'axolotl-demo.title', defaultMessage: 'Try Axolotl Launcher' },
     description: {
@@ -19,6 +20,10 @@ const messages = defineMessages({
     phone: {
         id: 'axolotl-demo.phone',
         defaultMessage: 'The launcher demo runs on a computer. Open this page on one to try it.',
+    },
+    unavailable: {
+        id: 'axolotl-demo.unavailable',
+        defaultMessage: 'The launcher demo is not available right now.',
     },
     download: { id: 'axolotl-demo.download', defaultMessage: 'Download Axolotl Launcher' },
 })
@@ -50,13 +55,16 @@ useHead({
             {{ formatMessage(messages.back) }}
         </a>
         <!-- The launcher fills the page while keeping its 1280×800 shape. -->
-        <div class="w-[min(100%,calc((100svh_-_6rem)_*_1.6))] max-md:hidden">
-            <LauncherDemo :label="formatMessage(messages.window)" @close="navigateTo('/')" />
+        <div v-if="launcherDemo" class="w-[min(100%,calc((100svh_-_6rem)_*_1.6))] max-md:hidden">
+            <LauncherDemo :label="formatMessage(messages.window)" :src="launcherDemo" />
         </div>
         <div
-            class="flex max-w-sm flex-1 flex-col items-center justify-center gap-4 text-center md:hidden"
+            class="flex max-w-sm flex-1 flex-col items-center justify-center gap-4 text-center"
+            :class="{ 'md:hidden': launcherDemo }"
         >
-            <p class="m-0 text-[var(--color-text-primary)]">{{ formatMessage(messages.phone) }}</p>
+            <p class="m-0 text-[var(--color-text-primary)]">
+                {{ formatMessage(launcherDemo ? messages.phone : messages.unavailable) }}
+            </p>
             <a
                 href="/#download"
                 class="rounded-full bg-brand px-5 py-3 font-bold text-brand-inverted no-underline"

@@ -1,21 +1,16 @@
 <script setup lang="ts">
 import { defineMessages, useVIntl } from '@modrinth/ui'
-import {
-    type Component,
-    defineAsyncComponent,
-    nextTick,
-    onBeforeUnmount,
-    onMounted,
-    ref,
-} from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
+import LauncherDemoFrame from './LauncherDemoFrame.vue'
 import LauncherSplash from './shared/LauncherSplash.vue'
 
 defineProps<{
     /** Accessible name of the launcher window. */
     label: string
+    /** Entry page of the launcher's web demo build. */
+    src: string
 }>()
-const emit = defineEmits<{ close: [] }>()
 const { formatMessage } = useVIntl()
 const messages = defineMessages({
     loading: { id: 'axolotl-preview.loading', defaultMessage: 'Loading Axolotl Launcher' },
@@ -36,40 +31,11 @@ const progress = ref(0)
 const launchCount = ref(0)
 let disposed = false
 let phoneQuery: MediaQueryList | null = null
-let previewModule: Promise<Component> | null = null
-
-function loadPreview() {
-    previewModule ??= import.meta.client
-        ? import('./LauncherPreview.vue')
-              .then((module) => module.default)
-              .catch((error) => {
-                  previewModule = null
-                  throw error
-              })
-        : Promise.reject(new Error('The launcher preview runs in the browser'))
-    return previewModule
-}
-
-const LauncherPreview = defineAsyncComponent({
-    loader: loadPreview,
-    onError(_error, _retry, fail) {
-        failed.value = true
-        fail()
-    },
-})
 
 function start() {
     started.value = true
-    progress.value = 5
-    loadPreview()
-        .then(() => {
-            if (disposed) return
-            progress.value = 25
-            mounted.value = true
-        })
-        .catch(() => {
-            if (!disposed) failed.value = true
-        })
+    progress.value = 25
+    mounted.value = true
 }
 
 /** Starts the launcher once the page is not laid out for a phone. */
@@ -128,12 +94,13 @@ onBeforeUnmount(() => {
             :inert="!ready || undefined"
             :aria-hidden="!ready || undefined"
         >
-            <LauncherPreview
+            <LauncherDemoFrame
                 :key="launchCount"
+                :src="src"
+                :label="label"
                 @ready="finishLoading"
                 @progress="progress = $event"
                 @failed="failed = true"
-                @close="emit('close')"
             />
         </div>
         <!-- Rendered on the server, so the page's first paint is the launcher starting. -->

@@ -40,6 +40,26 @@ The shared packages under `packages/` (`@modrinth/ui`, `assets`, `utils`,
 linked by the pnpm workspace. Each keeps its own `lint` script, for example
 `pnpm --filter @modrinth/ui lint`.
 
+## Launcher demo
+
+`/demo` frames the launcher frontend's web demo build, which each launcher
+release attaches as `Axolotl_Launcher_<version>_web_demo.zip`. `pnpm dev` and
+`pnpm build` first run `scripts/fetch-launcher-demo.mjs`: it downloads the
+package of the latest stable release (or, when that has none, of the newest
+earlier stable release that has one), checks it against the asset's SHA-256
+digest and unpacks it into the ignored `src/public/launcher-demo/<version>/`,
+downloading again only when a newer release ships one. When no stable release
+has a package, `/demo` shows a download link instead.
+
+- `GITHUB_TOKEN` authenticates the release lookup. Without it, GitHub allows 60
+  lookups an hour per IP address.
+- `AXOLOTL_WEB_DEMO=<path>` uses a local build instead: the launcher
+  repository's `apps/app-frontend/demo/dist` (built there with
+  `node node_modules/vite/bin/vite.js build --config demo/vite.config.ts`) or a
+  package `.zip`. `AXOLOTL_WEB_DEMO=off` uses none.
+- A failed lookup or download fails the build in CI. Elsewhere it only warns,
+  and `/demo` keeps the package it already has, if any.
+
 ## Release data
 
 `releases/catalog.json` (changelog announcements) and `releases/latest.json`

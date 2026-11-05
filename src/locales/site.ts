@@ -11,6 +11,7 @@ export const siteLocaleMessages: Record<string, Record<string, string>> = {
         'axolotl-demo.window': 'Axolotl Launcher',
         'axolotl-demo.back': '返回首页',
         'axolotl-demo.phone': '启动器演示需要在电脑上运行，请在电脑上打开此页面试用。',
+        'axolotl-demo.unavailable': '启动器演示暂时无法使用。',
         'axolotl-demo.download': '下载 Axolotl Launcher',
         'axolotl-marketing.download.package-unavailable': '此版本暂无对应安装包。',
         'axolotl-marketing.download.view-options': '查看下载选项',
