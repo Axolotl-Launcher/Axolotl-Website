@@ -2,8 +2,8 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 /**
- * The launcher frontend's web demo build in a frame, its 1280×800 window scaled to fit
- * like the in-page preview's. The build posts `axolotl-demo:ready` to this page once the
+ * The launcher frontend's web demo build in a frame, its 1280×800 window scaled to
+ * fit. The build posts `axolotl-demo:ready` to this page once the
  * launcher has started, and shows the site's theme: it starts with the theme in its
  * `?theme=` query and switches when sent `axolotl-demo:theme`.
  */
@@ -15,8 +15,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ ready: []; progress: [value: number]; failed: [] }>()
 
-/** How long the loaded page may take to start the launcher before it counts as failed. */
-const READY_TIMEOUT = 60_000
+/** How long the demo may take to load and start the launcher before it counts as failed. */
+const READY_TIMEOUT = 90_000
 
 type DemoTheme = 'light' | 'dark' | 'oled'
 
@@ -57,10 +57,7 @@ function followSiteTheme() {
 function onLoad() {
     // A theme the visitor picked while the page was still loading reached no listener.
     if (theme !== startTheme) postTheme()
-    if (ready) return
-    emit('progress', 60)
-    clearTimeout(readyTimer)
-    readyTimer = setTimeout(() => emit('failed'), READY_TIMEOUT)
+    if (!ready) emit('progress', 60)
 }
 
 function onMessage(event: MessageEvent) {
@@ -72,6 +69,8 @@ function onMessage(event: MessageEvent) {
 }
 
 onMounted(() => {
+    // Counts from here, so a page that never finishes loading fails too.
+    readyTimer = setTimeout(() => emit('failed'), READY_TIMEOUT)
     window.addEventListener('message', onMessage)
     resizeObserver = new ResizeObserver(([entry]) => {
         if (entry) scale.value = entry.contentRect.width / 1280

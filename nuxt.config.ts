@@ -75,7 +75,7 @@ const NUXT_VUE_ROUTER = join(
 /**
  * The entry page of the launcher's web demo build that scripts/fetch-launcher-demo.mjs
  * put in public/launcher-demo/<version>/, which /demo frames; empty when there is none and
- * /demo runs the hand-ported preview. The script writes the entry page last, so it marks a
+ * /demo shows a download link. The script writes the entry page last, so it marks a
  * complete build.
  */
 function launcherDemoEntry() {
@@ -211,44 +211,19 @@ export default defineNuxtConfig({
             ]
         },
         'build:manifest'(manifest) {
-            // The launcher preview loads only on its own page (/demo), so no page may
-            // prefetch its code, styles or images ahead of that: neither its own
-            // modules nor what only it imports (three.js and the skin renderer reach the
-            // page's graph as lazy exports of the @modrinth/ui barrel).
-            const isPreview = (id: string) => id.includes('components/launcher-preview/')
-            const staticClosure = (roots: string[]) => {
-                const seen = new Set<string>()
-                const visit = (id: string) => {
-                    if (seen.has(id) || !manifest[id]) return
-                    seen.add(id)
-                    for (const dep of manifest[id].imports ?? []) visit(dep)
-                }
-                roots.forEach(visit)
-                return seen
-            }
-            const ids = Object.keys(manifest)
-            const site = staticClosure(
-                ids.filter(
-                    (id) =>
-                        !isPreview(id) && (manifest[id].isEntry || /^(pages|layouts)\//.test(id)),
-                ),
-            )
-            const previewOnly = [...staticClosure(ids.filter(isPreview))].filter(
-                (id) => !site.has(id),
-            )
             // The UI package bundles a catalog per language; the site renders only its own.
-            const unusedLocales = ids.filter((id) => {
-                const code = id.match(/packages\/ui\/src\/locales\/([^/]+)\/index\.json$/)?.[1]
-                return code && !(SUPPORTED_SITE_LOCALES as readonly string[]).includes(code)
-            })
-            // Assets appear twice: under their source path and under their output file.
             const unprefetched = new Set(
-                [...previewOnly, ...unusedLocales].map((id) => manifest[id].file),
+                Object.keys(manifest)
+                    .filter((id) => {
+                        const code = id.match(
+                            /packages\/ui\/src\/locales\/([^/]+)\/index\.json$/,
+                        )?.[1]
+                        return code && !(SUPPORTED_SITE_LOCALES as readonly string[]).includes(code)
+                    })
+                    // Assets appear twice: under their source path and under their output file.
+                    .map((id) => manifest[id].file),
             )
             for (const entry of Object.values(manifest)) {
-                if (entry.dynamicImports) {
-                    entry.dynamicImports = entry.dynamicImports.filter((dep) => !isPreview(dep))
-                }
                 if (unprefetched.has(entry.file)) entry.prefetch = false
                 // The page first paints from its server-rendered HTML and CSS. Preloading
                 // every module the app imports (~80 requests, ~500 KB) made that paint

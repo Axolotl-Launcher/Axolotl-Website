@@ -45,11 +45,11 @@ linked by the pnpm workspace. Each keeps its own `lint` script, for example
 `/demo` frames the launcher frontend's web demo build, which each launcher
 release attaches as `Axolotl_Launcher_<version>_web_demo.zip`. `pnpm dev` and
 `pnpm build` first run `scripts/fetch-launcher-demo.mjs`: it downloads the
-package of the latest stable release, checks it against the asset's SHA-256
+package of the latest stable release (or, when that has none, of the newest
+earlier stable release that has one), checks it against the asset's SHA-256
 digest and unpacks it into the ignored `src/public/launcher-demo/<version>/`,
-downloading again only when a newer release ships one. When the latest stable
-release has no package, `/demo` runs the hand-ported preview in
-`src/components/launcher-preview/` instead.
+downloading again only when a newer release ships one. When no stable release
+has a package, `/demo` shows a download link instead.
 
 - `GITHUB_TOKEN` authenticates the release lookup. Without it, GitHub allows 60
   lookups an hour per IP address.
