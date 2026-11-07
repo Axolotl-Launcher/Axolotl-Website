@@ -189,47 +189,79 @@ jobs:
           echo "enabled=$deploy" >> "$GITHUB_OUTPUT"
 
   deploy:
-    name: Deploy to Cloudflare Pages
+    name: Deploy to Linux server
     needs: [prepare, build, decide-deployment]
     if: needs.decide-deployment.outputs.deploy == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Check Cloudflare Pages deployment configuration
+      - name: Configure SSH private-key authentication
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          DEPLOY_SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
         run: |
-          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ACCOUNT_ID" || -z "$CLOUDFLARE_PAGES_PROJECT_NAME" ]]; then
-            echo '::error::Configure the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets and the CLOUDFLARE_PAGES_PROJECT_NAME variable. See README.md.'
+          set -euo pipefail
+          if [[ -z "$DEPLOY_HOST" || -z "$DEPLOY_USER" || -z "$DEPLOY_SSH_PRIVATE_KEY" || -z "$DEPLOY_SSH_KNOWN_HOSTS" ]]; then
+            echo '::error::Configure the DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_PRIVATE_KEY and DEPLOY_SSH_KNOWN_HOSTS secrets. See README.md.'
             exit 1
           fi
+          if [[ ! "$DEPLOY_HOST" =~ ^[a-zA-Z0-9][a-zA-Z0-9.:-]*$ || ! "$DEPLOY_USER" =~ ^[a-zA-Z_][a-zA-Z0-9_-]*$ ]]; then
+            echo '::error::Invalid deployment hostname or username.'
+            exit 1
+          fi
+          if [[ ! "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]] || (( 10#$DEPLOY_PORT < 1 || 10#$DEPLOY_PORT > 65535 )); then
+            echo '::error::DEPLOY_PORT must be between 1 and 65535.'
+            exit 1
+          fi
+          umask 077
+          ssh_directory="$RUNNER_TEMP/website-ssh"
+          mkdir -p "$ssh_directory"
+          printf '%s\n' "$DEPLOY_SSH_PRIVATE_KEY" | tr -d '\r' > "$ssh_directory/key"
+          printf '%s\n' "$DEPLOY_SSH_KNOWN_HOSTS" > "$ssh_directory/known_hosts"
+          ssh-keygen -y -P '' -f "$ssh_directory/key" > /dev/null
+          ssh-keygen -l -f "$ssh_directory/known_hosts" > /dev/null
+          cat > "$ssh_directory/config" <<EOF
+          Host website
+              HostName $DEPLOY_HOST
+              Port $DEPLOY_PORT
+              User $DEPLOY_USER
+              IdentityFile $ssh_directory/key
+              UserKnownHostsFile $ssh_directory/known_hosts
+              StrictHostKeyChecking yes
+              BatchMode yes
+              IdentitiesOnly yes
+              PasswordAuthentication no
+              KbdInteractiveAuthentication no
+              ConnectTimeout 15
+              ServerAliveInterval 15
+              ServerAliveCountMax 3
+          EOF
       - name: Checkout validated source
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ needs.prepare.outputs.sha }}
           persist-credentials: false
-      - name: Setup pnpm
-        uses: pnpm/action-setup@008330803749db0355799c700092d9a85fd074e9 # v6.0.9
-      - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version-file: .nvmrc
       - name: Download static website artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: website-static-${{ github.run_id }}
           path: .output/public/
-      - name: Deploy prebuilt website to Cloudflare Pages
+      - name: Upload and activate prebuilt website
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          DEPLOY_REASON: ${{ github.event_name == 'push' && 'Release data sync' || 'Manual website deploy' }}
+          SOURCE_SHA: ${{ needs.prepare.outputs.sha }}
         run: |
-          pnpm --package=wrangler@4.152.0 dlx wrangler pages deploy \
-            .output/public \
-            --project-name "$CLOUDFLARE_PAGES_PROJECT_NAME" \
-            --branch main \
-            --commit-message "${DEPLOY_REASON} (GitHub Actions ${GITHUB_RUN_ID})"
+          set -euo pipefail
+          release_id="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${SOURCE_SHA}"
+          release_directory="/www/wwwroot/axlmc.org/releases/$release_id"
+          ssh_config="$RUNNER_TEMP/website-ssh/config"
+          ssh -F "$ssh_config" website "umask 022; mkdir -p '$release_directory'"
+          rsync -rptz --chmod=D755,F644 \
+            -e "ssh -F $ssh_config" \
+            .output/public/ "website:$release_directory/"
+          ssh -F "$ssh_config" website "bash -s -- '$release_id'" < scripts/activate-website.sh
+      - name: Remove SSH credentials
+        if: always()
+        run: rm -f -- "$RUNNER_TEMP/website-ssh/key" "$RUNNER_TEMP/website-ssh/known_hosts" "$RUNNER_TEMP/website-ssh/config"

@@ -123,8 +123,9 @@ After every published `v*` release, the launcher repository's
 ## Deployment
 
 `.github/workflows/deploy-website.yml` builds `main` on GitHub's runner and uploads
-`.output/public` to the Cloudflare Pages **Direct Upload** project with the pinned
-Wrangler CLI and `--branch main`. Separate jobs run lint and tests, spelling
+`.output/public` over SSH to `/www/wwwroot/axlmc.org/` on the Linux server.
+OpenResty serves the generated files; no Node.js process runs on the server.
+Separate jobs run lint and tests, spelling
 checks, and a single static build in parallel. Deployment eligibility is evaluated
 after all three jobs pass. The deployment job downloads that build artifact and
 uploads it without rebuilding. It only
@@ -135,26 +136,70 @@ the pre-push commit unavailable, the workflow tries fetching it. If it cannot be
 recovered, automatic deployment is skipped with a warning; use `force-deploy` to
 publish manually.
 
-Pages serves only static assets; no Worker adapter or Pages Functions are needed.
-GitHub Actions owns the build and publication order. Pages does not run a hosted
-build. Before uploading, the workflow checks that the homepage exists and that
+GitHub Actions owns the build and publication order. Before uploading, the
+workflow checks that the homepage exists and that
 every catalog version appears in the prerendered changelog. A missing secret or a
 failed build fails the job without replacing the live site.
 
-The deployment needs these Actions settings in this repository:
+The deployment needs these **Actions secrets** in this repository:
 
-- Secret `CLOUDFLARE_API_TOKEN`: a Cloudflare API token with
-  **Account > Cloudflare Pages > Edit** for the account that owns `axlmc.org`.
-- Secret `CLOUDFLARE_ACCOUNT_ID`: that Cloudflare account ID.
-- Variable `CLOUDFLARE_PAGES_PROJECT_NAME`: the Pages project name
-  (`axolotl-website`).
+- `DEPLOY_HOST`: the server IP address or SSH hostname, without a URL scheme.
+- `DEPLOY_USER`: the SSH user that owns the website directory.
+- `DEPLOY_PORT`: optional SSH port; defaults to `22`.
+- `DEPLOY_SSH_PRIVATE_KEY`: the complete, unencrypted SSH private key, including
+  its header and footer. Use a dedicated deployment key and install its public
+  key in the server user's `~/.ssh/authorized_keys`.
+- `DEPLOY_SSH_KNOWN_HOSTS`: the server's verified OpenSSH `known_hosts` entry.
+  For a nonstandard port, the entry uses `[host]:port`. Obtain the entry with
+  `ssh-keyscan -p PORT HOST` and verify its fingerprint through the server console
+  before saving it. The workflow requires strict host verification.
+
+The server needs Bash, `rsync`, and `flock` (usually supplied by `util-linux`).
+Create `/www/wwwroot/axlmc.org/` once and give the deployment user ownership.
+The OpenResty worker user needs read access to files and traverse access to
+their parent directories. Deployment uses SSH private-key authentication only;
+it needs neither root access nor `sudo`. No Cloudflare API secrets are used.
+
+Each upload goes into `releases/<run-id>-<attempt>-<commit>/`. After checking
+the generated pages, `scripts/activate-website.sh` copies `_nuxt/`
+into `shared/` without deleting older assets, then atomically
+switches the `current` symlink. Failed uploads never switch the live directory.
+Deleted pages are absent from the new release; older Nuxt assets remain
+available for already-open pages. Launcher demo files are served from
+`current/launcher-demo/` and switch with the website release; an open demo may
+need a refresh after deployment. Old releases and shared assets are retained
+for rollback; monitor disk usage and remove old versions according to your
+retention policy. Do not delete the current release or assets still needed by
+retained releases.
+
+### OpenResty setup (once)
+
+Use [`deploy/openresty/axlmc.org.conf`](deploy/openresty/axlmc.org.conf) as the
+sample for `/www/server/openresty/nginx/conf/sites-enabled/axlmc.org.conf`.
+It serves pages and `/launcher-demo/` from `current/`, reads historical Nuxt
+assets from `shared/`, sends
+HTTP and `www` traffic to `https://axlmc.org`, and returns real 404 responses.
+HTML and unversioned files revalidate; Nuxt's hashed assets have immutable caching.
+The main `nginx.conf` must include `sites-enabled/*.conf` inside its `http` block
+and load `mime.types`. Check existing virtual hosts for duplicate domain entries.
+
+Replace the sample's Let's Encrypt certificate paths with your existing paths.
+The certificate must cover both `axlmc.org` and `www.axlmc.org`; certificate
+renewal remains the responsibility of the server's existing certificate tooling.
+If IPv6 is disabled on the server, remove the `[::]` listen directives. After installing
+the configuration, validate and reload it once:
+
+```sh
+sudo /www/server/openresty/nginx/sbin/nginx -t
+sudo /www/server/openresty/nginx/sbin/nginx -s reload
+```
+
+The Actions workflow only uploads and activates website files. It never installs,
+modifies, or reloads OpenResty configuration or TLS certificates. Publish the
+first build and test the server before switching the domain's DNS records.
 
 Any website build-time environment variables must be provided to the GitHub build
-step; runtime Pages variables cannot change already generated HTML. Domain routing
-(`axlmc.org`, `www` redirect) is configured in Cloudflare, not in the CI token.
-
-See Cloudflare's [Direct Upload CI guide](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/)
-and [custom domain setup](https://developers.cloudflare.com/pages/configuration/custom-domains/).
+step; server environment variables cannot change already generated HTML.
 
 ## Manual website deployment
 
@@ -172,6 +217,14 @@ lock. Runs on other branches validate the site without deploying it. The workflo
 uses the release data already in `releases/`; it does not regenerate announcements
 from potentially unreleased `catalog.ts` entries.
 
-To roll back site content, select a previous successful production deployment in
-Pages and choose **Rollback**. This does not roll back the synchronized release
-data; the next deployment publishes the current `main` again.
+To roll back, replace `RELEASE_ID` with a retained directory name and run on the
+server as the deployment user:
+
+```sh
+cd /www/wwwroot/axlmc.org
+test -s "releases/RELEASE_ID/index.html" && ln -s "releases/RELEASE_ID" .rollback && mv -Tf .rollback current
+```
+
+Coordinate rollback with any running deployment. No OpenResty reload is needed.
+Rollback does not change the synchronized release data in Git; the next
+deployment publishes the current `main` again.
