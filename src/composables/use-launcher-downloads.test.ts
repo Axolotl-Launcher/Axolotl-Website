@@ -38,8 +38,10 @@ function setup(t: TestContext) {
         url: Ref<string>
         options: { server: boolean; timeout: number; retry: number }
     }> = []
+    const headCalls: Array<{ link: Array<Record<string, string>> }> = []
     const globals = {
         computed,
+        useHead: (head: { link: Array<Record<string, string>> }) => headCalls.push(head),
         useState: () => source,
         onMounted: () => {},
         useRuntimeConfig: () => ({ public: { githubUrl: TEST_GITHUB_URL, ...TEST_ENDPOINTS } }),
@@ -63,8 +65,35 @@ function setup(t: TestContext) {
             else Reflect.deleteProperty(globalThis, key)
         }
     })
-    return { source, channel, data, status, refresh, calls, result: useLauncherDownloads(channel) }
+    return {
+        source,
+        channel,
+        data,
+        status,
+        refresh,
+        calls,
+        headCalls,
+        result: useLauncherDownloads(channel),
+    }
 }
+
+test('initial catalog is discoverable before hydration without preloading beta', (t) => {
+    const f = setup(t)
+    assert.equal(f.headCalls.length, 1)
+    assert.deepEqual(f.headCalls[0].link, [
+        {
+            key: 'launcher-download-catalog',
+            rel: 'preload',
+            as: 'fetch',
+            href: f.calls[0].url.value,
+            crossorigin: 'anonymous',
+            fetchpriority: 'high',
+        },
+    ])
+    f.channel.value = 'beta'
+    assert(f.calls[0].url.value.endsWith('channel=beta'))
+    assert(f.headCalls[0].link[0].href.endsWith('channel=release'))
+})
 
 test('source changes reuse one authoritative catalog and only change the file host', (t) => {
     const f = setup(t)
