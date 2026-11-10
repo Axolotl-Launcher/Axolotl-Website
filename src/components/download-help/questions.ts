@@ -57,7 +57,7 @@ const messages = defineMessages({
     vcStep2: {
         id: 'axolotl-download-help.vc.step-2',
         defaultMessage:
-            'Open <strong>vc_redist.x64.exe</strong>, tick <strong>I agree to the license terms and conditions</strong> and click <strong>Install</strong>.',
+            'Open <strong>vc_redist.x64.exe</strong>, tick <strong>I agree to the license terms and conditions</strong>, click <strong>Install</strong>, then <strong>Yes</strong> in User Account Control.',
     },
     vcStep3: {
         id: 'axolotl-download-help.vc.step-3',
@@ -92,7 +92,7 @@ export const DOWNLOAD_HELP_QUESTIONS: DownloadHelpQuestion[] = [
         link: 'https://aka.ms/vc14/vc_redist.x64.exe',
         steps: [
             { text: messages.vcStep1, durationMs: 6000 },
-            { text: messages.vcStep2, durationMs: 6500 },
+            { text: messages.vcStep2, durationMs: 9000 },
             { text: messages.vcStep3, durationMs: 6000 },
         ],
     },

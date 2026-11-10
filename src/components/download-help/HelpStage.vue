@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /**
- * A fixed 640×400 drawing of a desktop, scaled to the width it is given.
+ * A fixed 640×496 drawing of part of a Windows 11 screen at 100% scaling, scaled to
+ * the width it is given, so the windows in it keep their real sizes.
  *
  * Scenes place everything in these stage pixels and time their animations as
  * fractions of the current step (`--d`), so pausing the walkthrough pauses the
@@ -36,7 +37,7 @@ const stageStyle = computed(() => ({
 </script>
 
 <template>
-    <div ref="frame" class="relative aspect-[16/10] w-full overflow-hidden" aria-hidden="true">
+    <div ref="frame" class="relative aspect-[40/31] w-full overflow-hidden" aria-hidden="true">
         <div
             class="dh-stage"
             :class="{ 'dh-paused': paused, 'dh-still': still }"
@@ -53,17 +54,17 @@ const stageStyle = computed(() => ({
     top: 0;
     left: 0;
     width: 640px;
-    height: 400px;
+    height: 496px;
     overflow: hidden;
     transform-origin: 0 0;
     background:
-        radial-gradient(120% 90% at 85% 110%, #2f6fd6 0%, transparent 55%),
-        radial-gradient(90% 80% at 10% 0%, #c9dcf7 0%, transparent 60%),
-        linear-gradient(160deg, #9fc0ee 0%, #5e8fe0 55%, #3d6fcf 100%);
-    color: #1b1b1b;
+        radial-gradient(70% 60% at 70% 75%, #1c63d9 0%, transparent 70%),
+        radial-gradient(60% 55% at 30% 40%, #7fb2f0 0%, transparent 70%),
+        linear-gradient(160deg, #c6dcf6 0%, #82aee8 45%, #2a68cf 100%);
+    color: #1a1a1a;
     font-family:
-        'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'PingFang SC', system-ui,
-        sans-serif;
+        'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei',
+        'PingFang SC', system-ui, sans-serif;
     font-size: 12px;
     line-height: 1.35;
     text-align: left;
@@ -71,6 +72,17 @@ const stageStyle = computed(() => ({
 
     * {
         box-sizing: border-box;
+    }
+
+    // The site sizes every <svg> to 1em; drawings here keep the size their attributes give.
+    @each $size in 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 32, 38, 48, 64 {
+        svg[width='#{$size}'] {
+            width: #{$size}px;
+        }
+
+        svg[height='#{$size}'] {
+            height: #{$size}px;
+        }
     }
 }
 

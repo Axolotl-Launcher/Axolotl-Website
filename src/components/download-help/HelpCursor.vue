@@ -1,10 +1,10 @@
+<!-- The Windows 11 default arrow pointer at 100% scaling; its tip is the element's origin. -->
 <template>
-    <svg class="dh-cursor" width="22" height="22" viewBox="0 0 22 22">
+    <svg class="dh-cursor" width="14" height="22" viewBox="0 0 14 22">
         <path
-            d="M3 2.5v15.2l4-3.8 2.6 6 2.9-1.3-2.6-5.8 5.6-.3z"
-            fill="#111"
-            stroke="#fff"
-            stroke-width="1.4"
+            d="M.5.5v16.8l3.9-3.7 2.8 6.6 2.6-1.1-2.8-6.5h5.5z"
+            fill="#fff"
+            stroke="#000"
             stroke-linejoin="round"
         />
     </svg>
