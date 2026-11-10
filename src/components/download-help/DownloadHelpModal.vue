@@ -34,6 +34,8 @@ const question = computed(() => questions.value[questionIndex.value])
 const fileName = computed(() => request.value.fileName ?? FALLBACK_FILE_NAME)
 
 const step = ref(0)
+/** Changes whenever a step (re)starts, so the scene restarts its animations with the timer. */
+const stepRun = ref(0)
 const elapsedMs = ref(0)
 const playing = ref(true)
 const reducedMotion = ref(false)
@@ -49,8 +51,7 @@ function tick(now: number) {
     if (playing.value && question.value) {
         elapsedMs.value += now - lastFrameAt
         if (elapsedMs.value >= stepDurationMs.value) {
-            step.value = (step.value + 1) % question.value.steps.length
-            elapsedMs.value = 0
+            selectStep((step.value + 1) % question.value.steps.length)
         }
     }
     lastFrameAt = now
@@ -76,8 +77,39 @@ function selectQuestion(index: number) {
 
 function selectStep(index: number) {
     step.value = index
+    stepRun.value++
     elapsedMs.value = 0
 }
+
+function readReducedMotion() {
+    return (
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        document.documentElement.classList.contains('reduced-motion')
+    )
+}
+
+// Follows both the system setting and the site's own toggle, which sets a class on <html>,
+// while the dialog is open. Under reduced motion the steps never advance on their own.
+let motionQuery: MediaQueryList | undefined
+let motionClassObserver: MutationObserver | undefined
+
+function syncReducedMotion() {
+    reducedMotion.value = readReducedMotion()
+    if (reducedMotion.value) playing.value = false
+}
+
+onMounted(() => {
+    motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    motionQuery.addEventListener('change', syncReducedMotion)
+    motionClassObserver = new MutationObserver(syncReducedMotion)
+    motionClassObserver.observe(document.documentElement, { attributeFilter: ['class'] })
+    syncReducedMotion()
+})
+
+onBeforeUnmount(() => {
+    motionQuery?.removeEventListener('change', syncReducedMotion)
+    motionClassObserver?.disconnect()
+})
 
 function onTabKeydown(event: KeyboardEvent) {
     const offset = { ArrowRight: 1, ArrowLeft: -1 }[event.key]
@@ -93,9 +125,7 @@ watch(
     () => {
         userAgent.value = navigator.userAgent
         if (questions.value.length === 0) return
-        reducedMotion.value =
-            window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-            document.documentElement.classList.contains('reduced-motion')
+        reducedMotion.value = readReducedMotion()
         selectQuestion(0)
         modal.value?.show()
         startPlayback()
@@ -173,9 +203,15 @@ onBeforeUnmount(stopPlayback)
                         :paused="!playing"
                         :still="reducedMotion"
                     >
-                        <component :is="question.scene" :step="step" :file-name="fileName" />
+                        <component
+                            :is="question.scene"
+                            :key="stepRun"
+                            :step="step"
+                            :file-name="fileName"
+                        />
                     </HelpStage>
                     <button
+                        v-if="!reducedMotion"
                         type="button"
                         class="absolute bottom-2 right-2 flex cursor-pointer items-center gap-1.5 rounded-full border-0 bg-black/60 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur sm:bottom-3 sm:right-3 sm:px-3 sm:py-1.5 sm:text-sm"
                         @click="playing = !playing"

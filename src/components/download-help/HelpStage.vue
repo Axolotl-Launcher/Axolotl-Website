@@ -130,7 +130,8 @@ const stageStyle = computed(() => ({
     }
 
     .dh-vanish,
-    .dh-ripple {
+    .dh-ripple,
+    .dh-hint {
         visibility: hidden;
     }
 }
