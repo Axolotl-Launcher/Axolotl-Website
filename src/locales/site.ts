@@ -44,18 +44,18 @@ export const siteLocaleMessages: Record<string, Record<string, string>> = {
         'axolotl-download-help.edge.cancel': '取消',
         'axolotl-download-help.edge.keep-anyway': '仍然保留',
         'axolotl-download-help.edge.open-file': '打开文件',
+        'axolotl-download-help.edge.downloading': '{speed} MB/s - {done} MB，共 {total} MB，剩余 {left} 秒',
         'axolotl-download-help.vc.question': '安装时提示找不到 VCRUNTIME140_1.dll？',
         'axolotl-download-help.vc.step-1':
             '前往 <link>aka.ms/vc14/vc_redist.x64.exe</link> 下载微软 VC++ 运行库。',
         'axolotl-download-help.vc.step-2':
-            '打开 <strong>vc_redist.x64.exe</strong>，勾选 <strong>「我同意许可条款和条件」</strong>，点 <strong>「安装」</strong>，在「用户帐户控制」里点 <strong>「是」</strong>。',
+            '打开 <strong>VC_redist.x64.exe</strong>，勾选 <strong>「我同意许可条款和条件」</strong>，点 <strong>「安装」</strong>，在「用户帐户控制」里点 <strong>「是」</strong>。',
         'axolotl-download-help.vc.step-3':
             '看到 <strong>「设置成功」</strong> 后点 <strong>「关闭」</strong>，再重新运行 Axolotl Launcher 安装程序。',
         'axolotl-download-help.vc.error-title': '{file} - 系统错误',
         'axolotl-download-help.vc.error-body':
             '由于找不到 VCRUNTIME140_1.dll，无法继续执行代码。重新安装程序可能会解决此问题。',
         'axolotl-download-help.vc.ok': '确定',
-        'axolotl-download-help.vc.recycle-bin': '回收站',
         'axolotl-download-help.vc.caption': '{name} 安装程序',
         'axolotl-download-help.vc.license-link': '{name} 的许可条款可从 https://aka.ms/VCRedistLicense 获得',
         'axolotl-download-help.vc.agree': '我同意许可条款和条件( A)',
@@ -64,6 +64,7 @@ export const siteLocaleMessages: Record<string, Record<string, string>> = {
         'axolotl-download-help.vc.cancel': '取消(C)',
         'axolotl-download-help.vc.progress': '安装进度',
         'axolotl-download-help.vc.processing': '正在处理: ',
+        'axolotl-download-help.vc.initializing': '正在初始化...',
         'axolotl-download-help.vc.success': '设置成功',
         'axolotl-download-help.vc.uac-title': '用户帐户控制',
         'axolotl-download-help.vc.uac-question': '你要允许此应用对你的设备进行更改吗?',

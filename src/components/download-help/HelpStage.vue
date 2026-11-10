@@ -1,19 +1,8 @@
 <script setup lang="ts">
 /**
- * A fixed 640×496 drawing of part of a Windows 11 screen at 100% scaling, scaled to
- * the width it is given, so the windows in it keep their real sizes.
- *
- * Scenes place everything in these stage pixels and time their animations as
- * fractions of the current step (`--d`), so pausing the walkthrough pauses the
- * drawing with it. Under reduced motion the animations are dropped and each
- * element shows its resting style, which scenes write as the step's end state.
+ * The 640×496 frame a walkthrough is recorded in, scaled to the width it is given.
+ * Scenes draw a whole Windows screen at 100% scaling and move a camera over it.
  */
-const props = defineProps<{
-    durationMs: number
-    paused: boolean
-    still: boolean
-}>()
-
 const STAGE_WIDTH = 640
 
 const frame = ref<HTMLElement | null>(null)
@@ -29,20 +18,11 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => observer?.disconnect())
-
-const stageStyle = computed(() => ({
-    '--d': `${props.durationMs}ms`,
-    transform: `scale(${scale.value})`,
-}))
 </script>
 
 <template>
     <div ref="frame" class="relative aspect-[40/31] w-full overflow-hidden" aria-hidden="true">
-        <div
-            class="dh-stage"
-            :class="{ 'dh-paused': paused, 'dh-still': still }"
-            :style="stageStyle"
-        >
+        <div class="dh-stage" :style="{ transform: `scale(${scale})` }">
             <slot />
         </div>
     </div>
@@ -57,11 +37,7 @@ const stageStyle = computed(() => ({
     height: 496px;
     overflow: hidden;
     transform-origin: 0 0;
-    background:
-        radial-gradient(38% 46% at 62% 64%, rgb(120 170 255 / 0.55) 0%, transparent 70%),
-        radial-gradient(55% 62% at 66% 62%, #1d4fc4 0%, transparent 72%),
-        radial-gradient(80% 90% at 70% 70%, #0b2a7a 0%, transparent 75%),
-        linear-gradient(160deg, #070b16 0%, #0a1430 55%, #0d1c45 100%);
+    background: #070b16;
     color: #1a1a1a;
     font-family:
         'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei',
@@ -76,7 +52,7 @@ const stageStyle = computed(() => ({
     }
 
     // The site sizes every <svg> to 1em; drawings here keep the size their attributes give.
-    @each $size in 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 32, 38, 48, 64 {
+    @each $size in 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 30, 32, 38, 48, 64 {
         svg[width='#{$size}'] {
             width: #{$size}px;
         }
@@ -87,111 +63,13 @@ const stageStyle = computed(() => ({
     }
 }
 
-.dh-paused,
-.dh-paused * {
-    animation-play-state: paused !important;
-}
-
-.dh-cursor {
+/** The guide ring around the next thing to click. */
+.dh-guide {
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 50;
-    animation-duration: var(--d);
-    animation-fill-mode: both;
-}
-
-.dh-appear {
-    animation: dh-appear 220ms ease-out calc(var(--d) * var(--at, 0)) both;
-}
-
-.dh-vanish {
-    animation: dh-vanish 200ms ease-in calc(var(--d) * var(--at, 0)) both;
-}
-
-.dh-ripple {
-    position: absolute;
-    z-index: 49;
-    width: 36px;
-    height: 36px;
-    margin: -18px 0 0 -18px;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--color-brand) 55%, transparent);
-    opacity: 0;
-    pointer-events: none;
-    animation: dh-ripple 520ms ease-out calc(var(--d) * var(--at, 0)) both;
-}
-
-.dh-hint {
-    position: absolute;
-    z-index: 40;
+    z-index: 55;
     border: 3px solid var(--color-brand);
     border-radius: 8px;
     pointer-events: none;
-    animation:
-        dh-hint calc(var(--d) * (var(--to) - var(--from))) linear calc(var(--d) * var(--from)) both,
-        dh-hint-pulse 1.1s ease-in-out infinite;
-}
-
-.dh-still {
-    .dh-cursor,
-    .dh-appear,
-    .dh-vanish,
-    .dh-hint,
-    * {
-        animation: none !important;
-    }
-
-    .dh-vanish,
-    .dh-ripple,
-    .dh-hint {
-        visibility: hidden;
-    }
-}
-
-@keyframes dh-appear {
-    from {
-        opacity: 0;
-        transform: translateY(6px) scale(0.98);
-    }
-}
-
-@keyframes dh-vanish {
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
-@keyframes dh-ripple {
-    0% {
-        opacity: 0;
-        transform: scale(0.2);
-    }
-    1% {
-        opacity: 1;
-        transform: scale(0.2);
-    }
-    100% {
-        opacity: 0;
-        transform: scale(1.4);
-    }
-}
-
-@keyframes dh-hint {
-    0%,
-    100% {
-        opacity: 0;
-    }
-    8%,
-    92% {
-        opacity: 1;
-    }
-}
-
-@keyframes dh-hint-pulse {
-    50% {
-        box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-brand) 30%, transparent);
-    }
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand) 22%, transparent);
 }
 </style>

@@ -198,15 +198,12 @@ onBeforeUnmount(stopPlayback)
                 <div
                     class="relative overflow-hidden rounded-2xl border border-solid border-surface-5"
                 >
-                    <HelpStage
-                        :duration-ms="stepDurationMs"
-                        :paused="!playing"
-                        :still="reducedMotion"
-                    >
+                    <HelpStage>
                         <component
                             :is="question.scene"
                             :key="stepRun"
                             :step="step"
+                            :time="reducedMotion ? stepDurationMs : elapsedMs"
                             :file-name="fileName"
                         />
                     </HelpStage>

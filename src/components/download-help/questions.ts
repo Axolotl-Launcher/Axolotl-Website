@@ -57,7 +57,7 @@ const messages = defineMessages({
     vcStep2: {
         id: 'axolotl-download-help.vc.step-2',
         defaultMessage:
-            'Open <strong>vc_redist.x64.exe</strong>, tick <strong>I agree to the license terms and conditions</strong>, click <strong>Install</strong>, then <strong>Yes</strong> in User Account Control.',
+            'Open <strong>VC_redist.x64.exe</strong>, tick <strong>I agree to the license terms and conditions</strong>, click <strong>Install</strong>, then <strong>Yes</strong> in User Account Control.',
     },
     vcStep3: {
         id: 'axolotl-download-help.vc.step-3',
@@ -79,9 +79,9 @@ export const DOWNLOAD_HELP_QUESTIONS: DownloadHelpQuestion[] = [
         question: messages.edgeQuestion,
         scene: markRaw(EdgeKeepScene),
         steps: [
-            { text: messages.edgeStep1 },
-            { text: messages.edgeStep2 },
-            { text: messages.edgeStep3 },
+            { text: messages.edgeStep1, durationMs: 5000 },
+            { text: messages.edgeStep2, durationMs: 3800 },
+            { text: messages.edgeStep3, durationMs: 4800 },
         ],
     },
     {
@@ -91,9 +91,9 @@ export const DOWNLOAD_HELP_QUESTIONS: DownloadHelpQuestion[] = [
         scene: markRaw(VcRuntimeScene),
         link: 'https://aka.ms/vc14/vc_redist.x64.exe',
         steps: [
-            { text: messages.vcStep1, durationMs: 6000 },
-            { text: messages.vcStep2, durationMs: 9000 },
-            { text: messages.vcStep3, durationMs: 6000 },
+            { text: messages.vcStep1, durationMs: 9200 },
+            { text: messages.vcStep2, durationMs: 10500 },
+            { text: messages.vcStep3, durationMs: 7600 },
         ],
     },
 ]
