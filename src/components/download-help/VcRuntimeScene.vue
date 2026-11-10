@@ -6,7 +6,13 @@ import EdgeFlyout from './EdgeFlyout.vue'
 import EdgeWindow from './EdgeWindow.vue'
 import HelpCursor from './HelpCursor.vue'
 import SetupIcon from './SetupIcon.vue'
-import { centreVariables, useStageTargets } from './use-stage-targets'
+import {
+    centreOf,
+    click,
+    pointerKeyframes,
+    type StagePoint,
+    useStageTargets,
+} from './use-stage-targets'
 import WinWindow from './WinWindow.vue'
 
 const props = defineProps<{ step: number; fileName: string }>()
@@ -28,7 +34,6 @@ const messages = defineMessages({
     siteDownload: { id: 'axolotl-download-help.edge.site-download', defaultMessage: 'Download' },
     downloads: { id: 'axolotl-download-help.edge.downloads', defaultMessage: 'Downloads' },
     openFile: { id: 'axolotl-download-help.edge.open-file', defaultMessage: 'Open file' },
-    seeMore: { id: 'axolotl-download-help.edge.see-more', defaultMessage: 'See more' },
     errorTitle: {
         id: 'axolotl-download-help.vc.error-title',
         defaultMessage: '{file} - System Error',
@@ -85,7 +90,12 @@ const messages = defineMessages({
 
 const root = ref<HTMLElement | null>(null)
 const targets = useStageTargets(root)
-const rootStyle = computed(() => centreVariables(targets.value))
+const id = useId()
+const animation = computed(() => `dh-vc-pointer-${id.replace(/[^\w-]/g, '')}`)
+
+const START: StagePoint = { x: 300, y: 420 }
+/** The omnibox, clicked before typing the address. */
+const ADDRESS: StagePoint = { x: 220, y: 60 }
 
 function ring(name: string, pad = 3) {
     const rect = targets.value[name]
@@ -104,18 +114,62 @@ function ripple(name: string) {
     return { left: `${rect.x + rect.w / 2}px`, top: `${rect.y + rect.h / 2}px` }
 }
 
-const cursorEnd = computed(
-    () =>
-        [
-            'translate(220px, 54px)',
-            'translate(var(--yes-cx), var(--yes-cy))',
-            'translate(var(--setupFile-cx), var(--setupFile-cy))',
-        ][props.step],
-)
+const pointer = computed(() => {
+    const at = (name: string) => centreOf(targets.value[name])
+    if (props.step === 0) {
+        return {
+            end: ADDRESS,
+            css: pointerKeyframes(animation.value, [
+                { at: [0, 0.04], to: START, ease: true },
+                ...click(0.19, at('ok')),
+                { at: 0.28, to: at('ok'), ease: true },
+                ...click(0.37, ADDRESS),
+                { at: 1, to: ADDRESS },
+            ]),
+        }
+    }
+    if (props.step === 1) {
+        return {
+            end: at('yes'),
+            css: pointerKeyframes(animation.value, [
+                { at: [0, 0.02], to: ADDRESS, ease: true },
+                ...click(0.11, at('openVc')),
+                { at: 0.22, to: at('openVc'), ease: true },
+                ...click(0.31, at('agree')),
+                { at: 0.37, to: at('agree'), ease: true },
+                ...click(0.46, at('install')),
+                { at: 0.56, to: at('install'), ease: true },
+                ...click(0.68, at('yes')),
+                { at: 1, to: at('yes') },
+            ]),
+        }
+    }
+    const file = at('setupFile')
+    return {
+        end: file,
+        css: pointerKeyframes(animation.value, [
+            { at: [0, 0.08], to: at('yes'), ease: true },
+            ...click(0.28, at('closeVc')),
+            { at: 0.42, to: at('closeVc'), ease: true },
+            { at: 0.58, to: file },
+            { at: 0.61, to: file, press: true },
+            { at: 0.63, to: file },
+            { at: 0.66, to: file, press: true },
+            { at: [0.68, 1], to: file },
+        ]),
+    }
+})
+
+const cursorStyle = computed(() => {
+    const end = pointer.value.end
+    if (!end || !pointer.value.css) return { display: 'none' }
+    return { transform: `translate(${end.x}px, ${end.y}px)`, animationName: animation.value }
+})
 </script>
 
 <template>
-    <div ref="root" class="absolute inset-0" :style="rootStyle">
+    <div ref="root" class="absolute inset-0">
+        <component :is="'style'">{{ pointer.css }}</component>
         <div class="desktop-icon top-1.5">
             <svg width="48" height="48" viewBox="0 0 48 48">
                 <path
@@ -158,21 +212,23 @@ const cursorEnd = computed(
 
         <EdgeWindow
             :tab-title="formatMessage(messages.tabTitle)"
-            favicon
-            :downloads="step === 0 ? 'idle' : 'open'"
+            downloads="open"
             :class="{ 'dh-appear': step === 0, 'dh-vanish': step === 2 }"
             :style="{ '--at': step === 0 ? 0.28 : 0.38 }"
         >
             <template #address>
                 <span v-if="step === 0" class="relative">
                     <span class="dh-vanish" style="--at: 0.4">
-                        <span class="url-selected">https://axlmc.org</span>
+                        <span class="bg-[#264f78] text-[#f2f2f2]">https://axlmc.org</span>
                     </span>
-                    <span class="typing absolute left-0 top-0 whitespace-nowrap">{{
+                    <span class="typing absolute left-0 top-0 whitespace-nowrap text-[#f2f2f2]">{{
                         VC_ADDRESS
                     }}</span>
                 </span>
-                <template v-else>https://axlmc.org</template>
+                <template v-else>
+                    <span class="text-[#9b9b9b]">https://</span
+                    ><span class="text-[#f2f2f2]">axlmc.org</span>
+                </template>
             </template>
             <template #page>
                 <AxolotlSitePage :download-label="formatMessage(messages.siteDownload)" />
@@ -180,31 +236,30 @@ const cursorEnd = computed(
             <EdgeFlyout
                 v-if="step < 2"
                 :title="formatMessage(messages.downloads)"
-                class="left-[165px] top-[71px] h-[179px]"
+                class="left-[224px] top-[84px] pb-[23px] pt-[54px]"
                 :class="{ 'dh-appear': step === 0 }"
                 style="--at: 0.66"
             >
-                <div class="flyout-item top-[46px]" :class="{ 'bg-[#f4f4f4]': step === 1 }">
-                    <SetupIcon class="absolute left-[10px] top-2 size-5" />
-                    <div class="flyout-item-text">
-                        <span class="block truncate">{{ VC_FILE }}</span>
-                        <span class="text-[#115ea3]" data-target="openVc">
-                            {{ formatMessage(messages.openFile) }}
-                        </span>
-                    </div>
+                <div class="flyout-item" :class="{ 'bg-[#2e2e2e]': step === 1 }">
+                    <SetupIcon class="absolute left-[18px] top-[9px] size-[26px]" />
+                    <p class="m-0 text-[14px] leading-[21px]">{{ VC_FILE }}</p>
+                    <p class="m-0 mt-[7px] text-[14px] font-semibold leading-[21px] text-[#4a97ee]">
+                        <span data-target="openVc">{{ formatMessage(messages.openFile) }}</span>
+                    </p>
                 </div>
-                <div class="flyout-item top-24">
-                    <img src="/axolotl.png" alt="" class="absolute left-2.5 top-2 size-5" />
-                    <div class="flyout-item-text">
-                        <span class="block truncate">{{ fileName }}</span>
-                        <span class="text-[#115ea3]">{{ formatMessage(messages.openFile) }}</span>
-                    </div>
+                <div class="flyout-item">
+                    <img
+                        src="/axolotl.png"
+                        alt=""
+                        class="absolute left-[18px] top-[9px] size-[26px] object-contain"
+                    />
+                    <p class="m-0 text-[14px] leading-[21px] [overflow-wrap:anywhere]">
+                        {{ fileName }}
+                    </p>
+                    <p class="m-0 mt-[7px] text-[14px] font-semibold leading-[21px] text-[#4a97ee]">
+                        {{ formatMessage(messages.openFile) }}
+                    </p>
                 </div>
-                <span
-                    class="absolute left-[26px] top-[154px] text-[14px] font-semibold leading-[19px]"
-                >
-                    {{ formatMessage(messages.seeMore) }}
-                </span>
             </EdgeFlyout>
         </EdgeWindow>
 
@@ -479,7 +534,7 @@ const cursorEnd = computed(
             <span class="dh-ripple" :style="{ ...ripple('setupFile'), '--at': 0.66 }" />
         </template>
 
-        <HelpCursor class="z-[60]" :class="`cursor-${step}`" :style="{ transform: cursorEnd }" />
+        <HelpCursor class="z-[60]" :style="cursorStyle" />
     </div>
 </template>
 
@@ -501,15 +556,7 @@ const cursorEnd = computed(
 }
 
 .flyout-item {
-    @apply absolute left-1.5 h-[46px] w-[347px] rounded;
-}
-
-.flyout-item-text {
-    @apply absolute left-9 top-1.5 w-[298px] text-[12px] leading-[19px];
-}
-
-.url-selected {
-    background: #cce4f7;
+    @apply relative mx-2 mb-2 rounded-md py-[9px] pl-12 pr-4;
 }
 
 .typing {
@@ -576,18 +623,6 @@ const cursorEnd = computed(
     filter: drop-shadow(0 16px 32px rgb(244 114 182 / 0.2));
 }
 
-.cursor-0 {
-    animation-name: cursor-0;
-}
-
-.cursor-1 {
-    animation-name: cursor-1;
-}
-
-.cursor-2 {
-    animation-name: cursor-2;
-}
-
 @keyframes typing {
     from {
         clip-path: inset(0 100% 0 0);
@@ -597,121 +632,6 @@ const cursorEnd = computed(
 @keyframes progress {
     from {
         width: 0;
-    }
-}
-
-@keyframes cursor-0 {
-    0%,
-    4% {
-        transform: translate(300px, 420px);
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    19% {
-        transform: translate(var(--ok-cx), var(--ok-cy));
-    }
-    21% {
-        transform: translate(var(--ok-cx), var(--ok-cy)) scale(0.9);
-    }
-    23%,
-    28% {
-        transform: translate(var(--ok-cx), var(--ok-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    37% {
-        transform: translate(220px, 54px);
-    }
-    38% {
-        transform: translate(220px, 54px) scale(0.9);
-    }
-    40%,
-    100% {
-        transform: translate(220px, 54px);
-    }
-}
-
-@keyframes cursor-1 {
-    0%,
-    2% {
-        transform: translate(220px, 54px);
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    11% {
-        transform: translate(var(--openVc-cx), var(--openVc-cy));
-    }
-    13% {
-        transform: translate(var(--openVc-cx), var(--openVc-cy)) scale(0.9);
-    }
-    15%,
-    22% {
-        transform: translate(var(--openVc-cx), var(--openVc-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    31% {
-        transform: translate(var(--agree-cx), var(--agree-cy));
-    }
-    33% {
-        transform: translate(var(--agree-cx), var(--agree-cy)) scale(0.9);
-    }
-    35%,
-    37% {
-        transform: translate(var(--agree-cx), var(--agree-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    46% {
-        transform: translate(var(--install-cx), var(--install-cy));
-    }
-    48% {
-        transform: translate(var(--install-cx), var(--install-cy)) scale(0.9);
-    }
-    50%,
-    56% {
-        transform: translate(var(--install-cx), var(--install-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    68% {
-        transform: translate(var(--yes-cx), var(--yes-cy));
-    }
-    70% {
-        transform: translate(var(--yes-cx), var(--yes-cy)) scale(0.9);
-    }
-    72%,
-    100% {
-        transform: translate(var(--yes-cx), var(--yes-cy));
-    }
-}
-
-@keyframes cursor-2 {
-    0%,
-    8% {
-        transform: translate(var(--yes-cx), var(--yes-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    28% {
-        transform: translate(var(--closeVc-cx), var(--closeVc-cy));
-    }
-    30% {
-        transform: translate(var(--closeVc-cx), var(--closeVc-cy)) scale(0.9);
-    }
-    32%,
-    42% {
-        transform: translate(var(--closeVc-cx), var(--closeVc-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    58% {
-        transform: translate(var(--setupFile-cx), var(--setupFile-cy));
-    }
-    61% {
-        transform: translate(var(--setupFile-cx), var(--setupFile-cy)) scale(0.9);
-    }
-    63% {
-        transform: translate(var(--setupFile-cx), var(--setupFile-cy));
-    }
-    66% {
-        transform: translate(var(--setupFile-cx), var(--setupFile-cy)) scale(0.9);
-    }
-    68%,
-    100% {
-        transform: translate(var(--setupFile-cx), var(--setupFile-cy));
     }
 }
 </style>

@@ -4,8 +4,15 @@ import { defineMessages, useVIntl } from '@modrinth/ui'
 import AxolotlSitePage from './AxolotlSitePage.vue'
 import EdgeFlyout from './EdgeFlyout.vue'
 import EdgeWindow from './EdgeWindow.vue'
+import FluentIcon from './FluentIcon.vue'
 import HelpCursor from './HelpCursor.vue'
-import { centreVariables, useStageTargets } from './use-stage-targets'
+import {
+    centreOf,
+    click,
+    pointerKeyframes,
+    type StagePoint,
+    useStageTargets,
+} from './use-stage-targets'
 
 const props = defineProps<{ step: number; fileName: string }>()
 
@@ -24,7 +31,6 @@ const messages = defineMessages({
         defaultMessage:
             "{file} isn't commonly downloaded. Make sure you trust {file} before you open it.",
     },
-    seeMore: { id: 'axolotl-download-help.edge.see-more', defaultMessage: 'See more' },
     delete: { id: 'axolotl-download-help.edge.delete', defaultMessage: 'Delete' },
     keep: { id: 'axolotl-download-help.edge.keep', defaultMessage: 'Keep' },
     reportFile: {
@@ -56,8 +62,17 @@ const messages = defineMessages({
     openFile: { id: 'axolotl-download-help.edge.open-file', defaultMessage: 'Open file' },
 })
 
+/** The flyout hangs from the Downloads button, 56 px in from the window's right edge. */
+const FLYOUT = { x: 224, y: 84 }
+/** Where "Keep" sits in the item menu, which opens at a fixed place under "···". */
+const KEEP: StagePoint = { x: 488, y: 225 }
+const START: StagePoint = { x: 330, y: 330 }
+const REST: StagePoint = { x: 470, y: 300 }
+
 const root = ref<HTMLElement | null>(null)
 const targets = useStageTargets(root)
+const id = useId()
+const animation = computed(() => `dh-edge-pointer-${id.replace(/[^\w-]/g, '')}`)
 
 /** How far the view scrolls up so the dialog's buttons and their menu stay in view. */
 const pan = computed(() => {
@@ -69,15 +84,83 @@ const pan = computed(() => {
 /** The flyout grows to hold the dialog, ending 64 px below it as Edge draws it. */
 const flyoutHeight = computed(() => {
     const chevron = targets.value.chevron
-    if (!chevron) return 455
-    return Math.max(455, chevron.y + chevron.h + 22 + 64 - 71)
+    if (!chevron) return 0
+    return chevron.y + chevron.h + 22 + 64 - FLYOUT.y
 })
 
-const rootStyle = computed(() => ({
-    ...centreVariables(targets.value),
-    '--pan': `${pan.value}px`,
-    '--flyout-h': `${flyoutHeight.value}px`,
-}))
+const pointer = computed(() => {
+    const more = centreOf(targets.value.more)
+    const keep = centreOf(targets.value.keep)
+    const chevron = centreOf(targets.value.chevron)
+    const keepAnyway = centreOf(targets.value.keepAnyway)
+    if (props.step === 0) {
+        return {
+            end: keep,
+            css: pointerKeyframes(animation.value, [
+                { at: [0, 0.08], to: START, ease: true },
+                ...click(0.28, more),
+                ...click(0.55, keep),
+                { at: 1, to: keep },
+            ]),
+        }
+    }
+    if (props.step === 1) {
+        return {
+            end: chevron,
+            css: pointerKeyframes(animation.value, [
+                { at: [0, 0.16], to: KEEP, ease: true },
+                ...click(0.4, chevron),
+                { at: 1, to: chevron },
+            ]),
+        }
+    }
+    return {
+        end: REST,
+        css: pointerKeyframes(animation.value, [
+            { at: [0, 0.08], to: chevron, ease: true },
+            ...click(0.3, keepAnyway),
+            { at: 0.62, to: keepAnyway, ease: true },
+            { at: [0.8, 1], to: REST },
+        ]),
+    }
+})
+
+const motionCss = computed(() => {
+    let css = pointer.value.css
+    if (props.step === 1) {
+        css += ` @keyframes ${animation.value}-pan { 0%, 4% { transform: translateY(0); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); } 16%, 100% { transform: translateY(${pan.value}px); } }`
+    }
+    if (props.step === 2) {
+        css += ` @keyframes ${animation.value}-pan { 0%, 50% { transform: translateY(${pan.value}px); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); } 62%, 100% { transform: translateY(0); } }`
+        css += ` @keyframes ${animation.value}-flyout { 0%, 47% { height: ${flyoutHeight.value}px; } 52%, 100% { height: auto; } }`
+    }
+    return css
+})
+
+const rootStyle = computed(() => {
+    if (props.step === 0 || !targets.value.chevron) return {}
+    return {
+        transform: props.step === 1 ? `translateY(${pan.value}px)` : undefined,
+        animation: `${animation.value}-pan var(--d) both`,
+    }
+})
+
+const flyoutStyle = computed(() => {
+    if (props.step === 1 && flyoutHeight.value) return { height: `${flyoutHeight.value}px` }
+    if (props.step === 2 && flyoutHeight.value) {
+        return { animation: `${animation.value}-flyout var(--d) both` }
+    }
+    return {}
+})
+
+const cursorStyle = computed(() => {
+    const end = pointer.value.end
+    if (!end || !pointer.value.css) return { display: 'none' }
+    return {
+        transform: `translate(${end.x}px, ${end.y}px)`,
+        animationName: animation.value,
+    }
+})
 
 function ring(name: string, pad = 3) {
     const rect = targets.value[name]
@@ -91,34 +174,23 @@ function ring(name: string, pad = 3) {
 }
 
 function ripple(name: string) {
-    const rect = targets.value[name]
-    if (!rect) return { display: 'none' }
-    return { left: `${rect.x + rect.w / 2}px`, top: `${rect.y + rect.h / 2}px` }
+    const point = centreOf(targets.value[name])
+    if (!point) return { display: 'none' }
+    return { left: `${point.x}px`, top: `${point.y}px` }
 }
-
-const cursorEnd = computed(
-    () =>
-        [
-            'translate(var(--keep-cx), var(--keep-cy))',
-            'translate(var(--chevron-cx), var(--chevron-cy))',
-            'translate(470px, 290px)',
-        ][props.step],
-)
 </script>
 
 <template>
-    <div
-        ref="root"
-        class="pan absolute inset-x-0 top-0 h-[720px]"
-        :class="`pan-${step}`"
-        :style="rootStyle"
-    >
+    <div ref="root" class="absolute inset-x-0 top-0 h-[720px]" :style="rootStyle">
+        <component :is="'style'">{{ motionCss }}</component>
         <EdgeWindow
             :tab-title="formatMessage(messages.tabTitle)"
-            favicon
             :downloads="step === 2 ? 'open' : 'warning'"
         >
-            <template #address>https://axlmc.org</template>
+            <template #address>
+                <span class="text-[#9b9b9b]">https://</span
+                ><span class="text-[#f2f2f2]">axlmc.org</span>
+            </template>
             <template #page>
                 <AxolotlSitePage :download-label="formatMessage(messages.siteDownload)" />
             </template>
@@ -126,71 +198,53 @@ const cursorEnd = computed(
 
         <EdgeFlyout
             :title="formatMessage(messages.downloads)"
-            class="flyout left-[165px] top-[71px]"
-            :class="`flyout-${step}`"
+            class="left-[224px] top-[84px] pb-[23px] pt-[54px]"
+            :style="flyoutStyle"
         >
             <div
                 class="item"
-                :class="{ 'bg-[#f4f4f4]': step === 0, 'dh-vanish': step === 2 }"
+                :class="{
+                    'bg-[#2e2e2e]': step === 0,
+                    'dh-vanish !absolute inset-x-0 top-[54px]': step === 2,
+                }"
                 style="--at: 0.5"
             >
-                <svg
-                    class="absolute left-[10px] top-[9px]"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                >
-                    <path
-                        d="M8 1.2l7.2 12.8H.8z"
-                        fill="#ee6a0f"
-                        stroke="#ee6a0f"
-                        stroke-linejoin="round"
-                    />
-                    <path d="M8 5.6v4.2M8 11.6v.6" stroke="#fff" stroke-width="1.5" />
-                </svg>
-                <p class="item-text line-clamp-2">
+                <FluentIcon
+                    name="warning"
+                    :size="18"
+                    class="absolute left-[14px] top-[9px] text-[#fc8b3a]"
+                />
+                <p class="m-0 w-[272px] text-[14px] leading-[21px] [overflow-wrap:anywhere]">
                     {{ formatMessage(messages.warning, { file: fileName }) }}
                 </p>
                 <span
                     v-if="step === 0"
-                    class="absolute right-0 top-[3px] flex h-7 items-center gap-2 bg-[#f4f4f4] pl-1.5 pr-0.5"
+                    class="absolute right-1.5 top-1 flex items-center gap-2 rounded-md bg-[#2e2e2e] pl-2"
                 >
                     <span class="item-button">
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            stroke="#1a1a1a"
-                            stroke-width="1.15"
-                        >
-                            <path
-                                d="M3.5 5.5h13M8 5.5V4h4v1.5M5 5.5l.8 11h8.4l.8-11M8.5 8.5v5.5M11.5 8.5v5.5"
-                            />
-                        </svg>
+                        <FluentIcon name="delete" :size="16" />
                     </span>
-                    <span class="item-button bg-[#e5e5e5]" data-target="more">
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                            <circle cx="4.5" cy="10" r="1.2" fill="#0f6cbd" />
-                            <circle cx="10" cy="10" r="1.2" fill="#0f6cbd" />
-                            <circle cx="15.5" cy="10" r="1.2" fill="#0f6cbd" />
-                        </svg>
+                    <span class="item-button bg-[#474747] text-[#4a97ee]" data-target="more">
+                        <FluentIcon name="more" :size="16" />
                     </span>
                 </span>
             </div>
             <div v-if="step === 2" class="item dh-appear" style="--at: 0.52">
-                <img src="/axolotl.png" alt="" class="absolute left-2.5 top-2 size-5" />
-                <div class="item-text">
-                    <span class="block truncate">{{ fileName }}</span>
-                    <span class="block text-[#115ea3]">{{ formatMessage(messages.openFile) }}</span>
-                </div>
+                <img
+                    src="/axolotl.png"
+                    alt=""
+                    class="absolute left-[18px] top-[9px] size-[26px] object-contain"
+                />
+                <p class="m-0 w-[280px] text-[14px] leading-[21px] [overflow-wrap:anywhere]">
+                    {{ fileName }}
+                </p>
+                <p class="m-0 mt-[7px] text-[14px] font-semibold leading-[21px] text-[#4a97ee]">
+                    {{ formatMessage(messages.openFile) }}
+                </p>
             </div>
-            <span class="absolute left-[26px] top-[104px] text-[14px] font-semibold leading-[19px]">
-                {{ formatMessage(messages.seeMore) }}
-            </span>
             <div
                 v-if="step > 0"
-                class="absolute inset-0 bg-black/10"
+                class="absolute inset-0 bg-black/40"
                 :class="step === 1 ? 'dh-appear' : 'dh-vanish'"
                 :style="{ '--at': step === 1 ? 0 : 0.46 }"
             />
@@ -198,18 +252,14 @@ const cursorEnd = computed(
 
         <div
             v-if="step === 0"
-            class="menu dh-appear left-[351px] top-[145px] w-[163px]"
+            class="menu dh-appear left-[407px] top-[173px] w-[163px]"
             style="--at: 0.33"
         >
             <span class="menu-row">
-                <svg class="menu-icon" viewBox="0 0 20 20">
-                    <path
-                        d="M3.5 5.5h13M8 5.5V4h4v1.5M5 5.5l.8 11h8.4l.8-11M8.5 8.5v5.5M11.5 8.5v5.5"
-                    />
-                </svg>
+                <FluentIcon name="delete" :size="16" class="menu-icon" />
                 {{ formatMessage(messages.delete) }}
             </span>
-            <span class="menu-row bg-[#ebebec]" data-target="keep">
+            <span class="menu-row bg-[#3d3d3d]" data-target="keep">
                 {{ formatMessage(messages.keep) }}
             </span>
             <span class="menu-separator" />
@@ -217,75 +267,60 @@ const cursorEnd = computed(
             <span class="menu-row">{{ formatMessage(messages.learnMore) }}</span>
             <span class="menu-separator" />
             <span class="menu-row">
-                <svg class="menu-icon" viewBox="0 0 20 20">
-                    <path d="M8 6.5H6a3.5 3.5 0 0 0 0 7h2M12 6.5h2a3.5 3.5 0 0 1 0 7h-2M6.5 10h7" />
-                </svg>
+                <FluentIcon name="link" :size="16" class="menu-icon" />
                 {{ formatMessage(messages.copyLink) }}
             </span>
         </div>
 
         <div
             v-if="step > 0"
-            class="dialog left-[165px] top-[135px]"
+            class="dialog left-[224px] top-[148px]"
             :class="step === 1 ? 'dh-appear' : 'dh-vanish'"
             :style="{ '--at': step === 1 ? 0 : 0.46 }"
         >
-            <svg class="absolute left-[18px] top-[25px]" width="16" height="16" viewBox="0 0 16 16">
-                <path
-                    d="M8 1.2l7.2 12.8H.8z"
-                    fill="#ee6a0f"
-                    stroke="#ee6a0f"
-                    stroke-linejoin="round"
-                />
-                <path d="M8 5.6v4.2M8 11.6v.6" stroke="#fff" stroke-width="1.5" />
-            </svg>
+            <FluentIcon
+                name="warning"
+                :size="18"
+                class="absolute left-[17px] top-6 text-[#fc8b3a]"
+            />
             <p
-                class="m-0 text-[20px] font-semibold leading-[26px] text-[#1a1a1a] [overflow-wrap:anywhere]"
+                class="m-0 text-[20px] font-semibold leading-[26px] text-white [overflow-wrap:anywhere]"
             >
                 {{ formatMessage(messages.dialogTitle, { file: fileName }) }}
             </p>
-            <p class="m-0 mt-[9px] text-[14px] leading-5 text-[#606060]">
+            <p class="m-0 mt-[9px] text-[14px] leading-5 text-[#c5c5c5]">
                 {{ formatMessage(messages.dialogBody) }}
             </p>
-            <p class="m-0 mt-3 text-[14px] leading-[21px] text-[#606060] [overflow-wrap:anywhere]">
+            <p class="m-0 mt-3 text-[14px] leading-[21px] text-[#c5c5c5] [overflow-wrap:anywhere]">
                 {{ formatMessage(messages.name, { file: fileName }) }}<br />
                 {{ formatMessage(messages.publisher) }}
             </p>
-            <p class="m-0 mt-3 text-[14px] leading-5 text-[#115ea3]">
+            <p class="m-0 mt-3 text-[14px] leading-5 text-[#4a97ee]">
                 {{ formatMessage(messages.reportApp) }}
             </p>
-            <p class="m-0 mt-3 text-[14px] leading-5 text-[#115ea3]">
+            <p class="m-0 mt-3 text-[14px] leading-5 text-[#4a97ee]">
                 {{ formatMessage(messages.learnMore) }}
             </p>
-            <div class="relative mt-[15px] flex justify-end gap-[9px]">
-                <span
-                    class="dialog-button w-[95px] border border-solid border-[#d1d1d1] bg-white text-[#1a1a1a]"
-                >
+            <div class="relative mt-[15px] flex justify-end gap-2">
+                <span class="dialog-button w-[95px] bg-[#474747] text-[#f2f2f2]">
                     {{ formatMessage(messages.cancel) }}
                 </span>
-                <span class="flex h-[31px] overflow-hidden rounded bg-[#1769f0] text-white">
+                <span class="flex h-8 overflow-hidden rounded-md bg-[#f0f0f0] text-[#1a1a1a]">
                     <span class="dialog-button w-24">{{ formatMessage(messages.delete) }}</span>
                     <span
-                        class="flex w-8 items-center justify-center border-0 border-l border-solid border-white/35"
-                        :class="{ 'bg-[#1f5dd4]': step === 2 }"
+                        class="flex w-8 items-center justify-center border-0 border-l border-solid border-[#bdbdbd]"
+                        :class="{ 'bg-[#d9d9d9]': step === 2 }"
                         data-target="chevron"
                     >
-                        <svg width="12" height="12" viewBox="0 0 12 12">
-                            <path
-                                d="M2.5 4.5l3.5 3.5 3.5-3.5"
-                                fill="none"
-                                stroke="#fff"
-                                stroke-width="1.2"
-                            />
-                        </svg>
+                        <FluentIcon name="chevronDown" :size="12" />
                     </span>
                 </span>
                 <div
                     v-if="step === 2"
-                    class="menu dh-appear right-0 top-[37px] w-[170px] !py-0"
+                    class="menu dh-appear right-0 top-[38px] w-[170px] !py-1"
                     style="--at: 0"
                 >
-                    <span class="menu-row h-9 pl-[14px] text-[#3a3a3a]" data-target="keepAnyway">
+                    <span class="menu-row h-9 pl-3 text-[14px]" data-target="keepAnyway">
                         {{ formatMessage(messages.keepAnyway) }}
                     </span>
                 </div>
@@ -310,47 +345,17 @@ const cursorEnd = computed(
             <span class="dh-ripple" :style="{ ...ripple('keepAnyway'), '--at': 0.34 }" />
         </template>
 
-        <HelpCursor :class="`cursor-${step}`" :style="{ transform: cursorEnd }" />
+        <HelpCursor :style="cursorStyle" />
     </div>
 </template>
 
 <style scoped lang="scss">
-.pan {
-    animation-duration: var(--d);
-    animation-fill-mode: both;
-}
-
-.pan-1 {
-    transform: translateY(var(--pan));
-    animation-name: pan-in;
-}
-
-.pan-2 {
-    animation-name: pan-out;
-}
-
-.flyout {
-    height: 129px;
-}
-
-.flyout-1 {
-    height: var(--flyout-h);
-}
-
-.flyout-2 {
-    animation: flyout-shrink var(--d) both;
-}
-
 .item {
-    @apply absolute left-1.5 top-[46px] h-[46px] w-[347px] rounded;
-}
-
-.item-text {
-    @apply absolute left-9 top-1.5 m-0 w-[298px] text-[12px] leading-[19px] [overflow-wrap:anywhere];
+    @apply relative mx-2 rounded-md pb-[9px] pl-12 pt-[9px];
 }
 
 .item-button {
-    @apply flex size-7 items-center justify-center rounded;
+    @apply flex size-7 items-center justify-center rounded-md text-[#dcdcdc];
 }
 
 .menu {
@@ -360,11 +365,11 @@ const cursorEnd = computed(
     flex-direction: column;
     padding: 4px 0;
     border-radius: 8px;
-    background: #fff;
-    color: #1a1a1a;
+    background: #2c2c2c;
+    color: #f0f0f0;
     box-shadow:
-        0 0 0 1px rgb(0 0 0 / 0.06),
-        0 8px 16px rgb(0 0 0 / 0.16);
+        0 0 0 1px rgb(255 255 255 / 0.08),
+        0 8px 24px rgb(0 0 0 / 0.5);
 }
 
 .menu-row {
@@ -373,16 +378,12 @@ const cursorEnd = computed(
 
 .menu-icon {
     position: absolute;
-    left: 8px;
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: #1a1a1a;
-    stroke-width: 1.15;
+    left: 10px;
+    color: #dcdcdc;
 }
 
 .menu-separator {
-    @apply my-1 h-px shrink-0 bg-[#dfe0e3];
+    @apply my-1 h-px shrink-0 bg-[#3b3b3b];
 }
 
 .dialog {
@@ -390,130 +391,14 @@ const cursorEnd = computed(
     z-index: 30;
     width: 360px;
     padding: 19px 22px 22px 44px;
-    border-radius: 8px;
-    background: #fff;
+    border-radius: 12px;
+    background: #2c2c2c;
     box-shadow:
-        0 0 0 1px rgb(0 0 0 / 0.06),
-        0 12px 28px rgb(0 0 0 / 0.22);
+        0 0 0 1px rgb(255 255 255 / 0.08),
+        0 12px 32px rgb(0 0 0 / 0.55);
 }
 
 .dialog-button {
-    @apply flex h-[31px] items-center justify-center rounded text-[14px] font-semibold;
-}
-
-.cursor-0 {
-    animation-name: cursor-0;
-}
-
-.cursor-1 {
-    animation-name: cursor-1;
-}
-
-.cursor-2 {
-    animation-name: cursor-2;
-}
-
-@keyframes pan-in {
-    0%,
-    4% {
-        transform: translateY(0);
-        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    16%,
-    100% {
-        transform: translateY(var(--pan));
-    }
-}
-
-@keyframes pan-out {
-    0%,
-    50% {
-        transform: translateY(var(--pan));
-        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    62%,
-    100% {
-        transform: translateY(0);
-    }
-}
-
-@keyframes flyout-shrink {
-    0%,
-    47% {
-        height: var(--flyout-h);
-    }
-    52%,
-    100% {
-        height: 129px;
-    }
-}
-
-@keyframes cursor-0 {
-    0%,
-    8% {
-        transform: translate(330px, 300px);
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    28% {
-        transform: translate(var(--more-cx), var(--more-cy));
-    }
-    31% {
-        transform: translate(var(--more-cx), var(--more-cy)) scale(0.9);
-    }
-    34% {
-        transform: translate(var(--more-cx), var(--more-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    55% {
-        transform: translate(var(--keep-cx), var(--keep-cy));
-    }
-    58% {
-        transform: translate(var(--keep-cx), var(--keep-cy)) scale(0.9);
-    }
-    61%,
-    100% {
-        transform: translate(var(--keep-cx), var(--keep-cy));
-    }
-}
-
-@keyframes cursor-1 {
-    0%,
-    16% {
-        transform: translate(433px, 197px);
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    40% {
-        transform: translate(var(--chevron-cx), var(--chevron-cy));
-    }
-    44% {
-        transform: translate(var(--chevron-cx), var(--chevron-cy)) scale(0.9);
-    }
-    48%,
-    100% {
-        transform: translate(var(--chevron-cx), var(--chevron-cy));
-    }
-}
-
-@keyframes cursor-2 {
-    0%,
-    8% {
-        transform: translate(var(--chevron-cx), var(--chevron-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    30% {
-        transform: translate(var(--keepAnyway-cx), var(--keepAnyway-cy));
-    }
-    34% {
-        transform: translate(var(--keepAnyway-cx), var(--keepAnyway-cy)) scale(0.9);
-    }
-    38%,
-    62% {
-        transform: translate(var(--keepAnyway-cx), var(--keepAnyway-cy));
-        animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
-    }
-    80%,
-    100% {
-        transform: translate(470px, 290px);
-    }
+    @apply flex h-8 items-center justify-center rounded-md text-[14px] font-semibold;
 }
 </style>

@@ -7,6 +7,11 @@ export interface StageRect {
     h: number
 }
 
+export interface StagePoint {
+    x: number
+    y: number
+}
+
 /**
  * Measures the elements marked `data-target="name"` inside `root`, in root's own
  * pixels, for drawings whose layout depends on wrapped text (a long file name, a
@@ -61,12 +66,45 @@ export function useStageTargets(root: Ref<HTMLElement | null>) {
     return rects
 }
 
-/** Writes each rect's centre as `--name-cx` / `--name-cy` for use inside keyframes. */
-export function centreVariables(rects: Record<string, StageRect>) {
-    const variables: Record<string, string> = {}
-    for (const [name, rect] of Object.entries(rects)) {
-        variables[`--${name}-cx`] = `${Math.round(rect.x + rect.w / 2)}px`
-        variables[`--${name}-cy`] = `${Math.round(rect.y + rect.h / 2)}px`
-    }
-    return variables
+export function centreOf(rect: StageRect | undefined): StagePoint | undefined {
+    return rect && { x: Math.round(rect.x + rect.w / 2), y: Math.round(rect.y + rect.h / 2) }
+}
+
+/** One stop on the pointer's path: where it is at these fractions of the step. */
+export interface PointerStop {
+    at: number | [number, number]
+    to: StagePoint | undefined
+    /** Drawn slightly smaller, as the button goes down. */
+    press?: boolean
+    /** Eases the move that leaves this stop. */
+    ease?: boolean
+}
+
+const EASE = 'cubic-bezier(0.45, 0, 0.2, 1)'
+
+/**
+ * Writes the pointer's keyframes with plain numbers. Keyframes that read custom
+ * properties are not updated by every browser once the animation has started, so
+ * the measured positions are baked in instead. Returns no CSS until every stop is
+ * known, so the pointer never starts from the corner.
+ */
+export function pointerKeyframes(name: string, stops: PointerStop[]) {
+    if (stops.some((stop) => !stop.to)) return ''
+    const frames = stops.map((stop) => {
+        const at = (Array.isArray(stop.at) ? stop.at : [stop.at]).map((t) => `${t * 100}%`)
+        const { x, y } = stop.to!
+        const transform = `translate(${x}px, ${y}px)${stop.press ? ' scale(0.9)' : ''}`
+        const easing = stop.ease ? ` animation-timing-function: ${EASE};` : ''
+        return `${at.join(', ')} { transform: ${transform};${easing} }`
+    })
+    return `@keyframes ${name} { ${frames.join(' ')} }`
+}
+
+/** A press on `point`: arrive, go down, come back up. */
+export function click(arrive: number, point: StagePoint | undefined): PointerStop[] {
+    return [
+        { at: arrive, to: point },
+        { at: arrive + 0.025, to: point, press: true },
+        { at: arrive + 0.05, to: point, ease: true },
+    ]
 }

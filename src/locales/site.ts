@@ -31,7 +31,6 @@ export const siteLocaleMessages: Record<string, Record<string, string>> = {
         'axolotl-download-help.edge.site-download': '下载',
         'axolotl-download-help.edge.downloads': '下载',
         'axolotl-download-help.edge.warning': '通常不会下载 {file}。请在打开前确保信任 {file}。',
-        'axolotl-download-help.edge.see-more': '查看更多',
         'axolotl-download-help.edge.delete': '删除',
         'axolotl-download-help.edge.keep': '保留',
         'axolotl-download-help.edge.report-file': '将此文件报告为安全',

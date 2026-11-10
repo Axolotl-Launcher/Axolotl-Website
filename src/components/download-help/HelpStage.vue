@@ -58,9 +58,10 @@ const stageStyle = computed(() => ({
     overflow: hidden;
     transform-origin: 0 0;
     background:
-        radial-gradient(70% 60% at 70% 75%, #1c63d9 0%, transparent 70%),
-        radial-gradient(60% 55% at 30% 40%, #7fb2f0 0%, transparent 70%),
-        linear-gradient(160deg, #c6dcf6 0%, #82aee8 45%, #2a68cf 100%);
+        radial-gradient(38% 46% at 62% 64%, rgb(120 170 255 / 0.55) 0%, transparent 70%),
+        radial-gradient(55% 62% at 66% 62%, #1d4fc4 0%, transparent 72%),
+        radial-gradient(80% 90% at 70% 70%, #0b2a7a 0%, transparent 75%),
+        linear-gradient(160deg, #070b16 0%, #0a1430 55%, #0d1c45 100%);
     color: #1a1a1a;
     font-family:
         'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei',
