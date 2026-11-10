@@ -28,7 +28,6 @@ export const siteLocaleMessages: Record<string, Record<string, string>> = {
         'axolotl-download-help.edge.step-3':
             '选择 <strong>「仍然保留」</strong>，文件就下载好了，可以直接打开。',
         'axolotl-download-help.edge.tab-title': 'Axolotl Launcher - 免费开源的 Minecraft Java 版启动器',
-        'axolotl-download-help.edge.site-download': '下载',
         'axolotl-download-help.edge.downloads': '下载',
         'axolotl-download-help.edge.warning': '通常不会下载 {file}。请在打开前确保信任 {file}。',
         'axolotl-download-help.edge.delete': '删除',

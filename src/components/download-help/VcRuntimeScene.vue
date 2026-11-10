@@ -31,7 +31,6 @@ const messages = defineMessages({
         id: 'axolotl-download-help.edge.tab-title',
         defaultMessage: 'Axolotl Launcher - Free, Open-Source Minecraft Java Launcher',
     },
-    siteDownload: { id: 'axolotl-download-help.edge.site-download', defaultMessage: 'Download' },
     downloads: { id: 'axolotl-download-help.edge.downloads', defaultMessage: 'Downloads' },
     openFile: { id: 'axolotl-download-help.edge.open-file', defaultMessage: 'Open file' },
     errorTitle: {
@@ -124,7 +123,8 @@ const pointer = computed(() => {
                 ...click(0.19, at('ok')),
                 { at: 0.28, to: at('ok'), ease: true },
                 ...click(0.37, ADDRESS),
-                { at: 1, to: ADDRESS },
+                // Windows hides the pointer while you type.
+                { at: [0.43, 1], to: ADDRESS, hidden: true },
             ]),
         }
     }
@@ -163,7 +163,11 @@ const pointer = computed(() => {
 const cursorStyle = computed(() => {
     const end = pointer.value.end
     if (!end || !pointer.value.css) return { display: 'none' }
-    return { transform: `translate(${end.x}px, ${end.y}px)`, animationName: animation.value }
+    return {
+        transform: `translate(${end.x}px, ${end.y}px)`,
+        opacity: props.step === 0 ? 0 : 1,
+        animationName: animation.value,
+    }
 })
 </script>
 
@@ -221,9 +225,19 @@ const cursorStyle = computed(() => {
                     <span class="dh-vanish" style="--at: 0.4">
                         <span class="bg-[#264f78] text-[#f2f2f2]">https://axlmc.org</span>
                     </span>
-                    <span class="typing absolute left-0 top-0 whitespace-nowrap text-[#f2f2f2]">{{
-                        VC_ADDRESS
-                    }}</span>
+                    <span class="dh-vanish absolute left-0 top-0" style="--at: 0.63">
+                        <span class="typing whitespace-nowrap text-[#f2f2f2]">{{
+                            VC_ADDRESS
+                        }}</span>
+                    </span>
+                    <!-- Enter starts the download, and Edge puts the page's own address back. -->
+                    <span
+                        class="show-at absolute left-0 top-0 whitespace-nowrap"
+                        style="--at: 0.63"
+                    >
+                        <span class="text-[#9b9b9b]">https://</span
+                        ><span class="text-[#f2f2f2]">axlmc.org</span>
+                    </span>
                 </span>
                 <template v-else>
                     <span class="text-[#9b9b9b]">https://</span
@@ -231,14 +245,14 @@ const cursorStyle = computed(() => {
                 </template>
             </template>
             <template #page>
-                <AxolotlSitePage :download-label="formatMessage(messages.siteDownload)" />
+                <AxolotlSitePage />
             </template>
             <EdgeFlyout
                 v-if="step < 2"
                 :title="formatMessage(messages.downloads)"
                 class="left-[224px] top-[84px] pb-[23px] pt-[54px]"
-                :class="{ 'dh-appear': step === 0 }"
-                style="--at: 0.66"
+                :class="step === 0 ? 'dh-appear' : 'dh-vanish'"
+                :style="{ '--at': step === 0 ? 0.66 : 0.17 }"
             >
                 <div class="flyout-item" :class="{ 'bg-[#2e2e2e]': step === 1 }">
                     <SetupIcon class="absolute left-[18px] top-[9px] size-[26px]" />
@@ -560,6 +574,7 @@ const cursorStyle = computed(() => {
 }
 
 .typing {
+    display: inline-block;
     clip-path: inset(0 0 0 0);
     animation: typing calc(var(--d) * 0.2) steps(29, end) calc(var(--d) * 0.4) both;
 }
@@ -621,6 +636,16 @@ const cursorStyle = computed(() => {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 16px 32px rgb(244 114 182 / 0.2));
+}
+
+.show-at {
+    animation: show-at 1ms step-end calc(var(--d) * var(--at)) both;
+}
+
+@keyframes show-at {
+    from {
+        visibility: hidden;
+    }
 }
 
 @keyframes typing {

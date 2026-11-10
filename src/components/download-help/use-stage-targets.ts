@@ -78,6 +78,8 @@ export interface PointerStop {
     press?: boolean
     /** Eases the move that leaves this stop. */
     ease?: boolean
+    /** Hidden, as Windows hides the pointer while you type. */
+    hidden?: boolean
 }
 
 const EASE = 'cubic-bezier(0.45, 0, 0.2, 1)'
@@ -91,11 +93,13 @@ const EASE = 'cubic-bezier(0.45, 0, 0.2, 1)'
 export function pointerKeyframes(name: string, stops: PointerStop[]) {
     if (stops.some((stop) => !stop.to)) return ''
     const frames = stops.map((stop) => {
-        const at = (Array.isArray(stop.at) ? stop.at : [stop.at]).map((t) => `${t * 100}%`)
+        const at = (Array.isArray(stop.at) ? stop.at : [stop.at]).map(
+            (t) => `${Math.round(t * 1000) / 10}%`,
+        )
         const { x, y } = stop.to!
         const transform = `translate(${x}px, ${y}px)${stop.press ? ' scale(0.9)' : ''}`
         const easing = stop.ease ? ` animation-timing-function: ${EASE};` : ''
-        return `${at.join(', ')} { transform: ${transform};${easing} }`
+        return `${at.join(', ')} { transform: ${transform}; opacity: ${stop.hidden ? 0 : 1};${easing} }`
     })
     return `@keyframes ${name} { ${frames.join(' ')} }`
 }

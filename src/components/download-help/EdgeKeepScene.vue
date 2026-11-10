@@ -24,7 +24,6 @@ const messages = defineMessages({
         id: 'axolotl-download-help.edge.tab-title',
         defaultMessage: 'Axolotl Launcher - Free, Open-Source Minecraft Java Launcher',
     },
-    siteDownload: { id: 'axolotl-download-help.edge.site-download', defaultMessage: 'Download' },
     downloads: { id: 'axolotl-download-help.edge.downloads', defaultMessage: 'Downloads' },
     warning: {
         id: 'axolotl-download-help.edge.warning',
@@ -192,7 +191,7 @@ function ripple(name: string) {
                 ><span class="text-[#f2f2f2]">axlmc.org</span>
             </template>
             <template #page>
-                <AxolotlSitePage :download-label="formatMessage(messages.siteDownload)" />
+                <AxolotlSitePage />
             </template>
         </EdgeWindow>
 
