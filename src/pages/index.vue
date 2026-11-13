@@ -320,6 +320,7 @@ const scrollToSection = () => {
 }
 
 const { formatMessage, locale } = useVIntl()
+const { openDownloadHelp } = useDownloadHelp()
 
 const messages = defineMessages({
     packageUnavailable: {
@@ -1506,7 +1507,13 @@ useHead(() => ({
                         {{ formatMessage(messages.windows) }}
                     </div>
                     <div class="description">
-                        <a v-if="windowsLink" ref="downloadWindows" :href="windowsLink" download="">
+                        <a
+                            v-if="windowsLink"
+                            ref="downloadWindows"
+                            :href="windowsLink"
+                            download=""
+                            @click="openDownloadHelp(windowsLink)"
+                        >
                             <DownloadIcon />
                             <span>{{ formatMessage(messages.downloadInstaller) }}</span>
                         </a>
@@ -1527,6 +1534,7 @@ useHead(() => ({
                             ref="downloadMac"
                             :href="macLinks.universal"
                             download=""
+                            @click="openDownloadHelp(macLinks.universal)"
                         >
                             <DownloadIcon />
                             <span>{{ formatMessage(messages.downloadInstaller) }}</span>
@@ -1546,7 +1554,12 @@ useHead(() => ({
                         </div>
                     </div>
                     <div class="description apple">
-                        <a v-if="linuxLinks.appImage" :href="linuxLinks.appImage" download="">
+                        <a
+                            v-if="linuxLinks.appImage"
+                            :href="linuxLinks.appImage"
+                            download=""
+                            @click="openDownloadHelp(linuxLinks.appImage)"
+                        >
                             <DownloadIcon />
                             <span>{{ formatMessage(messages.downloadAppImage) }}</span>
                         </a>
@@ -1576,6 +1589,7 @@ useHead(() => ({
                                 :href="linuxLinks.deb"
                                 download=""
                                 class="text-[var(--color-text-default)]"
+                                @click="openDownloadHelp(linuxLinks.deb)"
                             >
                                 <DownloadIcon />
                                 <span>{{ formatMessage(messages.downloadTheDEB) }}</span>
@@ -1591,6 +1605,7 @@ useHead(() => ({
                                 :href="linuxLinks.rpm"
                                 download=""
                                 class="text-[var(--color-text-default)]"
+                                @click="openDownloadHelp(linuxLinks.rpm)"
                             >
                                 <DownloadIcon />
                                 <span>{{ formatMessage(messages.downloadTheRPM) }}</span>
