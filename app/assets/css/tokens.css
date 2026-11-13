@@ -1,0 +1,95 @@
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *, [data-theme='oled'], [data-theme='oled'] *));
+
+@theme {
+  --font-sans:
+    'Inter Variable', 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', system-ui,
+    sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-brand-50: #fdf2f8;
+  --color-brand-100: #fce7f3;
+  --color-brand-200: #fbcfe8;
+  --color-brand-300: #f9a8d4;
+  --color-brand-400: #f472b6;
+  --color-brand-500: #ec4899;
+  --color-brand-600: #db2777;
+  --color-brand-700: #be185d;
+  --color-brand-800: #9d174d;
+  --color-brand-900: #831843;
+  --color-brand-950: #500724;
+
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.12em;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.7;
+
+  --text-lead: clamp(1rem, 1.3vw, 1.125rem);
+  --text-lead--line-height: 1.65;
+
+  --text-card: clamp(1.15rem, 1.6vw, 1.35rem);
+  --text-card--line-height: 1.35;
+  --text-card--letter-spacing: -0.02em;
+
+  --text-section: clamp(2rem, 4vw, 3rem);
+  --text-section--line-height: 1.08;
+  --text-section--letter-spacing: -0.035em;
+
+  --text-section-sm: clamp(1.5rem, 2.6vw, 2rem);
+  --text-section-sm--line-height: 1.15;
+  --text-section-sm--letter-spacing: -0.025em;
+
+  --text-display: clamp(2.75rem, 5.2vw, 4.25rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.045em;
+
+  --text-hero: clamp(3.25rem, 7vw, 5.4rem);
+  --text-hero--line-height: 0.98;
+  --text-hero--letter-spacing: -0.055em;
+
+  --radius-btn: 0.75rem;
+  --radius-card: 1.25rem;
+  --radius-panel: 1.5rem;
+  --radius-pill: 999px;
+
+  --spacing-gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --spacing-section: clamp(4.5rem, 9vw, 8rem);
+  --container-site: 80rem;
+
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 0.55) inset, 0 18px 40px -24px rgb(40 27 36 / 0.28);
+  --shadow-raised: 0 24px 60px -28px rgb(40 27 36 / 0.35);
+  --shadow-floating: 0 32px 80px -32px rgb(40 27 36 / 0.42);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@theme inline {
+  --color-surface-0: var(--surface-0);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
+  --color-surface-5: var(--surface-5);
+
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-heading: var(--heading);
+  --color-subheading: var(--subheading);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-divider: var(--divider);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-glow: var(--accent-glow);
+  --color-on-accent: var(--on-accent);
+}

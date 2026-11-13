@@ -1,0 +1,199 @@
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    scrollbar-gutter: stable;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--surface-0);
+    color: var(--fg);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  #__nuxt {
+    min-height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--heading);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer components {
+  .site-container {
+    width: 100%;
+    max-width: var(--container-site);
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .link-underline {
+    position: relative;
+  }
+
+  .link-underline::after {
+    position: absolute;
+    right: 0;
+    bottom: -0.15em;
+    left: 0;
+    height: 1px;
+    content: '';
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s var(--ease-out-expo);
+  }
+
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .text-gradient {
+    background: linear-gradient(105deg, var(--heading) 12%, var(--accent) 58%, var(--accent-strong) 96%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 8rem 8rem;
+  }
+
+  .glass {
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+  }
+
+  .docs-prose {
+    --tw-prose-body: var(--fg-muted);
+    --tw-prose-headings: var(--heading);
+    --tw-prose-lead: var(--fg-muted);
+    --tw-prose-links: var(--accent);
+    --tw-prose-bold: var(--fg);
+    --tw-prose-counters: var(--fg-subtle);
+    --tw-prose-bullets: var(--border-strong);
+    --tw-prose-hr: var(--divider);
+    --tw-prose-quotes: var(--fg-muted);
+    --tw-prose-quote-borders: var(--accent);
+    --tw-prose-captions: var(--fg-subtle);
+    --tw-prose-code: var(--fg);
+    --tw-prose-pre-code: var(--fg);
+    --tw-prose-pre-bg: var(--surface-2);
+    --tw-prose-th-borders: var(--border);
+    --tw-prose-td-borders: var(--divider);
+  }
+
+  .docs-prose :where(h2, h3, h4) {
+    scroll-margin-top: 6rem;
+  }
+
+  .docs-prose :where(code):not(:where(pre code)) {
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    background: var(--surface-2);
+    padding: 0.1em 0.35em;
+    font-size: 0.875em;
+  }
+
+  .docs-prose :where(code)::before,
+  .docs-prose :where(code)::after {
+    content: none;
+  }
+
+  .docs-prose :where(pre) {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    background: var(--surface-2);
+  }
+
+  .docs-prose :where(img) {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+  }
+
+  .docs-prose :where(blockquote) {
+    border-left-width: 2px;
+    border-left-color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 6%, transparent);
+    border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+    padding: 0.25rem 1rem;
+    font-style: normal;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: var(--surface-1);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* The launcher poster is a CSS background so only the active theme is fetched. */
+.hero-poster {
+  aspect-ratio: 16 / 10;
+  background-image: var(--poster-light);
+  background-position: top center;
+  background-size: cover;
+}
+
+html[data-theme='dark'] .hero-poster {
+  background-image: var(--poster-dark);
+}
+
+html[data-theme='oled'] .hero-poster {
+  background-image: var(--poster-oled);
+}
