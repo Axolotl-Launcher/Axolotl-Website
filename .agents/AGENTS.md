@@ -4,7 +4,7 @@
 
 - `AGENTS.md` files are ordinary UTF-8 files containing instructions for their subtree. Keep repository-wide safeguards and routing at the root; put specialized rules beside their owning code.
 - `.agents/skills/<name>/SKILL.md` defines a reusable task workflow. Keep `name` and `description` focused on the actual trigger. Express inputs in normal language so implicit and explicit invocation both work.
-- `standards/` owns shared technical facts. Link to the relevant standard instead of copying its tables or implementation recipes into multiple skills and instruction files.
+- The root `AGENTS.md` and `app/assets/css/` own shared technical facts and design tokens. Link to the relevant file instead of copying its tables or implementation recipes into multiple skills and instruction files.
 - Paths in Markdown links are relative to their containing file. When naming code paths in prose, state that they are repository-relative. Use real files for examples; clearly label hypothetical paths in code examples.
 - Read only the skill references relevant to the current task. Do not load all frontend or design references by default.
 - A review request stays read-only. A skill does not authorize implementation, dependencies, commits, messages or remote actions beyond the user's request.

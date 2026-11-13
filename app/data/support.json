@@ -1,0 +1,87 @@
+{
+  "afdianUrl": "https://afdian.com/a/Mystic-Stars",
+  "fallbackUrl": "https://ifdian.net/a/Mystic-Stars",
+  "plans": [
+    {
+      "id": "coffee",
+      "amount": "¥9.90",
+      "url": "https://afdian.com/p/010ff078177211eca44f52540025c377",
+      "fallbackUrl": "https://ifdian.net/p/010ff078177211eca44f52540025c377",
+      "period": {
+        "zh-CN": "每月",
+        "en-US": "per month"
+      },
+      "title": {
+        "zh-CN": "请开发者喝杯咖啡",
+        "en-US": "Buy the team a coffee"
+      },
+      "description": {
+        "zh-CN": "最低档位，加入 Axolotl Boosters QQ 群，并在官方交流群获得赞助者头衔。",
+        "en-US": "The entry tier includes the Axolotl Boosters QQ group and a sponsor title in the community group."
+      }
+    },
+    {
+      "id": "token",
+      "amount": "¥140",
+      "url": "https://afdian.com/p/9c65d9cc617011ed81c352540025c377",
+      "fallbackUrl": "https://ifdian.net/p/9c65d9cc617011ed81c352540025c377",
+      "period": {
+        "zh-CN": "每月",
+        "en-US": "per month"
+      },
+      "title": {
+        "zh-CN": "支持一个月开发额度",
+        "en-US": "Fund a month of development"
+      },
+      "description": {
+        "zh-CN": "帮助团队承担开发工具与模型额度；当前没有额外档位权益。",
+        "en-US": "Helps cover development tools and model usage. There are no additional tier benefits today."
+      }
+    },
+    {
+      "id": "custom",
+      "amount": {
+        "zh-CN": "自选金额",
+        "en-US": "Choose an amount"
+      },
+      "url": "https://afdian.com/a/Mystic-Stars",
+      "fallbackUrl": "https://ifdian.net/a/Mystic-Stars",
+      "period": {
+        "zh-CN": "一次性或每月",
+        "en-US": "one-time or monthly"
+      },
+      "title": {
+        "zh-CN": "自定义支持",
+        "en-US": "Custom support"
+      },
+      "description": {
+        "zh-CN": "按你的意愿支持项目；所有支持都会用于持续维护和发布。",
+        "en-US": "Support the project on your terms. Every contribution goes toward ongoing maintenance and releases."
+      }
+    }
+  ],
+  "cooperation": [
+    {
+      "id": "content",
+      "title": {
+        "zh-CN": "内容合作",
+        "en-US": "Content collaboration"
+      },
+      "description": {
+        "zh-CN": "教程、视频、整合包或服务器内容合作，欢迎通过 QQ 群或 GitHub Issues 联系。",
+        "en-US": "Tutorials, videos, modpacks, or server content. Reach us through the QQ group or GitHub Issues."
+      }
+    },
+    {
+      "id": "technical",
+      "title": {
+        "zh-CN": "技术合作",
+        "en-US": "Technical collaboration"
+      },
+      "description": {
+        "zh-CN": "镜像、下载分发、认证服务或工具集成，请在 GitHub Issues 说明合作范围。",
+        "en-US": "Mirrors, distribution, authentication, or tooling integrations. Describe the scope in GitHub Issues."
+      }
+    }
+  ]
+}

@@ -13,7 +13,7 @@ release_directory="$site_directory/releases/$release_id"
 exec 9>"$site_directory/.deploy.lock"
 flock -w 60 9
 
-for page in index.html changelog/index.html demo/index.html terms/index.html privacy/index.html robots.txt sitemap.xml llms.txt; do
+for page in index.html en/index.html download/index.html docs/index.html articles/index.html changelog/index.html demo/index.html support/index.html thanks/index.html terms/index.html privacy/index.html robots.txt sitemap.xml llms.txt; do
     if [[ ! -s "$release_directory/$page" ]]; then
         echo "Missing or empty prerendered file: $page" >&2
         exit 1
