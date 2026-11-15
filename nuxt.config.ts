@@ -54,6 +54,7 @@ export default defineNuxtConfig({
     'nuxt-icons',
     'nuxt-lenis',
     'motion-v/nuxt',
+    '@atoms-studio/nuxt-swiftsearch',
     '@nuxt/eslint',
     '@vueuse/nuxt',
   ],
@@ -160,6 +161,13 @@ export default defineNuxtConfig({
       updateArtifactUrl: 'https://dist.axlmc.org',
       gitlinkReleasesUrl: 'https://www.gitlink.org.cn/xinvxueyuan/Axolotl/releases/download',
       launcherDemo: launcherDemoEntry(),
+      // Search-only Algolia credentials are public by design. They are
+      // injected at build time so the search page can SSR its first results.
+      algolia: {
+        appId: process.env.NUXT_PUBLIC_ALGOLIA_APP_ID ?? '',
+        searchApiKey: process.env.NUXT_PUBLIC_ALGOLIA_SEARCH_API_KEY ?? '',
+        indexName: process.env.NUXT_PUBLIC_ALGOLIA_INDEX_NAME ?? '',
+      },
     },
   },
 
@@ -182,6 +190,8 @@ export default defineNuxtConfig({
         '/en/download',
         '/download/thanks',
         '/en/download/thanks',
+        '/search',
+        '/en/search',
         '/docs',
         '/en/docs',
         '/articles',

@@ -7,6 +7,7 @@
     "home": "首页",
     "download": "下载",
     "docs": "文档",
+    "search": "搜索",
     "articles": "文章",
     "changelog": "更新日志",
     "demo": "在线演示",
@@ -205,6 +206,14 @@
     "thanksHelpBody": "查看常见问题，或到 GitHub 反馈。",
     "thanksDocs": "查看文档",
     "thanksAgain": "重新选择下载"
+  },
+  "search": {
+    "eyebrow": "SEARCH",
+    "title": "搜索 Axolotl",
+    "lead": "搜索文档、文章与更新日志。",
+    "placeholder": "搜索文档、文章…",
+    "stats": "找到 {count} 条结果（{ms} ms）",
+    "unconfigured": "搜索服务尚未配置。"
   },
   "support": {
     "eyebrow": "SUPPORT",

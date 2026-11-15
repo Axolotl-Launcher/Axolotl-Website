@@ -122,13 +122,19 @@ jobs:
           NITRO_PRESET: static
           # Looks up the launcher's latest stable release for its web demo package.
           GITHUB_TOKEN: ${{ github.token }}
+          # Public search-only Algolia configuration. Present at build time so
+          # the search page can render its first results during prerendering
+          # (SSR); visitors continue searching client-side after hydration.
+          NUXT_PUBLIC_ALGOLIA_APP_ID: ${{ vars.ALGOLIA_APP_ID }}
+          NUXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: ${{ vars.ALGOLIA_SEARCH_API_KEY }}
+          NUXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ vars.ALGOLIA_INDEX_NAME }}
         run: pnpm build
       - name: Verify prerendered website
         run: |
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
-          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'terms/index.html', 'privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
+          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'search/index.html', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'terms/index.html', 'privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
             assert(fs.existsSync(`.output/public/${page}`), `Missing prerendered page: ${page}`)
           }
           const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))

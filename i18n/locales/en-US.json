@@ -7,6 +7,7 @@
     "home": "Home",
     "download": "Download",
     "docs": "Docs",
+    "search": "Search",
     "articles": "Articles",
     "changelog": "Changelog",
     "demo": "Live demo",
@@ -205,6 +206,14 @@
     "thanksHelpBody": "Check the FAQ, or open an issue on GitHub.",
     "thanksDocs": "Read the docs",
     "thanksAgain": "Choose another download"
+  },
+  "search": {
+    "eyebrow": "SEARCH",
+    "title": "Search Axolotl",
+    "lead": "Search the docs, articles and changelog.",
+    "placeholder": "Search the docs, articles…",
+    "stats": "{count} results in {ms} ms",
+    "unconfigured": "Search is not configured yet."
   },
   "support": {
     "eyebrow": "SUPPORT",
