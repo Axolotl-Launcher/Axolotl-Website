@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DownloadHelpModal from '~/components/download-help/DownloadHelpModal.vue'
 import AxolotlFooter from '~/components/ui/AxolotlFooter.vue'
 import AxolotlHeader from '~/components/ui/AxolotlHeader.vue'
 import SiteSettingsModal from '~/components/ui/SiteSettingsModal.vue'
@@ -14,6 +15,7 @@ const settingsOpen = ref(false)
         </main>
         <AxolotlFooter />
         <SiteSettingsModal v-model="settingsOpen" />
+        <DownloadHelpModal />
     </div>
 </template>
 
