@@ -6,10 +6,15 @@ type LocalizedText = string | Record<string, string>
 interface Plan {
   id: string
   amount: LocalizedText
-  url: string
   period: LocalizedText
   title: LocalizedText
   description: LocalizedText
+}
+
+interface CheckoutResponse {
+  url: string
+  fallbackUrl?: string
+  validated?: boolean
 }
 
 interface Cooperation {
@@ -51,6 +56,30 @@ const reasons = computed(() => [
   { icon: 'lucide:server', text: t('support.why2') },
   { icon: 'lucide:book-open', text: t('support.why3') },
 ])
+
+const pendingPlan = ref<string | null>(null)
+const checkoutError = ref('')
+
+async function startCheckout(planId: string) {
+  if (pendingPlan.value) return
+
+  pendingPlan.value = planId
+  checkoutError.value = ''
+
+  try {
+    const { url } = await $fetch<CheckoutResponse>(`/api/support/checkout/${encodeURIComponent(planId)}.json`)
+    if (!url) throw new Error('The support API did not return a checkout URL.')
+    await navigateTo(url, { external: true })
+  } catch {
+    checkoutError.value = t('support.checkoutError')
+  } finally {
+    pendingPlan.value = null
+  }
+}
+
+function scrollToTiers() {
+  document.getElementById('support-tiers')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 const canonical = computed(() => `${site.url}${localePath({ path: '/support' })}`)
 
@@ -95,44 +124,50 @@ useHead(() => ({
         <h1 class="mt-4 max-w-3xl text-hero">{{ t('support.title') }}</h1>
         <p class="mt-5 max-w-2xl text-lead text-fg-muted">{{ t('support.lead') }}</p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <BaseButton :href="support.afdianUrl" target="_blank" rel="noopener noreferrer" size="lg">
-            {{ t('support.supportOnAfdian') }}
+          <BaseButton size="lg" @click="scrollToTiers">
+            {{ t('support.chooseTier') }}
             <Icon name="lucide:heart" class="size-4" />
           </BaseButton>
-          <BaseButton :to="localePath({ path: '/thanks' })" variant="secondary" size="lg">{{
-            t('support.viewThanks')
-          }}</BaseButton>
         </div>
       </div>
     </section>
 
-    <section class="site-container py-14 sm:py-20">
+    <section id="support-tiers" class="site-container py-14 sm:py-20">
       <h2 class="text-section-sm">{{ t('support.tiersTitle') }}</h2>
+      <p class="mt-3 max-w-2xl text-caption text-fg-subtle">{{ t('support.checkoutHint') }}</p>
       <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <a
+        <button
           v-for="plan in plans"
           :key="plan.id"
-          :href="plan.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group flex flex-col rounded-card border border-border bg-surface-1 p-6 no-underline transition-colors hover:border-accent/50 hover:bg-surface-2"
+          type="button"
+          :disabled="pendingPlan !== null"
+          :aria-busy="pendingPlan === plan.id"
+          class="group flex flex-col rounded-card border border-border bg-surface-1 p-6 text-left transition-colors hover:border-accent/50 hover:bg-surface-2 disabled:cursor-wait disabled:opacity-70"
+          @click="startCheckout(plan.id)"
         >
           <span class="font-mono text-caption text-fg-subtle">{{ plan.period }}</span>
           <span class="mt-3 text-section-sm font-bold text-heading">{{ plan.amount }}</span>
           <span class="mt-4 text-card font-semibold">{{ plan.title }}</span>
           <span class="mt-2 text-body leading-relaxed text-fg-muted">{{ plan.description }}</span>
           <span class="mt-6 inline-flex items-center gap-1 text-caption font-semibold text-accent">
-            {{ t('support.supportOnAfdian') }} <Icon name="lucide:arrow-up-right" class="size-3.5" />
+            <template v-if="pendingPlan === plan.id">{{ t('support.openingAfdian') }}</template>
+            <template v-else>
+              {{ t('support.checkoutOnAfdian') }}
+              <NuxtIcon name="afdian" class="text-[0.875rem] leading-none" aria-hidden="true" />
+            </template>
           </span>
-        </a>
+        </button>
       </div>
+      <p v-if="checkoutError" role="alert" class="mt-4 text-caption font-semibold text-accent">
+        {{ checkoutError }}
+      </p>
     </section>
 
     <section class="border-y border-divider bg-surface-1/60">
       <div class="site-container grid gap-10 py-14 sm:py-20 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
           <h2 class="text-section-sm">{{ t('support.whyTitle') }}</h2>
-          <p class="mt-3 max-w-md text-body leading-relaxed text-fg-muted">{{ t('support.thanksLead') }}</p>
+          <p class="mt-3 max-w-md text-body leading-relaxed text-fg-muted">{{ t('support.whyLead') }}</p>
         </div>
         <ul class="space-y-4">
           <li

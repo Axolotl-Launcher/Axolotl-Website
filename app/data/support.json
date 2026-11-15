@@ -5,8 +5,6 @@
     {
       "id": "coffee",
       "amount": "¥9.90",
-      "url": "https://afdian.com/p/010ff078177211eca44f52540025c377",
-      "fallbackUrl": "https://ifdian.net/p/010ff078177211eca44f52540025c377",
       "period": {
         "zh-CN": "每月",
         "en-US": "per month"
@@ -23,8 +21,6 @@
     {
       "id": "token",
       "amount": "¥140",
-      "url": "https://afdian.com/p/9c65d9cc617011ed81c352540025c377",
-      "fallbackUrl": "https://ifdian.net/p/9c65d9cc617011ed81c352540025c377",
       "period": {
         "zh-CN": "每月",
         "en-US": "per month"
@@ -44,8 +40,6 @@
         "zh-CN": "自选金额",
         "en-US": "Choose an amount"
       },
-      "url": "https://afdian.com/a/Mystic-Stars",
-      "fallbackUrl": "https://ifdian.net/a/Mystic-Stars",
       "period": {
         "zh-CN": "一次性或每月",
         "en-US": "one-time or monthly"
