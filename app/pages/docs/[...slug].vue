@@ -42,7 +42,7 @@ if (!page.value) {
 const canonical = computed(() => `${site.url}${localePath({ path: docsPath(locale.value, slug.value) })}`)
 
 useSeoMeta({
-  title: () => (page.value ? `${page.value.title} — Axolotl Launcher` : t('docs.notFound')),
+  title: () => (page.value ? `${page.value.title}` : t('docs.notFound')),
   description: () => page.value?.description ?? '',
   ogType: 'article',
   articleModifiedTime: () => page.value?.updatedAt,

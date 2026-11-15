@@ -52,9 +52,9 @@ function formatDate(value: string) {
 }
 
 useSeoMeta({
-  title: `${t('changelog.title')} — Axolotl Launcher`,
+  title: `${t('changelog.title')}`,
   description: t('changelog.lead'),
-  ogTitle: `${t('changelog.title')} — Axolotl Launcher`,
+  ogTitle: `${t('changelog.title')}`,
   ogDescription: t('changelog.lead'),
   ogType: 'website',
 })

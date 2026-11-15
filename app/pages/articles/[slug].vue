@@ -31,7 +31,7 @@ function formatDate(value: string | undefined) {
 }
 
 useSeoMeta({
-  title: () => (article.value ? `${article.value.title} — Axolotl Launcher` : t('articles.title')),
+  title: () => (article.value ? `${article.value.title}` : t('articles.title')),
   description: () => article.value?.description ?? '',
   ogType: 'article',
   articlePublishedTime: () => article.value?.publishedAt,

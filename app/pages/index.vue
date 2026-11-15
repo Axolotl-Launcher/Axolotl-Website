@@ -234,7 +234,7 @@ useHead({
           >
             <img
               :src="shot.src"
-              :alt="`${shot.label} — Axolotl Launcher`"
+              :alt="`${shot.label}`"
               loading="lazy"
               decoding="async"
               class="size-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none"

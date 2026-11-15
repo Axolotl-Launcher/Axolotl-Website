@@ -3,7 +3,7 @@ const { t } = useI18n()
 const config = useRuntimeConfig()
 const demoPath = computed(() => config.public.launcherDemo.replace(/\/$/, ''))
 
-const title = computed(() => `${t('demo.title')} — Axolotl Launcher`)
+const title = computed(() => `${t('demo.title')}`)
 
 useSeoMeta({
   title: () => title.value,

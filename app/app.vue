@@ -6,6 +6,10 @@ const lenisOptions = {
   anchors: true,
   lerp: 0.1,
 }
+
+// Give every page a generated OG image; article pages still override it with
+// their own cover through useSeoMeta.
+defineOgImageComponent('Default')
 </script>
 
 <template>

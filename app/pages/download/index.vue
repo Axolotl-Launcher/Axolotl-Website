@@ -239,9 +239,9 @@ onMounted(() => {
 })
 
 useSeoMeta({
-  title: `${t('download.title')} — Axolotl Launcher`,
+  title: `${t('download.title')}`,
   description: t('download.lead'),
-  ogTitle: `${t('download.title')} — Axolotl Launcher`,
+  ogTitle: `${t('download.title')}`,
   ogDescription: t('download.lead'),
   ogType: 'website',
 })

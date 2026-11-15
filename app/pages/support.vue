@@ -84,9 +84,9 @@ function scrollToTiers() {
 const canonical = computed(() => `${site.url}${localePath({ path: '/support' })}`)
 
 useSeoMeta({
-  title: () => `${t('support.title')} — Axolotl Launcher`,
+  title: () => `${t('support.title')}`,
   description: () => t('support.lead'),
-  ogTitle: () => `${t('support.title')} — Axolotl Launcher`,
+  ogTitle: () => `${t('support.title')}`,
   ogDescription: () => t('support.lead'),
   ogType: 'website',
 })

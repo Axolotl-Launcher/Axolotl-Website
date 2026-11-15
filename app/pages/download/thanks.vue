@@ -200,7 +200,7 @@ onMounted(() => {
 onBeforeUnmount(() => clearTimeout(copyTimer))
 
 useSeoMeta({
-  title: `${t('download.thanksTitle')} — Axolotl Launcher`,
+  title: `${t('download.thanksTitle')}`,
   description: t('download.thanksLead'),
   robots: 'noindex',
 })

@@ -168,6 +168,43 @@ export default defineNuxtConfig({
     name: 'Axolotl Launcher',
     description: 'A modern Minecraft launcher for Windows, macOS and Linux.',
     defaultLocale: 'zh-CN',
+    trailingSlash: false,
+  },
+
+  robots: {
+    allow: '/',
+    disallow: ['/api/'],
+  },
+
+  sitemap: {
+    autoLastmod: true,
+    exclude: ['/api/**'],
+  },
+
+  schemaOrg: {
+    identity: {
+      type: 'Organization',
+      name: 'Axolotl Launcher',
+      url: 'https://axlmc.org',
+      logo: 'https://axlmc.org/axolotl.png',
+    },
+  },
+
+  ogImage: {
+    enabled: true,
+    zeroRuntime: true,
+    defaults: { width: 1200, height: 630, extension: 'png' },
+  },
+
+  seo: {
+    automaticOgAndTwitterTags: true,
+    automaticTwitterTags: true,
+    metaDataFiles: true,
+  },
+
+  aiReady: {
+    // Project instructions and agent skills stay private.
+    agentSkills: false,
   },
 
   nitro: {

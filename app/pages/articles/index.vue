@@ -25,9 +25,9 @@ function formatDate(value: string) {
 }
 
 useSeoMeta({
-  title: () => `${t('articles.title')} — Axolotl Launcher`,
+  title: () => `${t('articles.title')}`,
   description: () => t('articles.lead'),
-  ogTitle: () => `${t('articles.title')} — Axolotl Launcher`,
+  ogTitle: () => `${t('articles.title')}`,
   ogDescription: () => t('articles.lead'),
   ogType: 'website',
 })

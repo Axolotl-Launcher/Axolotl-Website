@@ -4,7 +4,7 @@ const localePath = useLocalePath()
 const { groups, docs } = useDocsNav()
 
 useSeoMeta({
-  title: `${t('nav.docs')} — Axolotl Launcher`,
+  title: `${t('nav.docs')}`,
   description: t('docs.lead'),
 })
 </script>
