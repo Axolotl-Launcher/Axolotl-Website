@@ -48,6 +48,13 @@
   animation: marquee 28s linear infinite;
 }
 
+/* Lenis disables pointer events on iframes so wheel scrolling stays on the
+   page. The launcher demo is interactive, so it opts back in and keeps its
+   own wheel events inside the frame. */
+.lenis.lenis-smooth iframe {
+  pointer-events: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -79,6 +79,7 @@ onBeforeUnmount(() => {
       ref="iframe"
       :src="frameSrc"
       :title="label"
+      data-lenis-prevent
       class="absolute top-0 left-0 h-[800px] w-[1280px] origin-top-left border-0"
       :style="{ transform: `scale(${scale})` }"
       @load="onLoad"
