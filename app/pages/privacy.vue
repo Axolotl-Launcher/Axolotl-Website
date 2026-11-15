@@ -35,7 +35,7 @@ useHead({
     eyebrow="隐私政策"
     title="隐私政策"
     description="本政策说明 Axolotl Launcher 官方网站和桌面应用处理数据的方式，以及第三方服务可能接收的信息。"
-    updated-at="2026 年 8 月 14 日"
+    updated-at="2026 年 11 月 15 日"
   >
     <h2>1. 适用范围</h2>
     <p>
@@ -46,18 +46,15 @@ useHead({
     <h2>2. 官方网站处理的数据</h2>
     <p>网站无需注册账户。为保存你的显示和下载偏好，浏览器会在本地保存：</p>
     <ul>
-      <li>语言偏好 Cookie（<code>locale</code>）；</li>
-      <li>主题、高级渲染、减少动态效果和外部链接打开方式；</li>
-      <li>下载源选择（自动、Update Server 或 GitHub）。</li>
+      <li>主题偏好（light、dark 或 oled）；</li>
+      <li>下载源选择（自动、官方更新服务、GitHub 或 GitLink）。</li>
     </ul>
     <p>
-      这些偏好主要保存在 Cookie 或浏览器 localStorage 中，你可通过浏览器设置清除。网站不使用广告 Cookie。网站接入<a
-        href="https://howxm.com"
-        target="_blank"
-        rel="noopener"
-        >浩客（Howxm）</a
-      >
-      作为第三方用户体验分析和反馈收集服务；其可根据服务配置处理与网站访问、交互、设备或浏览器及网络请求相关的信息，以展示问卷、收集评价和改进网站体验。
+      这些偏好保存在浏览器 Cookie 或 localStorage 中，你可通过浏览器设置清除。语言选择通过 URL 前缀（例如
+      /en）表达，不写入 Cookie。网站不使用广告
+      Cookie，也不接入第三方分析或反馈收集服务。站内搜索使用构建时生成的本地索引（MiniSearch），查询不会发送给第三方搜索服务；知识库是飞书文档的构建时静态快照，访问网站不会连接飞书。下载页会在浏览器内读取
+      User-Agent
+      以识别操作系统并推荐构建，该信息不会由网站额外上传。点击支持档位时，网站接口会向爱发电获取收银台链接并跳转，支付由爱发电处理，本站不保存支付信息。
     </p>
     <p>
       网站托管和网络基础设施提供者可能为保障访问、安全和故障排查而处理常规请求信息，例如 IP
@@ -77,7 +74,7 @@ useHead({
       Minecraft 令牌、账户凭据或原始随机安装标识。
     </p>
     <p>
-      遥测使用本地生成的随机安装标识；服务端仅保存经密钥 HMAC-SHA256
+      遥测使用本地生成的随机安装标识；服务端仅保存经 HMAC
       处理后的不可逆标识。你可随时在“隐私与安全”中关闭遥测；关闭后会停止后续采集并清空本地待发送队列，但已经上传的数据仍按下述保留周期清理。Discord
       Rich Presence 是独立的本地开关，不属于遥测。
     </p>
@@ -91,8 +88,7 @@ useHead({
       <li>Microsoft 和 Minecraft 的登录、资料及游戏服务；</li>
       <li>你选择的第三方 Yggdrasil 认证服务；</li>
       <li>Modrinth、CurseForge 及内容作者提供的 API 和下载地址；</li>
-      <li>Update Server、GitHub 及其他用于版本检查、更新或文件分发的服务；</li>
-      <li>用于官网用户体验分析和反馈收集的浩客（Howxm）；</li>
+      <li>Update Server、GitHub、GitLink 及其他用于版本检查、更新或文件分发的服务；</li>
       <li>用于接收和保存选择加入的匿名遥测数据的 Cloudflare Workers 和 D1；</li>
       <li>你主动连接的 Minecraft 服务器或其他外部链接。</li>
     </ul>
@@ -142,7 +138,7 @@ useHead({
     eyebrow="Privacy Policy"
     title="Privacy Policy"
     description="This policy explains how the Axolotl Launcher official website and desktop application handle data, and what information third-party services may receive."
-    updated-at="August 14, 2026"
+    updated-at="November 15, 2026"
   >
     <h2>1. Scope</h2>
     <p>
@@ -157,17 +153,18 @@ useHead({
       locally:
     </p>
     <ul>
-      <li>A language preference cookie (<code>locale</code>);</li>
-      <li>Theme, advanced rendering, reduced motion, and external-link behavior;</li>
-      <li>Your download-source selection (automatic, Update Server, or GitHub).</li>
+      <li>Theme preference (light, dark, or OLED);</li>
+      <li>Download-source selection (automatic, official update service, GitHub, or GitLink).</li>
     </ul>
     <p>
-      These preferences are mainly stored in cookies or browser localStorage and can be cleared through your browser
-      settings. The website uses no advertising cookies. It integrates
-      <a href="https://howxm.com" target="_blank" rel="noopener">Howxm</a> as a third-party user-experience analytics
-      and feedback collection service. Depending on its service configuration, Howxm may process information related to
-      website visits, interactions, devices or browsers, and network requests to display surveys, collect ratings, and
-      improve the website experience.
+      These preferences are stored in browser cookies or localStorage and can be cleared through your browser settings.
+      Language is expressed through the URL prefix (for example, /en) and is not stored in a cookie. The website uses no
+      advertising cookies and no third-party analytics or feedback-collection service. Site search uses a locally built
+      MiniSearch index, so queries are not sent to a third-party search service. The knowledge base is a static snapshot
+      of Feishu documents generated at build time; visiting the website does not connect to Feishu. The download page
+      reads the User-Agent in the browser to detect the operating system and recommend a build; the website does not
+      upload that information separately. When you choose a support tier, the site API obtains an Afdian checkout link
+      and redirects you; Afdian processes the payment, and this site does not store payment information.
     </p>
     <p>
       Website hosting and network infrastructure providers may process routine request information such as IP addresses,
@@ -194,11 +191,10 @@ useHead({
       identifier are not uploaded automatically.
     </p>
     <p>
-      Telemetry uses a random installation identifier generated locally; the service stores only an irreversible
-      HMAC-SHA256 value produced with a server secret. You can disable telemetry at any time under Privacy & security.
-      Disabling it stops future collection and clears the local pending queue, while previously uploaded records are
-      deleted under the retention periods below. Discord Rich Presence is an independent local setting and is not
-      telemetry.
+      Telemetry uses a random installation identifier generated locally; the service stores only an irreversible HMAC
+      value produced with a server secret. You can disable telemetry at any time under Privacy & security. Disabling it
+      stops future collection and clears the local pending queue, while previously uploaded records are deleted under
+      the retention periods below. Discord Rich Presence is an independent local setting and is not telemetry.
     </p>
 
     <h2>4. Sharing and Transfers with Third Parties</h2>
@@ -212,8 +208,9 @@ useHead({
       <li>Microsoft and Minecraft sign-in, profile, and game services;</li>
       <li>Third-party Yggdrasil authentication services you choose;</li>
       <li>APIs and download addresses provided by Modrinth, CurseForge, and content authors;</li>
-      <li>Update Server, GitHub, and other services used for version checks, updates, or file distribution;</li>
-      <li>Howxm for official-website user-experience analytics and feedback collection;</li>
+      <li>
+        Update Server, GitHub, GitLink, and other services used for version checks, updates, or file distribution;
+      </li>
       <li>Cloudflare Workers and D1 for opted-in anonymous telemetry ingestion and storage;</li>
       <li>Minecraft servers or other external links you connect to.</li>
     </ul>

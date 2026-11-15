@@ -37,7 +37,7 @@ useHead({
     eyebrow="服务条款"
     title="服务条款"
     description="本条款说明 Axolotl Launcher 各部分适用的开源许可证、官方服务规则及第三方权利边界。"
-    updated-at="2026 年 8 月 2 日"
+    updated-at="2026 年 11 月 15 日"
   >
     <h2>1. 适用范围与文件效力</h2>
     <p>
@@ -93,9 +93,8 @@ useHead({
       Inc.、Modrinth、CurseForge 或 MinecraftSearch 不存在隶属、认可或背书关系。相关名称和商标归各自权利人所有。
     </p>
     <p>
-      Modrinth 商标、徽标、封面和其他受限品牌素材不属于 Axolotl Launcher 品牌。网站复制声明列出的 Modrinth 品牌元素未经
-      Rinth, Inc.
-      明确书面许可不得使用。外部徽标须遵守各权利人的品牌规范。使用或再分发其他第三方图片、图标、数据和素材前，也应核对对应声明。
+      本网站不再包含 Modrinth 的界面或品牌素材。Modrinth、CurseForge
+      等名称仅用于说明启动器可访问的第三方内容来源；相关商标、徽标、封面和素材归各自权利人所有。使用或再分发第三方图片、图标、数据和素材前，应核对对应权利人的品牌规范与声明。
     </p>
 
     <h2>5. 特别归属与第三方许可</h2>
@@ -110,6 +109,10 @@ useHead({
     <p>
       使用项目维护者运营的官方网站、下载源、反馈渠道或其他基础设施时，你应遵守适用法律及对应第三方平台规则，不得攻击、干扰、滥用基础设施，不得实施欺诈或侵害他人权利。这些服务规则只约束官方服务的使用，不限制
       GPL 或 AGPL 授予你对软件副本的权利。
+    </p>
+    <p>
+      官方网站以静态页面提供项目介绍、文档、下载入口和支持渠道。下载文件可能来自官方更新服务、GitHub 或
+      GitLink；知识库内容由飞书文档在构建时同步为静态页面，访问网站不会连接飞书；站内搜索在浏览器本地完成。支持档位由爱发电处理支付，适用爱发电自身的条款与隐私政策。
     </p>
     <p>
       启动器会按你的操作连接 Microsoft、Minecraft、Modrinth、CurseForge、GitHub、Update Server、自定义 Yggdrasil
@@ -149,7 +152,7 @@ useHead({
     eyebrow="Terms of Service"
     title="Terms of Service"
     description="These terms explain the open-source licenses that apply to each part of Axolotl Launcher, the rules for official services, and the boundaries of third-party rights."
-    updated-at="August 2, 2026"
+    updated-at="November 15, 2026"
   >
     <h2>1. Scope and Effect of This Document</h2>
     <p>
@@ -215,10 +218,10 @@ useHead({
       CurseForge, or MinecraftSearch. The related names and trademarks belong to their respective owners.
     </p>
     <p>
-      Modrinth trademarks, logos, covers, and other restricted brand assets are not part of the Axolotl Launcher brand.
-      Modrinth brand elements listed in the repository's copying notices must not be used without the explicit written
-      permission of Rinth, Inc. External logos must follow each owner's brand guidelines. Before using or redistributing
-      other third-party images, icons, data, and assets, check the corresponding notices.
+      This website no longer ships Modrinth interface or brand assets. Modrinth, CurseForge, and similar names are used
+      only to describe third-party content sources the launcher can access. Their trademarks, logos, covers, and assets
+      belong to their respective owners; review the applicable brand rules and notices before using or redistributing
+      third-party images, icons, data, or other assets.
     </p>
 
     <h2>5. Specific Attributions and Third-Party Licenses</h2>
@@ -238,6 +241,13 @@ useHead({
       and must not attack, interfere with, or abuse the infrastructure, commit fraud, or infringe the rights of others.
       These service rules only govern the use of official services and do not limit the rights granted to you under GPL
       or AGPL.
+    </p>
+    <p>
+      The official website provides project information, documentation, download entry points, and support channels as
+      static pages. Downloads may be served by the official update service, GitHub, or GitLink. Knowledge-base content
+      is synchronized from Feishu documents into static pages at build time; visiting the website does not connect to
+      Feishu. Site search runs locally in the browser. Support tiers are paid through Afdian and are subject to Afdian's
+      own terms and privacy policy.
     </p>
     <p>
       The launcher connects to Microsoft, Minecraft, Modrinth, CurseForge, GitHub, the Update Server, custom Yggdrasil

@@ -10,8 +10,8 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <article class="site-container max-w-3xl py-10 sm:py-14">
-    <header class="max-w-2xl">
+  <article class="mx-auto w-4/5 py-10 sm:py-14">
+    <header>
       <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">{{ eyebrow }}</p>
       <h1 class="mt-4 text-section">{{ title }}</h1>
       <p class="mt-4 text-lead text-fg-muted">{{ description }}</p>
