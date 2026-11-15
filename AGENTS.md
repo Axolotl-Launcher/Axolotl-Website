@@ -27,6 +27,10 @@ Read the applicable instruction files before editing, even when your session sta
 
 Nuxt DevTools 4 is installed and enabled in development (`Shift` + `Alt` + `D`). Keep `future.compatibilityVersion: 5`; `experimental.nitroAutoImports` is a temporary compatibility exception for `@nuxtjs/i18n` 10.6.0 and should be removed once i18n supports the Nuxt 5 defaults.
 
+The download page uses `@nuxtjs/device` for client-side OS detection. Static prerendering has no request user agent, so `device.defaultUserAgent` is pinned to Windows and the recommendation waits for hydration before switching. Supported desktop systems get a direct download CTA; mobile, crawler and unknown systems fall back to Windows.
+
+Support tiers must not link to Afdian pages directly. Plan IDs and checkout URLs live in `shared/support.ts`; the page calls `/api/support/checkout/<plan>.json`, which is prerendered for static deployment and can validate plans at runtime with `NUXT_AFDIAN_USER_ID`/`NUXT_AFDIAN_TOKEN`.
+
 Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user performs visual and interaction acceptance; do not run excessive browser automation unless requested.
 
 ## Structure
@@ -34,6 +38,7 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 - `app/pages/` — file-based routes. Every public route must prerender because OpenResty serves static files only.
 - `app/components/` — site components; `app/components/docs/` holds the knowledge-base shell.
 - `app/assets/css/` — Tailwind 4 entry and the design tokens/themes. `tokens.css` and `themes.css` are the source of truth for the brand palette, surfaces and typography.
+- `app/assets/icons/` — local brand SVGs for `nuxt-icons`, rendered with `<NuxtIcon name="…">`. UI icons use the Lucide set through `@nuxt/icon`.
 - `app/utils/` and `app/composables/` — download resolution, i18n helpers, docs navigation and theme state.
 - `content/articles/` — repository-authored Markdown. Legal pages are Vue routes under `app/pages/`.
 - `content/feishu/` and `public/feishu/` — generated from Feishu by the sync script; never hand-edit.

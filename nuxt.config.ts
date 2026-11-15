@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 import tailwindcss from '@tailwindcss/vite'
 
-const themeInit = `(function(){try{var m=localStorage.getItem('axolotl-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var o=m==='oled';var t=o?'oled':d?'dark':'light';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=d?'dark':'light'}catch(e){}})()`
+const themeInit = `(function(){try{var m=localStorage.getItem('axolotl-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var o=m==='oled';var t=o?'oled':d?'dark':'light';document.documentElement.dataset.theme=t;document.documentElement.classList.toggle('dark',d||o);document.documentElement.classList.toggle('light',!d&&!o);document.documentElement.style.colorScheme=d?'dark':'light'}catch(e){}})()`
 
 /** The entry page of the launcher web demo build, or an empty string when none is installed. */
 function launcherDemoEntry() {
@@ -41,16 +41,24 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxt/devtools',
+    '@nuxtjs/device',
+    // Content already pulls MDC in as a module dependency; registering it
+    // explicitly keeps the Markdown pipeline configurable and available to
+    // pages directly (MDC, MDCRenderer, parseMarkdown).
+    '@nuxtjs/mdc',
     '@nuxt/content',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',
     '@nuxt/image',
     '@nuxt/icon',
+    'nuxt-icons',
+    'nuxt-lenis',
+    'motion-v/nuxt',
     '@nuxt/eslint',
     '@vueuse/nuxt',
   ],
 
-  css: ['~/assets/css/main.css'],
+  css: ['lenis/dist/lenis.css', '~/assets/css/main.css'],
 
   alias: {
     '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
@@ -116,6 +124,14 @@ export default defineNuxtConfig({
     },
   },
 
+  device: {
+    // Static pages have no request user-agent during prerendering. Render the
+    // Windows fallback first, then let the client detect the real OS after
+    // hydration without changing the server-rendered markup.
+    defaultUserAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  },
+
   experimental: {
     viewTransition: true,
     renderJsonPayloads: true,
@@ -133,6 +149,10 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    afdian: {
+      userId: '',
+      token: '',
+    },
     public: {
       siteUrl: 'https://axlmc.org',
       githubUrl: 'https://github.com/Axolotl-Launcher/Axolotl',
@@ -160,6 +180,8 @@ export default defineNuxtConfig({
         '/en',
         '/download',
         '/en/download',
+        '/download/thanks',
+        '/en/download/thanks',
         '/docs',
         '/en/docs',
         '/articles',
@@ -170,13 +192,14 @@ export default defineNuxtConfig({
         '/en/demo',
         '/support',
         '/en/support',
-        '/thanks',
-        '/en/thanks',
         '/terms',
         '/en/terms',
         '/privacy',
         '/en/privacy',
         '/llms.txt',
+        '/api/support/checkout/coffee.json',
+        '/api/support/checkout/token.json',
+        '/api/support/checkout/custom.json',
       ],
     },
   },

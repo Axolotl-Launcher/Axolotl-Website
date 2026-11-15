@@ -8,9 +8,12 @@ The official website for [Axolotl Launcher](https://axlmc.org), built as a stati
 - Nuxt 5 compatibility preview (`future.compatibilityVersion: 5`): Vite Environment API, case-sensitive routing, typed routes and client payload extraction
 - Tailwind CSS 4 with site-owned design tokens (light, dark and OLED themes)
 - `@nuxt/content` for articles
+- `@nuxtjs/mdc` for MDC parsing, prose components and runtime Markdown rendering
+- `@nuxt/icon` with the Lucide set for UI icons, plus `nuxt-icons` for local brand SVGs in `app/assets/icons`
 - `@nuxtjs/i18n` with `zh-CN` (default, no prefix) and `en` (`/en/*`)
 - `@nuxtjs/seo` for sitemaps, robots and `llms.txt`
 - `@nuxt/devtools` 4.1.0 with the component inspector, data inspector, timeline and Vite inspect
+- `@nuxtjs/device` for visitor OS detection; unsupported devices fall back to the Windows download
 - Native HTML dialogs, popovers and view transitions (no component library)
 - Feishu Open API for the documentation knowledge base, exported at build time
 
@@ -41,9 +44,17 @@ The production build is written to `.output/public` and served by OpenResty. Eve
 
 ## Documentation from Feishu
 
+## Support checkout
+
+Support tiers never link to Afdian plan pages directly. The page requests a checkout URL from `/api/support/checkout/<plan>.json`, and the endpoint returns the official Afdian `order/create` URL. Static builds prerender those JSON responses, so the feature works on OpenResty without a server process; a runtime Nitro or serverless deployment can additionally validate plan IDs against Afdian's `query-plan` API using `NUXT_AFDIAN_USER_ID` and `NUXT_AFDIAN_TOKEN`.
+
+Set `NUXT_AFDIAN_USER_ID` and `NUXT_AFDIAN_TOKEN` in `.env` (or the deployment environment) to enable validation. Without them the endpoint returns the configured checkout URLs and reports `validated: false`. The OpenResty config serves the API directory as JSON.
+
+## Documentation from Feishu
+
 Docs are written in Feishu, not in this repository. The sync script exports the configured wiki nodes to Markdown and images, then the site builds from that committed snapshot.
 
-1. Create a Feishu custom app and grant `docx:document:readonly`, `wiki:wiki:readonly` and either `drive:drive:readonly` or `docs:document.media:download`.
+1. Create a Feishu custom app and grant `docx:document:readonly`, `docs:document.content:read` (Markdown export), `wiki:wiki:readonly` and either `drive:drive:readonly` or `docs:document.media:download`.
 2. Add the app to the wiki space and publish the app version.
 3. Put the credentials in `.env.local`:
 
