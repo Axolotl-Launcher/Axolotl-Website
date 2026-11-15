@@ -155,14 +155,6 @@ test.describe('downloads', () => {
   })
 })
 
-test.describe('search', () => {
-  test('returns local results', async ({ page }) => {
-    await page.goto('/search')
-    await page.getByRole('searchbox').fill('安装')
-    await expect(page.getByText('安装与更新')).toBeVisible()
-  })
-})
-
 test.describe('docs search', () => {
   test('opens the search modal', async ({ page }) => {
     await page.goto('/docs')

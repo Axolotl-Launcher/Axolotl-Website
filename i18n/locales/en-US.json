@@ -206,19 +206,6 @@
     "thanksDocs": "Read the docs",
     "thanksAgain": "Choose another download"
   },
-  "search": {
-    "eyebrow": "SEARCH",
-    "title": "Search Axolotl",
-    "lead": "Search the docs and articles.",
-    "placeholder": "Search the docs, articles…",
-    "loading": "Loading the search index…",
-    "error": "Could not load the search index.",
-    "results": "{count} results",
-    "empty": "No matching content.",
-    "hint": "Type to start searching.",
-    "doc": "Doc",
-    "article": "Article"
-  },
   "support": {
     "eyebrow": "SUPPORT",
     "title": "Keep an independent launcher moving forward",

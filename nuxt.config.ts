@@ -182,8 +182,6 @@ export default defineNuxtConfig({
         '/en/download',
         '/download/thanks',
         '/en/download/thanks',
-        '/search',
-        '/en/search',
         '/docs',
         '/en/docs',
         '/articles',

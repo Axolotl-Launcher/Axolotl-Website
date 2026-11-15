@@ -206,19 +206,6 @@
     "thanksDocs": "查看文档",
     "thanksAgain": "重新选择下载"
   },
-  "search": {
-    "eyebrow": "SEARCH",
-    "title": "搜索 Axolotl",
-    "lead": "搜索文档与文章。",
-    "placeholder": "搜索文档、文章…",
-    "loading": "正在加载搜索索引…",
-    "error": "搜索索引加载失败。",
-    "results": "找到 {count} 条结果",
-    "empty": "没有找到相关内容。",
-    "hint": "输入关键词开始搜索。",
-    "doc": "文档",
-    "article": "文章"
-  },
   "support": {
     "eyebrow": "SUPPORT",
     "title": "让独立启动器继续前进",
