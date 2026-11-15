@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
+import windowControls from './shared/window-controls.svg?url'
+
 /**
  * The launcher frontend's web demo build in a frame, its 1280×800 window scaled to
  * fit. The build posts `axolotl-demo:ready` to this page once the
@@ -34,6 +36,8 @@ const frameSrc = computed(() => `${props.src}?theme=${startTheme}`)
 const frame = ref<HTMLElement | null>(null)
 const iframe = ref<HTMLIFrameElement | null>(null)
 const scale = ref(1)
+const showWindowControls = ref(false)
+let frameObserver: MutationObserver | null = null
 let theme = startTheme
 let resizeObserver: ResizeObserver | null = null
 let themeObserver: MutationObserver | null = null
@@ -55,6 +59,26 @@ function followSiteTheme() {
 
 /** The page and its scripts have loaded; images it is still loading may hold this past `ready`. */
 function onLoad() {
+    frameObserver?.disconnect()
+    showWindowControls.value = false
+    // macOS draws these controls outside the webview. The browser demo only
+    // reserves their space, so reproduce the decoration while its titlebar exists.
+    const document = iframe.value?.contentDocument
+    if (document) {
+        const syncWindowControls = () => {
+            showWindowControls.value =
+                document.documentElement.classList.contains('mac') &&
+                !!document.querySelector('.app-grid-statusbar')
+        }
+        frameObserver = new MutationObserver(syncWindowControls)
+        frameObserver.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class'],
+        })
+        syncWindowControls()
+    }
     // A theme the visitor picked while the page was still loading reached no listener.
     if (theme !== startTheme) postTheme()
     if (!ready) emit('progress', 60)
@@ -84,6 +108,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+    frameObserver?.disconnect()
     clearTimeout(readyTimer)
     window.removeEventListener('message', onMessage)
     resizeObserver?.disconnect()
@@ -100,6 +125,15 @@ onBeforeUnmount(() => {
             class="absolute left-0 top-0 h-[800px] w-[1280px] origin-top-left border-0"
             :style="{ transform: `scale(${scale})` }"
             @load="onLoad"
+        />
+        <img
+            v-if="showWindowControls"
+            :src="windowControls"
+            alt=""
+            aria-hidden="true"
+            draggable="false"
+            class="pointer-events-none absolute left-0 top-0 h-[48px] w-[80px] origin-top-left"
+            :style="{ transform: `scale(${scale})` }"
         />
     </div>
 </template>
