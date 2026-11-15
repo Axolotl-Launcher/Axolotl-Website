@@ -72,6 +72,7 @@ jobs:
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
+          import { isValid } from 'verkit'
           const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))
           assert(Array.isArray(catalog.announcements) && catalog.announcements.length > 0, 'Empty release catalog')
           for (const entry of catalog.announcements) {
@@ -127,7 +128,6 @@ jobs:
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
-          import { isValid } from 'verkit'
           for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'terms/index.html', 'privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
             assert(fs.existsSync(`.output/public/${page}`), `Missing prerendered page: ${page}`)
           }
