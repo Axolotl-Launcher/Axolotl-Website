@@ -1,12 +1,13 @@
 packages:
   - '.'
 
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@tailwindcss/oxide'
-  - better-sqlite3
-  - esbuild
-  - lightningcss
-  - protobufjs
-  - sharp
-  - unrs-resolver
+# pnpm 12 replaced onlyBuiltDependencies with an explicit allow-list.
+allowBuilds:
+  '@parcel/watcher': true
+  '@tailwindcss/oxide': true
+  better-sqlite3: true
+  esbuild: true
+  lightningcss: true
+  protobufjs: true
+  sharp: true
+  unrs-resolver: true
