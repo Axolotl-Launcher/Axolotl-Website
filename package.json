@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/fetch-launcher-demo.mjs && nuxt dev",
-    "build": "node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
-    "generate": "node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
+    "dev": "node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt dev",
+    "build": "node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
+    "generate": "node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
     "check:media": "node scripts/check-media.mjs",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -24,7 +24,6 @@
     "prepr": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {
-    "@atoms-studio/nuxt-swiftsearch": "^1.5.0",
     "@fontsource-variable/inter": "5.3.0",
     "@nuxt/content": "3.16.2",
     "@nuxt/icon": "2.6.2",
@@ -35,8 +34,8 @@
     "@nuxtjs/seo": "6.0.1",
     "@vueuse/core": "15.0.0",
     "@vueuse/nuxt": "15.0.0",
-    "algoliasearch": "^5.64.0",
     "lenis": "^1.3.27",
+    "minisearch": "^7.2.0",
     "motion-v": "^2.12.0",
     "nuxt": "4.6.4",
     "nuxt-icons": "4.0.0",

@@ -1,34 +1,66 @@
 <script setup lang="ts">
-import { algoliasearch } from 'algoliasearch'
+import MiniSearch from 'minisearch'
 
-const { t } = useI18n()
-const config = useRuntimeConfig()
-const algolia = config.public.algolia
-
-const configured = Boolean(algolia.appId && algolia.searchApiKey && algolia.indexName)
-const searchClient = configured ? algoliasearch(algolia.appId, algolia.searchApiKey) : null
-const configuration = searchClient ? { indexName: algolia.indexName, searchClient } : null
-
-function hitRecord(item: unknown): Record<string, unknown> {
-  return item && typeof item === 'object' ? (item as Record<string, unknown>) : {}
+interface SearchDocument {
+  id: string
+  title: string
+  description: string
+  body: string
+  url: string
+  locale: string
+  type: 'doc' | 'article'
 }
 
-function hitTitle(item: unknown) {
-  const record = hitRecord(item)
-  return String(record.title ?? record.name ?? record.objectID ?? '')
+type SearchHit = SearchDocument & { score: number }
+
+const { t, locale } = useI18n()
+const localePath = useLocalePath()
+
+const index = shallowRef<MiniSearch<SearchDocument> | null>(null)
+const query = ref('')
+const results = ref<SearchHit[]>([])
+const loading = ref(true)
+const failed = ref(false)
+let searchTimer: ReturnType<typeof setTimeout> | undefined
+
+const searchOptions = {
+  boost: { title: 2 },
+  fuzzy: 0.2,
+  prefix: true,
 }
 
-function hitDescription(item: unknown) {
-  const record = hitRecord(item)
-  const value = record.description ?? record.excerpt ?? ''
-  return typeof value === 'string' ? value : ''
+function runSearch() {
+  const value = query.value.trim()
+  if (!index.value || !value) {
+    results.value = []
+    return
+  }
+  const hits = index.value.search(value, searchOptions) as unknown as SearchHit[]
+  results.value = hits.filter((hit) => hit.locale === locale.value).slice(0, 20)
 }
 
-function hitLink(item: unknown) {
-  const record = hitRecord(item)
-  const value = record.url ?? record.path
-  return typeof value === 'string' && value ? value : null
-}
+watch([query, locale], () => {
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(runSearch, 120)
+})
+
+onMounted(async () => {
+  try {
+    const raw = await $fetch<Record<string, unknown>>('/search-index.json')
+    index.value = MiniSearch.loadJSON<SearchDocument>(JSON.stringify(raw), {
+      fields: ['title', 'description', 'body'],
+      storeFields: ['title', 'description', 'url', 'locale', 'type'],
+      idField: 'id',
+    })
+    runSearch()
+  } catch {
+    failed.value = true
+  } finally {
+    loading.value = false
+  }
+})
+
+onBeforeUnmount(() => clearTimeout(searchTimer))
 
 useSeoMeta({
   title: `${t('search.title')} — Axolotl Launcher`,
@@ -47,119 +79,44 @@ useSeoMeta({
     </header>
 
     <div class="mx-auto mt-10 max-w-3xl">
-      <AisInstantSearch v-if="configuration" :configuration="configuration">
-        <AisSearchBox :placeholder="t('search.placeholder')" />
-        <AisStats class="mt-4 text-caption text-fg-subtle">
-          <template #default="{ nbHits, processingTimeMS }">
-            {{ t('search.stats', { count: nbHits, ms: processingTimeMS }) }}
-          </template>
-        </AisStats>
-        <AisHits class="mt-6">
-          <template #item="{ item }">
+      <input
+        v-model="query"
+        type="search"
+        :aria-label="t('search.placeholder')"
+        :placeholder="t('search.placeholder')"
+        autocomplete="off"
+        spellcheck="false"
+        class="h-12 w-full rounded-btn border border-border bg-surface-1 px-4 text-body text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      />
+
+      <p v-if="loading" class="mt-5 text-caption text-fg-subtle">{{ t('search.loading') }}</p>
+      <p v-else-if="failed" class="mt-5 text-caption text-fg-subtle">{{ t('search.error') }}</p>
+
+      <template v-else>
+        <p v-if="query.trim()" class="mt-5 text-caption text-fg-subtle">
+          {{ t('search.results', { count: results.length }) }}
+        </p>
+
+        <ul v-if="results.length" class="mt-4 grid gap-3">
+          <li v-for="hit in results" :key="hit.id">
             <NuxtLink
-              v-if="hitLink(item)"
-              :to="hitLink(item) || '/'"
+              :to="localePath({ path: hit.url })"
               class="block rounded-card border border-border bg-surface-1 p-4 transition-colors hover:border-border-strong"
             >
-              <h2 class="text-card font-semibold">{{ hitTitle(item) }}</h2>
-              <p v-if="hitDescription(item)" class="mt-1 text-caption leading-relaxed text-fg-muted">
-                {{ hitDescription(item) }}
+              <span class="text-micro font-semibold tracking-[0.12em] text-fg-subtle uppercase">
+                {{ hit.type === 'doc' ? t('search.doc') : t('search.article') }}
+              </span>
+              <h2 class="mt-1 text-card font-semibold">{{ hit.title }}</h2>
+              <p v-if="hit.description" class="mt-1 text-caption leading-relaxed text-fg-muted">
+                {{ hit.description }}
               </p>
             </NuxtLink>
-            <div v-else class="rounded-card border border-border bg-surface-1 p-4">
-              <h2 class="text-card font-semibold">{{ hitTitle(item) }}</h2>
-              <p v-if="hitDescription(item)" class="mt-1 text-caption leading-relaxed text-fg-muted">
-                {{ hitDescription(item) }}
-              </p>
-            </div>
-          </template>
-        </AisHits>
-        <AisPagination class="mt-8" />
-      </AisInstantSearch>
+          </li>
+        </ul>
 
-      <div v-else class="rounded-panel border border-border bg-surface-1 p-6 text-center text-caption text-fg-muted">
-        {{ t('search.unconfigured') }}
-      </div>
+        <p v-else-if="query.trim()" class="mt-5 text-caption text-fg-muted">{{ t('search.empty') }}</p>
+        <p v-else class="mt-5 text-caption text-fg-subtle">{{ t('search.hint') }}</p>
+      </template>
     </div>
   </div>
 </template>
-
-<style scoped>
-:deep(.ais-SearchBox-form) {
-  position: relative;
-}
-
-:deep(.ais-SearchBox-input) {
-  width: 100%;
-  height: 3rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-btn);
-  background: var(--surface-1);
-  padding: 0 3.25rem 0 1rem;
-  color: var(--fg);
-  font: inherit;
-}
-
-:deep(.ais-SearchBox-input::placeholder) {
-  color: var(--fg-subtle);
-}
-
-:deep(.ais-SearchBox-input:focus-visible) {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-:deep(.ais-SearchBox-submit),
-:deep(.ais-SearchBox-reset) {
-  position: absolute;
-  top: 50%;
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  place-items: center;
-  color: var(--fg-subtle);
-  transform: translateY(-50%);
-}
-
-:deep(.ais-SearchBox-submit) {
-  left: 0.5rem;
-}
-
-:deep(.ais-SearchBox-reset) {
-  right: 0.5rem;
-}
-
-:deep(.ais-Hits-list) {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-:deep(.ais-Pagination-list) {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-:deep(.ais-Pagination-link) {
-  display: grid;
-  min-width: 2.25rem;
-  height: 2.25rem;
-  place-items: center;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-btn);
-  color: var(--fg-muted);
-}
-
-:deep(.ais-Pagination-item--selected .ais-Pagination-link) {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
-}
-</style>
