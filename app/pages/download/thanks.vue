@@ -208,7 +208,7 @@ useSeoMeta({
 
 <template>
   <div class="site-container py-10 sm:py-14">
-    <div class="mx-auto max-w-3xl">
+    <div class="mx-auto max-w-[58rem]">
       <button
         type="button"
         class="inline-flex items-center gap-1.5 text-caption text-fg-muted transition-colors hover:text-fg"
@@ -227,7 +227,7 @@ useSeoMeta({
       </header>
 
       <template v-if="ready && selectionValid">
-        <div class="mx-auto mt-8 max-w-xl rounded-panel border border-border bg-surface-1 p-5 text-left">
+        <div class="mx-auto mt-8 max-w-[43.5rem] rounded-panel border border-border bg-surface-1 p-5 text-left">
           <div class="flex items-center gap-3">
             <span class="grid size-10 shrink-0 place-items-center rounded-card bg-accent/10 text-accent">
               <Icon name="lucide:package" class="size-5" aria-hidden="true" />
@@ -259,7 +259,7 @@ useSeoMeta({
           </p>
         </div>
 
-        <dl class="mx-auto mt-4 grid max-w-xl gap-3 text-left sm:grid-cols-2">
+        <dl class="mx-auto mt-4 grid max-w-[43.5rem] gap-3 text-left sm:grid-cols-2">
           <div class="rounded-card border border-border p-3">
             <dt class="text-micro font-semibold tracking-[0.12em] text-fg-subtle uppercase">
               {{ t('download.resultChecksum') }}
@@ -288,7 +288,7 @@ useSeoMeta({
         </dl>
 
         <div
-          class="mx-auto mt-4 flex max-w-xl flex-wrap items-center justify-between gap-3 border-t border-divider pt-4"
+          class="mx-auto mt-4 flex max-w-[43.5rem] flex-wrap items-center justify-between gap-3 border-t border-divider pt-4"
         >
           <div class="flex flex-wrap gap-x-4 gap-y-1">
             <a
@@ -314,7 +314,7 @@ useSeoMeta({
         <p class="mt-3 text-center text-micro text-fg-subtle">{{ t('download.sourceLabel') }}: {{ sourceName }}</p>
       </template>
 
-      <section class="mx-auto mt-14 max-w-3xl">
+      <section class="mx-auto mt-14 max-w-[58rem]">
         <h2 class="text-center text-card font-semibold">{{ t('download.thanksNext') }}</h2>
         <div class="mt-5 grid gap-3 sm:grid-cols-3">
           <NuxtLink
@@ -340,7 +340,7 @@ useSeoMeta({
         </div>
       </section>
 
-      <div class="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-3">
+      <div class="mx-auto mt-10 flex max-w-[58rem] flex-wrap items-center justify-center gap-3">
         <BaseButton :to="localePath({ path: '/' })" variant="secondary">
           {{ t('nav.home') }}
         </BaseButton>
