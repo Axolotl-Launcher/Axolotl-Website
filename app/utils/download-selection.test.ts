@@ -23,7 +23,7 @@ describe('isDownloadPlatform', () => {
 
 describe('isDownloadFormat', () => {
   it('accepts supported formats', () => {
-    for (const format of ['installer', 'dmg', 'appimage', 'deb', 'rpm']) {
+    for (const format of ['installer', 'portable', 'dmg', 'appimage', 'deb', 'rpm']) {
       expect(isDownloadFormat(format)).toBe(true)
     }
   })
@@ -48,6 +48,7 @@ describe('downloadFormatMatches', () => {
     expect(downloadFormatMatches('linux', 'rpm')).toBe(true)
     expect(downloadFormatMatches('linux', 'installer')).toBe(false)
     expect(downloadFormatMatches('windows', 'installer')).toBe(true)
+    expect(downloadFormatMatches('windows', 'portable')).toBe(true)
     expect(downloadFormatMatches('windows', 'dmg')).toBe(false)
     expect(downloadFormatMatches('mac', 'dmg')).toBe(true)
     expect(downloadFormatMatches('mac', 'appimage')).toBe(false)

@@ -59,6 +59,7 @@ const platformName = computed(() => {
 const formatName = computed(() => {
   const names: Record<DownloadFormat, string> = {
     installer: t('download.formatInstaller'),
+    portable: t('download.formatPortable'),
     dmg: t('download.formatDmg'),
     appimage: t('download.formatAppImage'),
     deb: t('download.formatDeb'),
@@ -68,6 +69,7 @@ const formatName = computed(() => {
 })
 
 const installHint = computed(() => {
+  if (format.value === 'portable') return t('download.portableHint')
   const hints: Record<DownloadPlatform, string> = {
     windows: t('download.windowsHint'),
     mac: t('download.macHint'),

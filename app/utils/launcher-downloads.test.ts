@@ -19,6 +19,10 @@ const release: LauncherRelease = {
       relative_path: 'dist/1.11.0/Axolotl_1.11.0_x64-setup.exe',
     },
     {
+      name: 'Axolotl_Launcher_1.11.0_x64_portable.zip',
+      relative_path: 'dist/1.11.0/Axolotl_Launcher_1.11.0_x64_portable.zip',
+    },
+    {
       name: 'Axolotl_1.11.0_universal.dmg',
       relative_path: 'dist/1.11.0/Axolotl_1.11.0_universal.dmg',
     },
@@ -42,6 +46,7 @@ describe('launcher downloads', () => {
     const links = resolveLauncherDownloads(release, 'update-server', sources)
     expect(links).toEqual({
       windows: 'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_x64-setup.exe',
+      portable: 'https://dist.axlmc.org/dist/1.11.0/Axolotl_Launcher_1.11.0_x64_portable.zip',
       mac: 'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_universal.dmg',
       appImage: 'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_amd64.AppImage',
       deb: 'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_amd64.deb',
@@ -52,6 +57,7 @@ describe('launcher downloads', () => {
   it('returns null when a platform is absent', () => {
     expect(resolveLauncherDownloads(null, 'github', sources)).toEqual({
       windows: null,
+      portable: null,
       mac: null,
       appImage: null,
       deb: null,

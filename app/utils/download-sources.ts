@@ -1,3 +1,5 @@
+import { isValid } from 'verkit'
+
 export type ReleaseChannel = 'release' | 'beta'
 
 export interface ReleaseAsset {
@@ -128,13 +130,11 @@ function relativePath(
 
 export function normalizeDownloadCatalog(payload: unknown, endpoints: DownloadEndpoints): LauncherRelease | null {
   if (payload === null || payload === undefined || payload === '') return null
-  const versionPattern =
-    /^[0-9]+[.][0-9]+[.][0-9]+(?:-[0-9A-Za-z-]+(?:[.][0-9A-Za-z-]+)*)?(?:[+][0-9A-Za-z-]+(?:[.][0-9A-Za-z-]+)*)?$/
   if (
     !record(payload) ||
     typeof payload.version !== 'string' ||
     payload.version !== payload.version.trim() ||
-    !versionPattern.test(payload.version) ||
+    !isValid(payload.version) ||
     !Array.isArray(payload.downloads)
   ) {
     throw new Error('Invalid Update Server download catalog')

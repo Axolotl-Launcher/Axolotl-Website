@@ -1,11 +1,12 @@
 export type DownloadPlatform = 'windows' | 'mac' | 'linux'
-export type DownloadFormat = 'installer' | 'dmg' | 'appimage' | 'deb' | 'rpm'
+export type DownloadFormat = 'installer' | 'portable' | 'dmg' | 'appimage' | 'deb' | 'rpm'
 
 export const DOWNLOAD_PLATFORMS: readonly DownloadPlatform[] = ['windows', 'mac', 'linux']
-export const DOWNLOAD_FORMATS: readonly DownloadFormat[] = ['installer', 'dmg', 'appimage', 'deb', 'rpm']
+export const DOWNLOAD_FORMATS: readonly DownloadFormat[] = ['installer', 'portable', 'dmg', 'appimage', 'deb', 'rpm']
 
 export const DOWNLOAD_LINK_KEY_BY_FORMAT = {
   installer: 'windows',
+  portable: 'portable',
   dmg: 'mac',
   appimage: 'appImage',
   deb: 'deb',
@@ -29,5 +30,5 @@ export function defaultFormatForPlatform(platform: DownloadPlatform): DownloadFo
 export function downloadFormatMatches(platform: DownloadPlatform, format: DownloadFormat) {
   if (platform === 'linux') return format === 'appimage' || format === 'deb' || format === 'rpm'
   if (platform === 'mac') return format === 'dmg'
-  return format === 'installer'
+  return format === 'installer' || format === 'portable'
 }

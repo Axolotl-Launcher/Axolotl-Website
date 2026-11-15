@@ -37,6 +37,7 @@ export function resolveLauncherDownloads(
 
   return {
     windows: findAsset([/x64-setup\.exe$/i, /\.exe$/i]),
+    portable: findAsset([/x64_portable\.zip$/i, /portable\.zip$/i]),
     mac: findAsset([/universal\.dmg$/i, /\.dmg$/i]),
     appImage: findAsset([/(amd64|x86_64)\.AppImage$/i]),
     deb: findAsset([/_amd64\.deb$/i, /(amd64|x86_64).*\.deb$/i]),

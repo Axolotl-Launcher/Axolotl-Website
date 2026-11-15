@@ -35,11 +35,22 @@ const channels = computed<{ value: ReleaseChannel; label: string }[]>(() => [
   { value: 'beta', label: t('download.beta') },
 ])
 
-const linuxFormats = computed<{ value: DownloadFormat; label: string }[]>(() => [
-  { value: 'appimage', label: t('download.formatAppImage') },
-  { value: 'deb', label: t('download.formatDeb') },
-  { value: 'rpm', label: t('download.formatRpm') },
-])
+const formatOptions = computed<{ value: DownloadFormat; label: string }[]>(() => {
+  if (platform.value === 'windows') {
+    return [
+      { value: 'installer', label: t('download.formatInstaller') },
+      { value: 'portable', label: t('download.formatPortable') },
+    ]
+  }
+  if (platform.value === 'linux') {
+    return [
+      { value: 'appimage', label: t('download.formatAppImage') },
+      { value: 'deb', label: t('download.formatDeb') },
+      { value: 'rpm', label: t('download.formatRpm') },
+    ]
+  }
+  return []
+})
 
 const detectedPlatformName = computed(() => platforms.value.find((item) => item.id === recommended.value)?.name ?? '')
 
@@ -52,6 +63,7 @@ const selectedPlatform = computed(
 const formatLabel = computed(() => {
   const labels: Record<DownloadFormat, string> = {
     installer: t('download.formatInstaller'),
+    portable: t('download.formatPortable'),
     dmg: t('download.formatDmg'),
     appimage: t('download.formatAppImage'),
     deb: t('download.formatDeb'),
@@ -255,11 +267,11 @@ useSeoMeta({
                   </div>
                 </fieldset>
 
-                <fieldset v-if="platform === 'linux'" class="mt-6">
+                <fieldset v-if="formatOptions.length" class="mt-6">
                   <legend class="text-caption font-semibold">{{ t('download.formatLabel') }}</legend>
-                  <div class="mt-2 grid grid-cols-3 gap-2">
+                  <div class="mt-2 grid gap-2" :class="formatOptions.length === 3 ? 'grid-cols-3' : 'grid-cols-2'">
                     <button
-                      v-for="option in linuxFormats"
+                      v-for="option in formatOptions"
                       :key="option.value"
                       type="button"
                       class="h-10 rounded-btn border text-caption font-semibold transition-colors"

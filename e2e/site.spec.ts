@@ -5,6 +5,10 @@ const releaseFixture = {
   release_tag: 'v1.11.0',
   downloads: [
     { filename: 'Axolotl_1.11.0_x64-setup.exe', relative_path: 'dist/1.11.0/Axolotl_1.11.0_x64-setup.exe' },
+    {
+      filename: 'Axolotl_Launcher_1.11.0_x64_portable.zip',
+      relative_path: 'dist/1.11.0/Axolotl_Launcher_1.11.0_x64_portable.zip',
+    },
     { filename: 'Axolotl_1.11.0_universal.dmg', relative_path: 'dist/1.11.0/Axolotl_1.11.0_universal.dmg' },
     { filename: 'Axolotl_1.11.0_amd64.AppImage', relative_path: 'dist/1.11.0/Axolotl_1.11.0_amd64.AppImage' },
     { filename: 'Axolotl_1.11.0_amd64.deb', relative_path: 'dist/1.11.0/Axolotl_1.11.0_amd64.deb' },

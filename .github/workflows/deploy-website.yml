@@ -78,7 +78,7 @@ jobs:
             assert(typeof entry.version === 'string' && entry.version, `Catalog entry ${entry.id} has no version`)
           }
           const latest = JSON.parse(fs.readFileSync('releases/latest.json', 'utf8'))
-          assert(/^v\d+\.\d+\.\d+$/.test(latest.tag_name), `Unexpected stable tag ${latest.tag_name}`)
+          assert(isValid(latest.tag_name.replace(/^v/, '')), `Unexpected stable tag ${latest.tag_name}`)
           assert(Array.isArray(latest.assets) && latest.assets.length > 0, 'Latest release lists no assets')
           NODE
 
@@ -127,6 +127,7 @@ jobs:
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
+          import { isValid } from 'verkit'
           for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'terms/index.html', 'privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
             assert(fs.existsSync(`.output/public/${page}`), `Missing prerendered page: ${page}`)
           }
