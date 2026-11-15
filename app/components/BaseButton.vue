@@ -23,11 +23,14 @@ const props = withDefaults(
   },
 )
 
+// The colour utilities are written as arbitrary properties: tailwind-merge
+// treats custom text-size tokens such as `text-caption` as text colours, so a
+// normal `text-on-accent` would be dropped when the size class is merged in.
 const variants: Record<Variant, string> = {
   primary:
-    'bg-accent text-on-accent shadow-[0_10px_30px_-12px_var(--accent-glow)] hover:bg-accent-strong active:translate-y-px',
-  secondary: 'border border-border bg-surface-1 text-fg hover:border-border-strong hover:bg-surface-2',
-  ghost: 'text-fg-muted hover:bg-surface-2 hover:text-fg',
+    'bg-accent [color:var(--on-accent)] shadow-[0_10px_30px_-12px_var(--accent-glow)] hover:bg-accent-strong active:translate-y-px',
+  secondary: 'border border-border bg-surface-1 [color:var(--fg)] hover:border-border-strong hover:bg-surface-2',
+  ghost: '[color:var(--fg-muted)] hover:bg-surface-2 hover:text-fg',
 }
 
 const sizes: Record<Size, string> = {
