@@ -6,17 +6,25 @@ const route = useRoute()
 
 const menuDialog = ref<HTMLDialogElement | null>(null)
 
-// Collapse the full-width bar into a floating pill while scrolling down; the
-// full header comes back as soon as the reader scrolls up or reaches the top.
+// The header changes shape only when the reader crosses 12% of the page,
+// regardless of scroll direction. Short pages never reach the threshold.
 const { y } = useWindowScroll()
 const collapsed = ref(false)
-let previousScrollY = 0
 
-watch(y, (value) => {
-  if (value <= 16) collapsed.value = false
-  else if (value > previousScrollY + 4) collapsed.value = true
-  else if (value < previousScrollY - 4) collapsed.value = false
-  previousScrollY = value
+function syncHeader() {
+  if (!import.meta.client) return
+  collapsed.value = window.scrollY > document.documentElement.scrollHeight * 0.12
+}
+
+watch(y, syncHeader)
+
+onMounted(() => {
+  syncHeader()
+  window.addEventListener('resize', syncHeader)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', syncHeader)
 })
 
 const nav = computed(() => [
@@ -59,8 +67,10 @@ watch(
     style="view-transition-name: site-header"
   >
     <div class="site-container flex h-16 items-center">
-      <div
-        class="flex items-center gap-4"
+      <Motion
+        layout
+        :transition="{ type: 'spring', stiffness: 300, damping: 30, mass: 0.7 }"
+        class="flex items-center gap-4 transition-[background-color,border-color,border-radius,padding] duration-300 motion-reduce:transition-none"
         :class="
           collapsed
             ? 'mx-auto h-12 w-fit max-w-full gap-2 rounded-pill border border-border/70 bg-surface-0/95 px-4 backdrop-blur-2xl'
@@ -106,7 +116,7 @@ watch(
             <Icon name="lucide:menu" class="size-5" />
           </button>
         </div>
-      </div>
+      </Motion>
     </div>
 
     <dialog
