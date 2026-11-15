@@ -101,38 +101,46 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
   <div class="docs-search">
     <button
       type="button"
-      class="flex h-9 w-full items-center gap-2 rounded-btn border border-border bg-surface-2 px-2.5 text-left text-caption text-fg-subtle transition-colors hover:border-border-strong hover:text-fg"
+      class="docs-search-trigger group flex h-9 w-full items-center gap-2 rounded-btn border border-border bg-surface-2/80 px-2.5 text-left text-caption text-fg-subtle shadow-[inset_0_1px_0_rgb(255_255_255/0.04)] transition-colors hover:border-border-strong hover:bg-surface-2 hover:text-fg"
       :aria-label="t('docs.searchPlaceholder')"
       aria-haspopup="dialog"
       @click="openDialog"
     >
-      <Icon name="lucide:search" class="size-3.5 shrink-0" aria-hidden="true" />
+      <Icon
+        name="lucide:search"
+        class="size-3.5 shrink-0 text-fg-subtle transition-colors group-hover:text-accent"
+        aria-hidden="true"
+      />
       <span class="truncate">{{ t('docs.searchPlaceholder') }}</span>
     </button>
 
     <dialog
       ref="dialog"
-      class="m-auto max-h-[80dvh] w-[min(42rem,calc(100vw-2rem))] overflow-hidden rounded-panel border border-border bg-surface-0 p-0 text-fg shadow-floating backdrop:bg-black/50"
+      class="m-auto max-h-[80dvh] w-[min(42rem,calc(100vw-2rem))] overflow-hidden rounded-panel border border-border bg-surface-1/95 p-0 text-fg shadow-floating backdrop-blur-xl backdrop:bg-black/50"
       :aria-label="t('docs.searchPlaceholder')"
       @close="onDialogClosed"
       @click="onDialogClick"
     >
-      <div class="flex flex-col" @click.stop>
-        <div class="flex items-center gap-2 border-b border-divider px-3 py-2.5">
-          <Icon name="lucide:search" class="size-4 shrink-0 text-fg-subtle" aria-hidden="true" />
+      <div class="flex max-h-[80dvh] flex-col" @click.stop>
+        <div
+          class="flex items-center gap-2.5 border-b border-divider px-4 py-3 transition-colors focus-within:bg-surface-2/40"
+        >
+          <span class="grid size-8 shrink-0 place-items-center rounded-btn bg-accent/10 text-accent">
+            <Icon name="lucide:search" class="size-4" aria-hidden="true" />
+          </span>
           <input
             ref="searchInput"
             v-model="query"
             type="search"
+            class="docs-search-input h-9 min-w-0 flex-1 bg-transparent text-body text-fg placeholder:text-fg-subtle"
             :aria-label="t('docs.searchPlaceholder')"
             :placeholder="t('docs.searchPlaceholder')"
             autocomplete="off"
             spellcheck="false"
-            class="h-9 min-w-0 flex-1 bg-transparent text-body text-fg placeholder:text-fg-subtle focus:outline-none"
           />
           <button
             type="button"
-            class="grid size-8 shrink-0 place-items-center rounded-btn text-fg-subtle transition-colors hover:bg-surface-2 hover:text-fg"
+            class="grid size-8 shrink-0 place-items-center rounded-btn border border-transparent text-fg-subtle transition-colors hover:border-border hover:bg-surface-2 hover:text-fg"
             :aria-label="t('docs.closeSearch')"
             @click="closeDialog"
           >
@@ -140,34 +148,76 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
           </button>
         </div>
 
-        <div class="max-h-[60vh] overflow-y-auto p-2" data-lenis-prevent>
-          <p v-if="loading" class="px-2 py-2 text-caption text-fg-subtle">{{ t('docs.searchLoading') }}</p>
-          <p v-else-if="failed" class="px-2 py-2 text-caption text-fg-subtle">{{ t('docs.searchError') }}</p>
+        <div class="min-h-0 flex-1 overflow-y-auto p-2" data-lenis-prevent>
+          <p v-if="loading" class="px-3 py-3 text-caption text-fg-subtle">{{ t('docs.searchLoading') }}</p>
+          <p v-else-if="failed" class="px-3 py-3 text-caption text-fg-subtle">{{ t('docs.searchError') }}</p>
           <template v-else>
-            <p v-if="query.trim()" class="px-2 py-1 text-micro text-fg-subtle">
+            <p
+              v-if="query.trim()"
+              class="px-3 py-1.5 text-micro font-semibold tracking-[0.12em] text-fg-subtle uppercase"
+            >
               {{ t('docs.searchResults', { count: results.length }) }}
             </p>
-            <ul v-if="results.length" class="space-y-0.5">
+            <ul v-if="results.length" class="space-y-1">
               <li v-for="hit in results" :key="hit.id">
                 <NuxtLink
                   :to="localePath({ path: hit.url })"
-                  class="block rounded-btn px-2 py-2 text-caption text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                  class="group flex items-start gap-2.5 rounded-btn px-2.5 py-2 transition-colors hover:bg-surface-2"
                   @click="closeDialog"
                 >
-                  <span class="block font-semibold text-fg">{{ hit.title }}</span>
-                  <span v-if="hit.description" class="mt-0.5 block truncate text-micro text-fg-subtle">
-                    {{ hit.description }}
+                  <span
+                    class="mt-0.5 grid size-7 shrink-0 place-items-center rounded-btn bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-on-accent"
+                  >
+                    <Icon name="lucide:file-text" class="size-3.5" aria-hidden="true" />
+                  </span>
+                  <span class="min-w-0">
+                    <span class="block text-caption font-semibold text-fg">{{ hit.title }}</span>
+                    <span v-if="hit.description" class="mt-0.5 line-clamp-2 block text-micro text-fg-subtle">
+                      {{ hit.description }}
+                    </span>
                   </span>
                 </NuxtLink>
               </li>
             </ul>
-            <p v-else-if="query.trim()" class="px-2 py-2 text-caption text-fg-muted">
-              {{ t('docs.searchEmpty') }}
-            </p>
-            <p v-else class="px-2 py-2 text-caption text-fg-subtle">{{ t('docs.searchHint') }}</p>
+            <div v-else-if="query.trim()" class="flex flex-col items-center gap-2 px-4 py-10 text-center">
+              <span class="grid size-10 place-items-center rounded-full bg-surface-2 text-fg-subtle">
+                <Icon name="lucide:search-x" class="size-5" aria-hidden="true" />
+              </span>
+              <p class="text-caption text-fg-muted">{{ t('docs.searchEmpty') }}</p>
+            </div>
+            <div v-else class="flex flex-col items-center gap-2 px-4 py-10 text-center">
+              <span class="grid size-10 place-items-center rounded-full bg-accent/10 text-accent">
+                <Icon name="lucide:book-open" class="size-5" aria-hidden="true" />
+              </span>
+              <p class="text-caption text-fg-subtle">{{ t('docs.searchHint') }}</p>
+            </div>
           </template>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-divider px-3 py-2 text-micro text-fg-subtle">
+          <span>{{ t('docs.title') }}</span>
+          <span class="flex items-center gap-1.5">
+            <kbd class="rounded border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[0.65rem]">Esc</kbd>
+            {{ t('docs.closeSearch') }}
+          </span>
         </div>
       </div>
     </dialog>
   </div>
 </template>
+
+<style scoped>
+.docs-search-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+.docs-search-input:focus-visible {
+  outline: none;
+}
+
+.docs-search-input::-webkit-search-cancel-button,
+.docs-search-input::-ms-clear {
+  display: none;
+}
+</style>
