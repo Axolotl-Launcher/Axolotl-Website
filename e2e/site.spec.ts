@@ -22,7 +22,6 @@ test.describe('site shell', () => {
       '/changelog',
       '/demo',
       '/support',
-      '/thanks',
       '/privacy',
       '/terms',
     ]
@@ -77,27 +76,77 @@ test.describe('content', () => {
     await expect(page.locator('.prose h2')).toHaveCount(4)
   })
 
-  test('shows the knowledge-base sync state when Feishu has not been synced', async ({ page }) => {
+  test('lists synced knowledge-base documents and opens one', async ({ page }) => {
     await page.goto('/docs')
-    await expect(page.locator('h1')).toBeVisible()
-    await expect(page.getByText(/飞书|Feishu/).first()).toBeVisible()
+    await expect(page.getByRole('heading', { name: '欢迎使用 Axolotl Launcher' })).toBeVisible()
+
+    await page.getByRole('link', { name: '欢迎使用 Axolotl Launcher' }).first().click()
+    await expect(page).toHaveURL(/\/docs\/getting-started$/)
+    await expect(page.locator('h1')).toContainText('欢迎使用 Axolotl Launcher')
+  })
+})
+
+test.describe('support', () => {
+  test('requests a checkout URL through the support API', async ({ page }) => {
+    await page.route('**/api/support/checkout/coffee.json', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ url: '/support?checkout=coffee' }),
+      }),
+    )
+
+    await page.goto('/support')
+    await page.getByRole('button', { name: /请开发者喝杯咖啡/ }).click()
+    await expect(page).toHaveURL(/checkout=coffee/)
   })
 })
 
 test.describe('downloads', () => {
   test('renders download links from the update-server catalogue', async ({ page }) => {
+    let artifactHits = 0
     await page.route('**/api/downloads/latest?channel=*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
     )
+    await page.route('**/dist/1.11.0/**', (route) => {
+      artifactHits += 1
+      return route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' })
+    })
     await page.goto('/download')
     await expect(page.getByText('1.11.0')).toBeVisible()
-    await expect(page.getByRole('link', { name: /Windows/i })).toHaveAttribute(
+    await page.getByRole('button', { name: '继续' }).click()
+    await page.getByRole('button', { name: '继续' }).click()
+    await page.getByRole('button', { name: '下载', exact: true }).click()
+    await expect(page).toHaveURL(/\/download\/thanks/)
+    await expect(page.getByRole('heading', { name: '感谢下载 Axolotl' })).toBeVisible()
+    await expect(page.getByRole('link', { name: '直接下载链接' })).toHaveAttribute(
       'href',
       'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_x64-setup.exe',
     )
-    await expect(page.getByRole('link', { name: /macOS/i })).toHaveAttribute(
-      'href',
-      'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_universal.dmg',
-    )
+    await expect.poll(() => artifactHits).toBeGreaterThan(0)
+  })
+
+  test.describe('unsupported device', () => {
+    test.use({
+      userAgent:
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    })
+
+    test('falls back to the Windows download', async ({ page }) => {
+      await page.route('**/api/downloads/latest?channel=*', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
+      )
+      await page.route('**/dist/1.11.0/**', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' }),
+      )
+      await page.goto('/download')
+      await expect(page.getByText('1.11.0')).toBeVisible()
+      await expect(page.getByText(/未识别到受支持的桌面系统/)).toBeVisible()
+      await page.getByRole('button', { name: '继续' }).click()
+      await page.getByRole('button', { name: '继续' }).click()
+      await page.getByRole('button', { name: '下载', exact: true }).click()
+      await expect(page).toHaveURL(/\/download\/thanks/)
+      await expect(page.getByRole('heading', { name: '感谢下载 Axolotl' })).toBeVisible()
+    })
   })
 })
