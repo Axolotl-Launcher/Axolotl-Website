@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import type { DownloadSource, ReleaseChannel } from '~/utils/download-sources'
+import type { DownloadSourceId, ReleaseChannel } from '~/utils/download-sources'
 import { isDownloadSource } from '~/utils/download-sources'
+import { resolveLauncherDownloads } from '~/utils/launcher-downloads'
+import {
+  pickFastestSource,
+  probeDownloadSources,
+  type DownloadCandidate,
+  type DownloadProbeResult,
+} from '~/utils/download-probe'
 import {
   defaultFormatForPlatform,
   downloadFormatMatches,
@@ -20,8 +27,8 @@ const step = ref(0)
 const platform = ref<DownloadPlatform>('windows')
 const format = ref<DownloadFormat>('installer')
 
-const { release, links, status, refresh } = useLauncherDownloads(channel)
-const { selectedSource, setDownloadSource } = useDownloadSource()
+const { release, status, refresh } = useLauncherDownloads(channel)
+const { selectedSource, sources, setDownloadSource } = useDownloadSource()
 const { platform: recommended, isFallback } = useRecommendedPlatform()
 
 const platforms = computed(() => [
@@ -80,34 +87,107 @@ const versionText = computed(() => {
   return release.value ? t('download.latestVersion', { version: release.value.version }) : t('download.unavailable')
 })
 
-const sourceOptions = computed(() => [
-  { value: 'auto' as const, label: t('download.sourceAuto') },
-  { value: 'update-server' as const, label: t('download.sourceUpdateServer') },
-  { value: 'github' as const, label: t('download.sourceGithub') },
-  { value: 'gitlink' as const, label: t('download.sourceGitlink') },
-])
+const sourceLabels = computed<Record<DownloadSourceId, string>>(() => ({
+  'update-server': t('download.sourceUpdateServer'),
+  github: t('download.sourceGithub'),
+  gitlink: t('download.sourceGitlink'),
+}))
 
-const sourceDescription = computed(() => {
-  const descriptions: Record<DownloadSource, string> = {
-    auto: t('download.sourceAutoDescription'),
-    'update-server': t('download.sourceUpdateServerDescription'),
-    github: t('download.sourceGithubDescription'),
-    gitlink: t('download.sourceGitlinkDescription'),
-  }
-  return descriptions[selectedSource.value]
+const sourceDescriptions = computed<Record<DownloadSourceId, string>>(() => ({
+  'update-server': t('download.sourceUpdateServerDescription'),
+  github: t('download.sourceGithubDescription'),
+  gitlink: t('download.sourceGitlinkDescription'),
+}))
+
+const probeResults = ref<DownloadProbeResult[]>([])
+const probing = ref(false)
+let probeRun = 0
+
+const linkKey = computed(() => DOWNLOAD_LINK_KEY_BY_FORMAT[format.value])
+
+const probeCandidates = computed<DownloadCandidate[]>(() => {
+  if (!release.value) return []
+  return sources.flatMap((source) => {
+    const url = resolveLauncherDownloads(release.value, source.id, sources)[linkKey.value]
+    return url ? [{ id: source.id, url }] : []
+  })
 })
 
-const isLastStep = computed(() => step.value === stepLabels.value.length - 1)
+const bestProbe = computed(() => probeResults.value.find((result) => result.ok) ?? null)
 
-const selectedLink = computed(() => links.value[DOWNLOAD_LINK_KEY_BY_FORMAT[format.value]])
+const effectiveSource = computed<DownloadSourceId>(() =>
+  selectedSource.value === 'auto' ? pickFastestSource(probeResults.value, 'update-server') : selectedSource.value,
+)
+
+const selectedLink = computed(() => {
+  if (!release.value) return null
+  return resolveLauncherDownloads(release.value, effectiveSource.value, sources)[linkKey.value]
+})
+
+async function refreshProbe() {
+  if (step.value !== 2 || selectedSource.value !== 'auto' || probeCandidates.value.length < 2) {
+    probeRun += 1
+    probeResults.value = []
+    probing.value = false
+    return
+  }
+
+  const run = ++probeRun
+  probing.value = true
+  const results = await probeDownloadSources(probeCandidates.value, { timeoutMs: 2000 })
+  if (run !== probeRun) return
+  probeResults.value = results
+  probing.value = false
+}
+
+watch([probeCandidates, selectedSource, step], refreshProbe, { immediate: true })
+
+onBeforeUnmount(() => {
+  probeRun += 1
+})
+
+function sourceMeta(id: DownloadSourceId) {
+  const result = probeResults.value.find((entry) => entry.id === id)
+  if (!result) return undefined
+  return result.ok ? `${result.latencyMs} ms` : t('download.sourceUnavailable')
+}
+
+const autoMeta = computed(() => {
+  if (selectedSource.value !== 'auto') return undefined
+  if (probing.value) return t('download.sourceProbing')
+  const best = bestProbe.value
+  if (!best) return undefined
+  return t('download.sourceFastest', {
+    source: sourceLabels.value[best.id],
+    latency: best.latencyMs,
+  })
+})
+
+const sourceOptions = computed(() => [
+  {
+    value: 'auto' as const,
+    label: t('download.sourceAuto'),
+    description: t('download.sourceAutoDescription'),
+    meta: autoMeta.value,
+  },
+  ...(['update-server', 'github', 'gitlink'] as const).map((id) => ({
+    value: id,
+    label: sourceLabels.value[id],
+    description: sourceDescriptions.value[id],
+    meta: sourceMeta(id),
+    unavailable: probeResults.value.find((entry) => entry.id === id)?.ok === false,
+  })),
+])
+
+const selectedSourceDescription = computed(
+  () => sourceOptions.value.find((option) => option.value === selectedSource.value)?.description ?? '',
+)
+
+const isLastStep = computed(() => step.value === stepLabels.value.length - 1)
 
 function selectPlatform(value: DownloadPlatform) {
   platform.value = value
   format.value = defaultFormatForPlatform(value)
-}
-
-function onSourceChange(event: Event) {
-  setDownloadSource((event.target as HTMLSelectElement).value as DownloadSource)
 }
 
 function next() {
@@ -125,7 +205,7 @@ function startDownload() {
       platform: platform.value,
       channel: channel.value,
       format: format.value,
-      source: selectedSource.value,
+      source: effectiveSource.value,
       start: '1',
     },
   })
@@ -321,21 +401,14 @@ useSeoMeta({
                 </dl>
 
                 <div class="mt-5">
-                  <label for="download-source" class="text-caption font-semibold">
-                    {{ t('download.sourceLabel') }}
-                  </label>
-                  <select
-                    id="download-source"
-                    :value="selectedSource"
-                    class="mt-2 h-10 w-full rounded-btn border border-border bg-surface-2 px-3 text-caption text-fg"
-                    @change="onSourceChange"
-                  >
-                    <option v-for="option in sourceOptions" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </option>
-                  </select>
-                  <p class="mt-2 text-micro leading-relaxed text-fg-subtle">
-                    {{ sourceDescription }}
+                  <DownloadSourceSelect
+                    :model-value="selectedSource"
+                    :options="sourceOptions"
+                    :label="t('download.sourceLabel')"
+                    @update:model-value="setDownloadSource"
+                  />
+                  <p class="mt-2 text-micro leading-relaxed text-fg-subtle" aria-live="polite">
+                    {{ selectedSourceDescription }}
                   </p>
                 </div>
 
