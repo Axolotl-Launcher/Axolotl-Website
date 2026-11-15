@@ -31,7 +31,7 @@ const nav = computed(() => [
   { key: 'nav.home', to: localePath({ path: '/' }) },
   { key: 'nav.download', to: localePath({ path: '/download' }) },
   { key: 'nav.docs', to: localePath({ path: '/docs' }) },
-  { key: 'nav.articles', to: localePath({ path: '/articles' }) },
+  { key: 'nav.blog', to: localePath({ path: '/blog' }) },
   { key: 'nav.changelog', to: localePath({ path: '/changelog' }) },
   { key: 'nav.demo', to: localePath({ path: '/demo' }) },
   { key: 'nav.support', to: localePath({ path: '/support' }) },

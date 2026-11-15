@@ -25,9 +25,9 @@ function formatDate(value: string) {
 }
 
 useSeoMeta({
-  title: () => `${t('articles.title')}`,
+  title: () => `${t('articles.allTitle')}`,
   description: () => t('articles.lead'),
-  ogTitle: () => `${t('articles.title')}`,
+  ogTitle: () => `${t('articles.allTitle')}`,
   ogDescription: () => t('articles.lead'),
   ogType: 'website',
 })
@@ -39,15 +39,15 @@ useSeoMeta({
       <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
         {{ t('articles.eyebrow') }}
       </p>
-      <h1 class="mt-4 text-section">{{ t('articles.title') }}</h1>
+      <h1 class="mt-4 text-section">{{ t('articles.allTitle') }}</h1>
       <p class="mt-4 text-lead text-fg-muted">{{ t('articles.lead') }}</p>
     </header>
 
-    <div v-if="articles?.length" class="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+    <div v-if="articles?.length" class="mt-12 columns-1 gap-5 sm:columns-2 xl:columns-3">
       <article
         v-for="article in articles"
         :key="article.path"
-        class="group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface-1 transition-colors hover:border-border-strong"
+        class="group relative mb-5 flex break-inside-avoid flex-col overflow-hidden rounded-card border border-border bg-surface-1 transition-colors hover:border-border-strong"
       >
         <NuxtImg
           v-if="article.cover"
@@ -68,7 +68,7 @@ useSeoMeta({
           </div>
           <h2 class="mt-3 text-card font-semibold">
             <NuxtLink
-              :to="localePath({ path: `/articles/${articleSlug(article.path)}` })"
+              :to="localePath({ path: `/blog/${articleSlug(article.path)}` })"
               class="after:absolute after:inset-0"
             >
               {{ article.title }}

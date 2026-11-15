@@ -13,7 +13,8 @@
     "support": "支持",
     "terms": "服务条款",
     "privacy": "隐私政策",
-    "github": "GitHub"
+    "github": "GitHub",
+    "blog": "博客"
   },
   "common": {
     "building": "内容正在建设中。",
@@ -234,7 +235,8 @@
     "updated": "更新于 {date}",
     "backToArticles": "返回文章列表",
     "readingTime": "约 {minutes} 分钟",
-    "tags": "标签"
+    "tags": "标签",
+    "allTitle": "所有文章"
   },
   "legal": {
     "updated": "最后更新于 {date}",
@@ -286,5 +288,32 @@
     "title": "页面不存在",
     "description": "你访问的页面可能已移动或删除。",
     "action": "返回首页"
+  },
+  "blog": {
+    "eyebrow": "BLOG",
+    "lead": "开发日志、排错记录与长期维护笔记。",
+    "timeline": "更新与发布",
+    "updated": "更新",
+    "history": "历史快照",
+    "historyNotice": "你正在查看这篇文章的历史快照。",
+    "viewLatest": "查看最新版本",
+    "mainAuthor": "主要作者",
+    "coAuthors": "共同作者",
+    "coAuthorRole": "共同作者",
+    "license": "内容许可",
+    "licenseShort": "博客文字采用 CC BY-SA 4.0 许可。",
+    "licenseDetails": "许可说明",
+    "licenseTip": "你可以转载、改编这些文字，但需署名、注明是否修改，并以相同许可共享；完整条款以 Creative Commons 官方文本为准。",
+    "empty": "暂无博客文章。",
+    "indexTitle": "博客",
+    "articleIndex": "文章索引",
+    "latestUpdate": "最新更新",
+    "readMore": "阅读全文",
+    "allArticles": "所有文章",
+    "versions": "全部版本",
+    "versionsTitle": "版本历史",
+    "versionsLead": "这篇文章的所有历史快照。",
+    "backToArticle": "返回文章",
+    "licenseCitation": "引用：博客文字采用 CC BY-SA 4.0 许可；转载或改编需署名、注明修改，并以相同许可共享。"
   }
 }

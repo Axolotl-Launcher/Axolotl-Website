@@ -1,4 +1,4 @@
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -13,6 +13,16 @@ function launcherDemoEntry() {
     ? readdirSync(directory).find((name) => existsSync(join(directory, name, 'demo/index.html')))
     : undefined
   return version ? `/launcher-demo/${version}/demo/index.html` : ''
+}
+
+/** Latest blog versions, read from the index generated before Nuxt starts. */
+function blogPostRoutes() {
+  const file = fileURLToPath(new URL('./public/blog-index.json', import.meta.url))
+  if (!existsSync(file)) return []
+  const { posts } = JSON.parse(readFileSync(file, 'utf8')) as {
+    posts: { slug: string; locale: string }[]
+  }
+  return posts.flatMap((post) => (post.locale === 'zh-CN' ? [`/blog/${post.slug}`] : [`/en/blog/${post.slug}`]))
 }
 
 export default defineNuxtConfig({
@@ -233,6 +243,9 @@ export default defineNuxtConfig({
         '/en/terms',
         '/privacy',
         '/en/privacy',
+        '/blog',
+        '/en/blog',
+        ...blogPostRoutes(),
         '/llms.txt',
         '/api/support/checkout/coffee.json',
         '/api/support/checkout/token.json',

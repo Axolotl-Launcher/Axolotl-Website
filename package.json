@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt dev",
-    "build": "node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
-    "generate": "node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
+    "dev": "node scripts/build-blog-index.mjs && node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt dev",
+    "build": "node scripts/build-blog-index.mjs && node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
+    "generate": "node scripts/build-blog-index.mjs && node scripts/build-search-index.mjs && node scripts/fetch-launcher-demo.mjs && nuxt generate && node scripts/check-media.mjs",
     "check:media": "node scripts/check-media.mjs",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
