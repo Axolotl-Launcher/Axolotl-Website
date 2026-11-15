@@ -6,34 +6,39 @@ const localePath = useLocalePath()
 const config = useRuntimeConfig()
 
 const lang = computed(() => (locale.value === 'zh-CN' ? 'zh' : 'en'))
+const latestVersion = latestRelease.tag_name.replace(/^v/, '')
 
-const features = computed(() => [
-  {
-    number: '01',
-    title: t('home.sections.isolationTitle'),
-    body: t('home.sections.isolationBody'),
-    visual: 'strata',
-  },
-  {
-    number: '02',
-    title: t('home.sections.repairTitle'),
-    body: t('home.sections.repairBody'),
-    visual: 'repair',
-  },
-  {
-    number: '03',
-    title: t('home.sections.sourcesTitle'),
-    body: t('home.sections.sourcesBody'),
-    visual: 'sources',
-  },
-])
+const githubUrl = 'https://github.com/Axolotl-Launcher/Axolotl'
+const contributorsUrl = `${githubUrl}/graphs/contributors`
+const contributorsImage = 'https://contributors.hikarilink.org/image?repo=Axolotl-Launcher/Axolotl&columns=16'
 
 const posterVars = computed(() => ({
   '--poster-light': `url(/launcher-preview/poster-light-${lang.value}-2x.webp)`,
   '--poster-dark': `url(/launcher-preview/poster-dark-${lang.value}-2x.webp)`,
   '--poster-oled': `url(/launcher-preview/poster-oled-${lang.value}-2x.webp)`,
 }))
-const latestVersion = latestRelease.tag_name.replace(/^v/, '')
+
+const platforms = [
+  { icon: 'lucide:monitor', label: 'Windows' },
+  { icon: 'lucide:laptop', label: 'macOS' },
+  { icon: 'lucide:terminal', label: 'Linux' },
+]
+
+const pillars = computed(() => [
+  { icon: 'lucide:layers', title: t('home.sections.isolationTitle'), body: t('home.sections.isolationBody') },
+  { icon: 'lucide:shield-check', title: t('home.sections.repairTitle'), body: t('home.sections.repairBody') },
+  { icon: 'lucide:network', title: t('home.sections.sourcesTitle'), body: t('home.sections.sourcesBody') },
+])
+
+const gallery = computed(() => [
+  {
+    src: '/showcase/launcher-home.webp',
+    label: t('home.sections.galleryHome'),
+    span: 'sm:col-span-2 lg:col-span-8 lg:row-span-2',
+  },
+  { src: '/showcase/theme-accent-1280.webp', label: t('home.sections.galleryThemes'), span: 'lg:col-span-4' },
+  { src: '/showcase/recent-lab-1600.webp', label: t('home.sections.galleryLab'), span: 'lg:col-span-4' },
+])
 
 const flow = computed(() => [
   { number: '01', title: t('home.sections.flowInstall'), body: t('home.sections.flowInstallBody') },
@@ -79,262 +84,316 @@ useHead({
 
 <template>
   <div>
-    <section class="relative isolate overflow-hidden">
-      <div class="grid-lines pointer-events-none absolute inset-0 opacity-80" aria-hidden="true" />
+    <section
+      class="relative isolate -mt-16 flex min-h-svh flex-col justify-center overflow-hidden border-b border-divider"
+    >
+      <div class="grid-lines pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
       <div
-        class="pointer-events-none absolute top-[-18rem] left-1/2 size-[40rem] -translate-x-1/2 rounded-full bg-accent-glow blur-[100px]"
+        class="pointer-events-none absolute -top-56 right-[-12%] h-[44rem] w-[40rem] bg-[radial-gradient(closest-side,var(--accent-glow),transparent)] opacity-70 dark:opacity-100"
         aria-hidden="true"
       />
 
-      <div class="site-container relative pt-20 pb-16 sm:pt-28 sm:pb-20">
-        <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
-          {{ t('home.eyebrow') }}
-        </p>
-        <h1 class="mt-6 max-w-4xl text-hero">{{ t('home.title') }}</h1>
-        <p class="mt-6 max-w-2xl text-lead text-fg-muted">{{ t('home.lead') }}</p>
+      <div class="site-container relative pt-28 pb-16 lg:pt-28 lg:pb-20">
+        <div class="grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <p
+              class="inline-flex items-center gap-2.5 rounded-pill border border-border bg-surface-1/70 px-3.5 py-1.5 font-mono text-micro font-semibold tracking-[0.18em] text-fg-muted uppercase backdrop-blur"
+            >
+              <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
+              {{ t('home.eyebrow') }}
+              <span class="text-fg-subtle">v{{ latestVersion }}</span>
+            </p>
 
-        <div class="mt-9 flex flex-wrap items-center gap-3">
-          <BaseButton :to="localePath({ path: '/download' })" size="lg">
-            <Icon name="lucide:download" class="size-4" />
-            {{ t('home.primary') }}
-          </BaseButton>
-          <BaseButton :to="localePath({ path: '/docs' })" variant="secondary" size="lg">
-            <Icon name="lucide:book-open" class="size-4" />
-            {{ t('home.secondary') }}
-          </BaseButton>
+            <h1 class="mt-7 text-section text-balance">
+              {{ t('home.titleLead') }}
+              <span class="block text-accent">{{ t('home.titleAccent') }}</span>
+            </h1>
+
+            <p class="mt-6 max-w-xl text-lead text-fg-muted">
+              {{ t('home.lead') }}
+            </p>
+
+            <div class="mt-9 flex flex-wrap items-center gap-3">
+              <BaseButton :to="localePath({ path: '/download' })" size="lg">
+                <Icon name="lucide:download" class="size-4" />
+                {{ t('home.primary') }}
+              </BaseButton>
+              <BaseButton :to="localePath({ path: '/docs' })" variant="secondary" size="lg">
+                <Icon name="lucide:book-open" class="size-4" />
+                {{ t('home.secondary') }}
+              </BaseButton>
+            </div>
+
+            <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-caption text-fg-subtle">
+              <span v-for="platform in platforms" :key="platform.label" class="inline-flex items-center gap-1.5">
+                <Icon :name="platform.icon" class="size-3.5" aria-hidden="true" />
+                {{ platform.label }}
+              </span>
+              <span class="hidden h-3.5 w-px bg-divider sm:block" aria-hidden="true" />
+              <span class="inline-flex items-center gap-1.5">
+                <Icon name="lucide:code-xml" class="size-3.5" aria-hidden="true" />
+                {{ t('home.sections.capOpenTitle') }}
+              </span>
+            </div>
+          </div>
+
+          <figure
+            class="relative mx-auto w-full max-w-xl min-[1440px]:-mr-[5.25rem] min-[1440px]:w-[calc(100%+5.25rem)] lg:max-w-none"
+          >
+            <div class="absolute -inset-6 rounded-[2.5rem] bg-accent/10 blur-3xl" aria-hidden="true" />
+            <div class="glass relative rounded-panel p-1.5 shadow-floating">
+              <div
+                class="hero-poster w-full rounded-card border border-border/60"
+                role="img"
+                :aria-label="t('home.preview')"
+                :style="posterVars"
+              />
+            </div>
+            <figcaption class="sr-only">{{ t('home.preview') }}</figcaption>
+
+            <NuxtLink
+              :to="localePath({ path: '/changelog' })"
+              class="group absolute -bottom-5 left-5 hidden items-center gap-3 rounded-card border border-border bg-surface-1/95 px-4 py-3 shadow-raised backdrop-blur sm:flex"
+            >
+              <span class="grid size-9 place-items-center rounded-full bg-accent/10 text-accent">
+                <Icon name="lucide:git-commit-horizontal" class="size-4" aria-hidden="true" />
+              </span>
+              <span>
+                <span class="block text-caption font-semibold">v{{ latestVersion }}</span>
+                <span class="block text-micro tracking-[0.12em] text-fg-subtle uppercase">
+                  {{ t('nav.changelog') }}
+                </span>
+              </span>
+              <Icon
+                name="lucide:arrow-up-right"
+                class="ml-1 size-3.5 text-fg-subtle transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none"
+                aria-hidden="true"
+              />
+            </NuxtLink>
+          </figure>
         </div>
-
-        <p class="mt-4 flex items-center gap-2 text-caption text-fg-subtle">
-          <span class="inline-block size-1.5 rounded-full bg-accent" aria-hidden="true" />
-          {{ t('home.note') }}
-        </p>
       </div>
     </section>
 
-    <section class="site-container pb-section">
-      <figure class="overflow-hidden rounded-panel border border-border bg-surface-1 p-1.5 shadow-raised sm:p-2">
-        <div
-          class="hero-poster w-full rounded-card border border-border/70"
-          role="img"
-          :aria-label="t('home.preview')"
-          :style="posterVars"
-        />
-        <figcaption class="flex items-center justify-between gap-4 px-3 py-3 text-caption text-fg-subtle">
-          <span>{{ t('home.preview') }}</span>
-          <span class="font-mono text-micro tracking-[0.16em] uppercase">v{{ latestVersion }}</span>
-        </figcaption>
-      </figure>
-    </section>
-
     <section class="site-container py-section">
-      <header class="max-w-2xl">
-        <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
-          {{ t('home.sections.featuresEyebrow') }}
-        </p>
-        <h2 class="mt-4 text-section">{{ t('home.sections.featuresTitle') }}</h2>
-        <p class="mt-4 text-lead text-fg-muted">{{ t('home.sections.featuresLead') }}</p>
-      </header>
+      <div class="grid gap-8 lg:grid-cols-12 lg:gap-10">
+        <div class="lg:col-span-7">
+          <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+            {{ t('home.sections.featuresEyebrow') }}
+          </p>
+          <h2 class="mt-4 max-w-2xl text-section text-balance">{{ t('home.sections.featuresTitle') }}</h2>
+        </div>
+        <div class="lg:col-span-5 lg:pt-2">
+          <p class="text-body leading-relaxed text-fg-muted">{{ t('home.sections.featuresLead') }}</p>
+          <NuxtLink
+            :to="localePath({ path: '/docs' })"
+            class="group mt-5 inline-flex items-center gap-2 text-caption font-semibold text-accent transition-colors hover:text-accent-strong"
+          >
+            {{ t('home.secondary') }}
+            <Icon
+              name="lucide:arrow-right"
+              class="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none"
+              aria-hidden="true"
+            />
+          </NuxtLink>
+        </div>
+      </div>
 
-      <div class="mt-14 space-y-16 sm:space-y-20">
-        <article
-          v-for="(feature, index) in features"
-          :key="feature.number"
-          class="grid items-center gap-8 lg:grid-cols-2 lg:gap-14"
-        >
-          <div :class="index % 2 === 1 ? 'lg:order-2' : ''">
-            <p class="font-mono text-caption text-fg-subtle">{{ feature.number }}</p>
-            <h3 class="mt-3 text-section-sm">{{ feature.title }}</h3>
-            <p class="mt-4 max-w-lg text-body leading-relaxed text-fg-muted">{{ feature.body }}</p>
-          </div>
-
-          <div :class="index % 2 === 1 ? 'lg:order-1' : ''">
-            <div
-              v-if="feature.visual === 'strata'"
-              class="relative aspect-[4/3] overflow-hidden rounded-panel border border-border bg-surface-1 p-5"
-            >
-              <div class="absolute inset-x-10 top-8 h-20 rounded-card border border-border bg-surface-2 opacity-60" />
-              <div class="absolute inset-x-7 top-16 h-24 rounded-card border border-border bg-surface-3 opacity-80" />
-              <div class="relative mt-24 rounded-card border border-border-strong bg-surface-1 p-4 shadow-raised">
-                <div class="flex items-center justify-between">
-                  <span class="font-mono text-micro tracking-[0.18em] text-fg-subtle uppercase">Instance</span>
-                  <span class="rounded-full bg-emerald-500/10 px-2 py-0.5 font-mono text-micro text-emerald-500"
-                    >READY</span
-                  >
-                </div>
-                <p class="mt-3 font-semibold">1.21.5 · Fabric</p>
-                <div class="mt-4 flex flex-wrap gap-1.5">
-                  <span
-                    class="rounded-md border border-border bg-surface-2 px-2 py-1 font-mono text-micro text-fg-muted"
-                    >VERSION</span
-                  >
-                  <span
-                    class="rounded-md border border-border bg-surface-2 px-2 py-1 font-mono text-micro text-fg-muted"
-                    >MODS</span
-                  >
-                  <span
-                    class="rounded-md border border-border bg-surface-2 px-2 py-1 font-mono text-micro text-fg-muted"
-                    >CONFIG</span
-                  >
-                </div>
-              </div>
-              <div
-                class="absolute right-5 bottom-5 left-5 flex items-center justify-between border-t border-divider pt-3 font-mono text-micro text-fg-subtle"
-              >
-                <span>instance/1.21.5-fabric</span>
-                <span>isolated</span>
-              </div>
-            </div>
-
-            <div
-              v-else-if="feature.visual === 'repair'"
-              class="rounded-panel border border-border bg-surface-1 p-5 shadow-raised"
-            >
-              <div class="flex items-center gap-1.5" aria-hidden="true">
-                <span class="size-2 rounded-full bg-red-400/70" />
-                <span class="size-2 rounded-full bg-amber-400/70" />
-                <span class="size-2 rounded-full bg-emerald-400/70" />
-                <span class="ml-3 font-mono text-micro text-fg-subtle">preflight.log</span>
-              </div>
-              <div class="mt-5 space-y-2.5 font-mono text-caption">
-                <p class="flex items-center gap-2 text-fg-muted">
-                  <Icon name="lucide:check" class="size-3.5 text-emerald-500" /> libraries/asm-9.7.1.jar
-                </p>
-                <p class="flex items-center gap-2 text-fg-muted">
-                  <Icon name="lucide:check" class="size-3.5 text-emerald-500" /> assets/index-1.21.5.json
-                </p>
-                <p class="flex items-center gap-2 text-accent">
-                  <Icon name="lucide:refresh-cw" class="size-3.5 animate-spin motion-reduce:animate-none" /> fetching 3
-                  missing artifacts…
-                </p>
-                <p class="flex items-center gap-2 text-fg-muted">
-                  <Icon name="lucide:check" class="size-3.5 text-emerald-500" /> natives/1.21.5-natives
-                </p>
-                <p class="flex items-center gap-2 text-emerald-500">
-                  <Icon name="lucide:circle-check" class="size-3.5" /> instance ready in 1.8s
-                </p>
-              </div>
-              <div class="mt-5 border-t border-divider pt-3 font-mono text-micro text-fg-subtle">
-                <span class="text-accent">↻</span> resume from checkpoint
-              </div>
-            </div>
-
-            <div v-else class="space-y-3">
-              <div
-                v-for="source in [
-                  {
-                    name: 'update.axlmc.org',
-                    icon: 'lucide:server',
-                    width: 'w-[92%]',
-                    speed: '42 MB/s',
-                    state: 'active',
-                  },
-                  { name: 'github.com', icon: 'lucide:github', width: 'w-[64%]', speed: '28 MB/s', state: 'standby' },
-                  {
-                    name: 'gitlink.org.cn',
-                    icon: 'lucide:git-branch',
-                    width: 'w-[38%]',
-                    speed: '17 MB/s',
-                    state: 'standby',
-                  },
-                ]"
-                :key="source.name"
-                class="rounded-card border border-border bg-surface-1 p-4"
-              >
-                <div class="flex items-center gap-2.5">
-                  <Icon :name="source.icon" class="size-4 text-fg-muted" />
-                  <span class="font-mono text-caption">{{ source.name }}</span>
-                  <span
-                    class="ml-auto font-mono text-micro"
-                    :class="source.state === 'active' ? 'text-accent' : 'text-fg-subtle'"
-                  >
-                    {{ source.state }}
-                  </span>
-                </div>
-                <div class="mt-3 flex items-center gap-3">
-                  <div class="h-1 flex-1 overflow-hidden rounded-full bg-surface-3">
-                    <div class="h-full rounded-full bg-accent" :class="source.width" />
-                  </div>
-                  <span class="font-mono text-micro text-fg-subtle">{{ source.speed }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="mt-14 grid gap-10 border-t border-divider pt-10 sm:grid-cols-3">
+        <article v-for="pillar in pillars" :key="pillar.title">
+          <span class="grid size-10 place-items-center rounded-card border border-border bg-surface-1 text-accent">
+            <Icon :name="pillar.icon" class="size-5" aria-hidden="true" />
+          </span>
+          <h3 class="mt-5 text-card font-semibold">{{ pillar.title }}</h3>
+          <p class="mt-2.5 text-body leading-relaxed text-fg-muted">{{ pillar.body }}</p>
         </article>
       </div>
     </section>
 
     <section class="border-y border-border bg-surface-1">
       <div class="site-container py-section">
-        <div class="flex flex-wrap items-end justify-between gap-4">
-          <div>
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-xl">
             <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
-              {{ t('home.sections.flowEyebrow') }}
+              {{ t('home.sections.galleryEyebrow') }}
             </p>
-            <h2 class="mt-4 text-section">{{ t('home.sections.flowTitle') }}</h2>
+            <h2 class="mt-4 text-section text-balance">{{ t('home.sections.galleryTitle') }}</h2>
           </div>
+          <p class="max-w-sm text-body leading-relaxed text-fg-muted">{{ t('home.sections.galleryLead') }}</p>
         </div>
-        <ol
-          class="mt-12 grid gap-px overflow-hidden rounded-panel border border-border bg-divider sm:grid-cols-2 lg:grid-cols-4"
-        >
-          <li v-for="step in flow" :key="step.number" class="bg-surface-2 p-6">
-            <p class="font-mono text-caption text-accent">{{ step.number }}</p>
-            <h3 class="mt-5 text-card font-semibold">{{ step.title }}</h3>
-            <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ step.body }}</p>
-          </li>
-        </ol>
+
+        <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:h-[30rem] lg:grid-cols-12 lg:grid-rows-2 lg:gap-5">
+          <Motion
+            v-for="shot in gallery"
+            :key="shot.src"
+            as="figure"
+            class="group relative aspect-[16/10] overflow-hidden rounded-panel border border-border bg-surface-2 lg:aspect-auto"
+            :class="shot.span"
+            :while-hover="{ y: -4 }"
+            :transition="{ type: 'spring', stiffness: 260, damping: 30 }"
+          >
+            <img
+              :src="shot.src"
+              :alt="`${shot.label} — Axolotl Launcher`"
+              loading="lazy"
+              decoding="async"
+              class="size-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none"
+            />
+            <figcaption
+              class="absolute top-3 left-3 rounded-pill border border-border bg-surface-0/85 px-3 py-1 text-caption font-medium text-fg backdrop-blur"
+            >
+              {{ shot.label }}
+            </figcaption>
+          </Motion>
+        </div>
       </div>
     </section>
 
     <section class="site-container py-section">
       <header class="max-w-2xl">
         <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
-          {{ t('home.sections.capabilitiesEyebrow') }}
+          {{ t('home.sections.flowEyebrow') }}
         </p>
-        <h2 class="mt-4 text-section">{{ t('home.sections.capabilitiesTitle') }}</h2>
+        <h2 class="mt-4 text-section text-balance">{{ t('home.sections.flowTitle') }}</h2>
       </header>
-      <div class="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <article
-          v-for="capability in capabilities"
-          :key="capability.title"
-          class="rounded-card border border-border bg-surface-1 p-5 transition-colors hover:border-border-strong hover:bg-surface-2"
-        >
-          <Icon :name="capability.icon" class="size-5 text-accent" />
-          <h3 class="mt-5 text-card font-semibold">{{ capability.title }}</h3>
-          <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ capability.body }}</p>
-        </article>
+
+      <ol class="relative mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="absolute inset-x-0 top-5 hidden h-px bg-divider lg:block" aria-hidden="true" />
+        <li v-for="step in flow" :key="step.number" class="relative">
+          <span
+            class="relative z-10 grid size-10 place-items-center rounded-full border border-border bg-surface-1 font-mono text-caption text-fg-muted"
+          >
+            {{ step.number }}
+          </span>
+          <h3 class="mt-5 text-card font-semibold">{{ step.title }}</h3>
+          <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ step.body }}</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="border-t border-border">
+      <div class="site-container py-section">
+        <header class="max-w-2xl">
+          <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+            {{ t('home.sections.capabilitiesEyebrow') }}
+          </p>
+          <h2 class="mt-4 text-section text-balance">{{ t('home.sections.capabilitiesTitle') }}</h2>
+        </header>
+
+        <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <article
+            v-for="capability in capabilities"
+            :key="capability.title"
+            class="rounded-card border border-border bg-surface-1 p-6 transition-colors duration-200 hover:border-border-strong"
+          >
+            <span class="grid size-9 place-items-center rounded-btn bg-accent/10 text-accent">
+              <Icon :name="capability.icon" class="size-4.5" aria-hidden="true" />
+            </span>
+            <h3 class="mt-4 text-body font-semibold">{{ capability.title }}</h3>
+            <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ capability.body }}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border">
+      <div class="site-container py-section">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-2xl">
+            <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+              {{ t('home.sections.contributorsEyebrow') }}
+            </p>
+            <h2 class="mt-4 text-section text-balance">{{ t('home.sections.contributorsTitle') }}</h2>
+          </div>
+          <div class="max-w-sm">
+            <p class="text-body leading-relaxed text-fg-muted">{{ t('home.sections.contributorsLead') }}</p>
+            <a
+              :href="contributorsUrl"
+              target="_blank"
+              rel="noreferrer"
+              class="group mt-4 inline-flex items-center gap-2 text-caption font-semibold text-accent transition-colors hover:text-accent-strong"
+            >
+              {{ t('home.sections.contributorsLink') }}
+              <Icon
+                name="lucide:arrow-up-right"
+                class="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none"
+                aria-hidden="true"
+              />
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-12 overflow-hidden rounded-panel border border-border bg-surface-1 p-4 sm:p-6">
+          <img
+            :src="contributorsImage"
+            alt="Axolotl Launcher contributors"
+            width="1084"
+            height="472"
+            fetchpriority="low"
+            decoding="async"
+            class="h-auto w-full"
+          />
+        </div>
       </div>
     </section>
 
     <section class="site-container pb-section">
-      <div class="relative overflow-hidden rounded-panel border border-accent/25 bg-surface-1 p-8 sm:p-12">
+      <div
+        class="relative isolate overflow-hidden rounded-panel border border-border bg-surface-1 px-6 py-10 sm:px-10 sm:py-12 lg:px-14"
+      >
         <div
-          class="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full bg-accent-glow blur-[80px]"
+          class="pointer-events-none absolute -top-28 -right-20 size-80 rounded-full bg-accent/15 blur-3xl"
           aria-hidden="true"
         />
-        <div class="relative max-w-2xl">
-          <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
-            {{ t('home.sections.ctaEyebrow') }}
-          </p>
-          <h2 class="mt-4 text-section">{{ t('home.sections.ctaTitle') }}</h2>
-          <p class="mt-4 text-lead text-fg-muted">{{ t('home.sections.ctaBody') }}</p>
-          <div class="mt-8 flex flex-wrap items-center gap-3">
-            <BaseButton :to="localePath({ path: '/download' })" size="lg">
-              <Icon name="lucide:download" class="size-4" />
-              {{ t('home.primary') }}
+        <div
+          class="pointer-events-none absolute -bottom-32 left-1/3 size-72 rounded-full bg-accent/10 blur-3xl"
+          aria-hidden="true"
+        />
+
+        <div class="relative flex flex-wrap items-end justify-between gap-8">
+          <div class="max-w-xl">
+            <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+              {{ t('support.eyebrow') }}
+            </p>
+            <h2 class="mt-4 text-section-sm text-balance">{{ t('support.title') }}</h2>
+            <p class="mt-3 text-body leading-relaxed text-fg-muted">{{ t('support.lead') }}</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <BaseButton :to="localePath({ path: '/support' })">
+              <Icon name="lucide:heart" class="size-4" aria-hidden="true" />
+              {{ t('nav.support') }}
             </BaseButton>
-            <BaseButton :to="localePath({ path: '/docs' })" variant="secondary" size="lg">
-              {{ t('home.sections.ctaDocs') }}
+            <BaseButton :href="githubUrl" variant="secondary">
+              <Icon name="lucide:github" class="size-4" aria-hidden="true" />
+              {{ t('nav.github') }}
             </BaseButton>
-            <a
-              :href="config.public.githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link-underline ml-1 text-caption text-fg-muted"
-            >
-              {{ t('home.sections.openSource') }}
-            </a>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="site-container pb-section">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+          {{ t('home.sections.ctaEyebrow') }}
+        </p>
+        <h2 class="mt-4 text-section text-balance">{{ t('home.sections.ctaTitle') }}</h2>
+        <p class="mt-4 text-lead text-fg-muted">{{ t('home.sections.ctaBody') }}</p>
+
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <BaseButton :to="localePath({ path: '/download' })" size="lg">
+            <Icon name="lucide:download" class="size-4" />
+            {{ t('home.primary') }}
+          </BaseButton>
+          <BaseButton :to="localePath({ path: '/docs' })" variant="secondary" size="lg">
+            <Icon name="lucide:book-open" class="size-4" />
+            {{ t('home.sections.ctaDocs') }}
+          </BaseButton>
+        </div>
+
+        <p class="mt-5 font-mono text-micro tracking-[0.18em] text-fg-subtle uppercase">
+          {{ t('home.note') }}
+        </p>
       </div>
     </section>
   </div>

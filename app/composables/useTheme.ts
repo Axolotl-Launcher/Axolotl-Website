@@ -26,6 +26,8 @@ export function useTheme() {
   function applyDom(value: ResolvedTheme) {
     if (!import.meta.client) return
     document.documentElement.dataset.theme = value
+    document.documentElement.classList.toggle('dark', value !== 'light')
+    document.documentElement.classList.toggle('light', value === 'light')
     document.documentElement.style.colorScheme = value === 'light' ? 'light' : 'dark'
   }
 
