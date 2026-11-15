@@ -127,7 +127,7 @@ jobs:
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
-          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'terms/index.html', 'privacy/index.html']) {
+          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'terms/index.html', 'privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
             assert(fs.existsSync(`.output/public/${page}`), `Missing prerendered page: ${page}`)
           }
           const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))
@@ -183,7 +183,7 @@ jobs:
               deploy=true
             elif [[ "$EVENT_NAME" == 'push' ]]; then
               if [[ "$BEFORE" == '0000000000000000000000000000000000000000' ]]; then
-                changed=$(git ls-tree -r --name-only "$AFTER" -- releases/ app/ content/ i18n/ public/ shared/ scripts/ feishu.config.ts content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
+                changed=$(git ls-tree -r --name-only "$AFTER" -- releases/ app/ content/ i18n/ public/ server/ shared/ scripts/ feishu.config.ts content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
               else
                 if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
                   git fetch --no-tags --depth=1 origin "$BEFORE" || true
