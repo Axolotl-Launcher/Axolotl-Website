@@ -104,7 +104,7 @@ useHead({
               <span class="text-fg-subtle">v{{ latestVersion }}</span>
             </p>
 
-            <h1 class="mt-7 text-section text-balance">
+            <h1 class="mt-7 text-section leading-[1.15] text-balance">
               {{ t('home.titleLead') }}
               <span class="block text-accent">{{ t('home.titleAccent') }}</span>
             </h1>
@@ -181,7 +181,7 @@ useHead({
           <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
             {{ t('home.sections.featuresEyebrow') }}
           </p>
-          <h2 class="mt-4 max-w-2xl text-section text-balance">{{ t('home.sections.featuresTitle') }}</h2>
+          <h2 class="mt-4 max-w-2xl text-section-sm text-balance">{{ t('home.sections.featuresTitle') }}</h2>
         </div>
         <div class="lg:col-span-5 lg:pt-2">
           <p class="text-body leading-relaxed text-fg-muted">{{ t('home.sections.featuresLead') }}</p>
@@ -217,7 +217,7 @@ useHead({
             <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
               {{ t('home.sections.galleryEyebrow') }}
             </p>
-            <h2 class="mt-4 text-section text-balance">{{ t('home.sections.galleryTitle') }}</h2>
+            <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.galleryTitle') }}</h2>
           </div>
           <p class="max-w-sm text-body leading-relaxed text-fg-muted">{{ t('home.sections.galleryLead') }}</p>
         </div>
@@ -254,7 +254,7 @@ useHead({
         <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
           {{ t('home.sections.flowEyebrow') }}
         </p>
-        <h2 class="mt-4 text-section text-balance">{{ t('home.sections.flowTitle') }}</h2>
+        <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.flowTitle') }}</h2>
       </header>
 
       <ol class="relative mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -277,7 +277,7 @@ useHead({
           <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
             {{ t('home.sections.capabilitiesEyebrow') }}
           </p>
-          <h2 class="mt-4 text-section text-balance">{{ t('home.sections.capabilitiesTitle') }}</h2>
+          <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.capabilitiesTitle') }}</h2>
         </header>
 
         <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -303,7 +303,7 @@ useHead({
             <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
               {{ t('home.sections.contributorsEyebrow') }}
             </p>
-            <h2 class="mt-4 text-section text-balance">{{ t('home.sections.contributorsTitle') }}</h2>
+            <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.contributorsTitle') }}</h2>
           </div>
           <div class="max-w-sm">
             <p class="text-body leading-relaxed text-fg-muted">{{ t('home.sections.contributorsLead') }}</p>
@@ -377,7 +377,7 @@ useHead({
         <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
           {{ t('home.sections.ctaEyebrow') }}
         </p>
-        <h2 class="mt-4 text-section text-balance">{{ t('home.sections.ctaTitle') }}</h2>
+        <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.ctaTitle') }}</h2>
         <p class="mt-4 text-lead text-fg-muted">{{ t('home.sections.ctaBody') }}</p>
 
         <div class="mt-8 flex flex-wrap justify-center gap-3">

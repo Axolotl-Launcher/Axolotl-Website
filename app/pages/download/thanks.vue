@@ -241,20 +241,14 @@ useSeoMeta({
               </p>
             </div>
           </div>
-          <a
-            v-if="link"
-            :href="link"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-4 inline-flex items-center gap-1.5 text-caption font-semibold text-accent underline underline-offset-4"
-          >
+          <BaseButton v-if="link" :href="link" size="lg" block class="mt-4">
+            <Icon name="lucide:download" class="size-4" aria-hidden="true" />
             {{ t('download.thanksDirect') }}
-            <Icon name="lucide:arrow-up-right" class="size-3.5" aria-hidden="true" />
-          </a>
-          <p v-else-if="status === 'pending' || status === 'idle'" class="mt-4 text-micro text-fg-subtle">
+          </BaseButton>
+          <p v-else-if="status === 'pending' || status === 'idle'" class="mt-4 text-caption text-fg-subtle">
             {{ t('download.thanksPreparing') }}
           </p>
-          <p v-else-if="status === 'error'" class="mt-4 text-micro text-fg-subtle">
+          <p v-else-if="status === 'error'" class="mt-4 text-caption text-fg-subtle">
             {{ t('download.error') }}
           </p>
         </div>
@@ -265,13 +259,16 @@ useSeoMeta({
               {{ t('download.resultChecksum') }}
             </dt>
             <dd class="mt-1.5 flex items-start gap-2">
-              <code class="min-w-0 flex-1 font-mono text-micro break-all text-fg-muted">
-                {{ checksum || '—' }}
+              <code v-if="checksum" class="min-w-0 flex-1 font-mono text-micro break-all text-fg-muted">
+                {{ checksum }}
               </code>
+              <span v-else class="min-w-0 flex-1 text-caption text-fg-muted">
+                {{ t('download.checksumUnavailable') }}
+              </span>
               <button
                 v-if="checksum"
                 type="button"
-                class="inline-flex shrink-0 items-center gap-1 text-micro font-semibold text-accent"
+                class="inline-flex shrink-0 items-center gap-1 text-caption font-semibold text-accent-strong"
                 @click="copyChecksum"
               >
                 <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="size-3.5" aria-hidden="true" />
@@ -283,7 +280,7 @@ useSeoMeta({
             <dt class="text-micro font-semibold tracking-[0.12em] text-fg-subtle uppercase">
               {{ t('download.resultInstall') }}
             </dt>
-            <dd class="mt-1.5 text-micro leading-relaxed text-fg-muted">{{ installHint }}</dd>
+            <dd class="mt-1.5 text-caption leading-relaxed text-fg-muted">{{ installHint }}</dd>
           </div>
         </dl>
 
@@ -295,7 +292,7 @@ useSeoMeta({
               v-for="alternative in alternativeLinks"
               :key="alternative.id"
               :href="alternative.href"
-              class="text-caption font-semibold text-accent underline underline-offset-4"
+              class="text-caption font-semibold text-accent-strong underline underline-offset-4"
             >
               {{ alternative.label }}
             </a>
@@ -327,8 +324,8 @@ useSeoMeta({
               <Icon :name="stepItem.icon" class="size-4" aria-hidden="true" />
             </span>
             <h3 class="mt-4 text-caption font-semibold">{{ stepItem.title }}</h3>
-            <p class="mt-1 text-micro leading-relaxed text-fg-muted">{{ stepItem.body }}</p>
-            <span class="mt-3 inline-flex items-center gap-1 text-micro font-semibold text-accent">
+            <p class="mt-1 text-caption leading-relaxed text-fg-muted">{{ stepItem.body }}</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-caption font-semibold text-accent-strong">
               {{ t('download.thanksDocs') }}
               <Icon
                 name="lucide:arrow-right"

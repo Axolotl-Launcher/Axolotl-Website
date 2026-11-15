@@ -121,7 +121,7 @@ useHead(() => ({
         <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
           {{ t('support.eyebrow') }}
         </p>
-        <h1 class="mt-4 max-w-3xl text-hero">{{ t('support.title') }}</h1>
+        <h1 class="mt-4 max-w-3xl text-section leading-[1.2]">{{ t('support.title') }}</h1>
         <p class="mt-5 max-w-2xl text-lead text-fg-muted">{{ t('support.lead') }}</p>
         <div class="mt-8 flex flex-wrap gap-3">
           <BaseButton size="lg" @click="scrollToTiers">
@@ -149,7 +149,7 @@ useHead(() => ({
           <span class="mt-3 text-section-sm font-bold text-heading">{{ plan.amount }}</span>
           <span class="mt-4 text-card font-semibold">{{ plan.title }}</span>
           <span class="mt-2 text-body leading-relaxed text-fg-muted">{{ plan.description }}</span>
-          <span class="mt-6 inline-flex items-center gap-1 text-caption font-semibold text-accent">
+          <span class="mt-6 inline-flex items-center gap-1 text-caption font-semibold text-accent-strong">
             <template v-if="pendingPlan === plan.id">{{ t('support.openingAfdian') }}</template>
             <template v-else>
               {{ t('support.checkoutOnAfdian') }}

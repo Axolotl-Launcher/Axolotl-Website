@@ -81,6 +81,18 @@ const formatLabel = computed(() => {
 
 const channelLabel = computed(() => (channel.value === 'beta' ? t('download.beta') : t('download.release')))
 
+const formatHint = computed(() => {
+  const hints: Record<DownloadFormat, string> = {
+    installer: t('download.formatInstallerHint'),
+    portable: t('download.formatPortableHint'),
+    dmg: t('download.macHint'),
+    appimage: t('download.formatAppImageHint'),
+    deb: t('download.formatDebHint'),
+    rpm: t('download.formatRpmHint'),
+  }
+  return hints[format.value]
+})
+
 const versionText = computed(() => {
   if (status.value === 'pending' || status.value === 'idle') return t('download.loadingVersion')
   if (status.value === 'error') return t('download.error')
@@ -289,10 +301,10 @@ useSeoMeta({
               <div v-if="step === 0">
                 <h2 class="text-center text-card font-semibold">{{ t('download.stepPlatformTitle') }}</h2>
                 <p class="mt-2 text-center text-caption text-fg-muted">{{ t('download.stepPlatformLead') }}</p>
-                <p v-if="isFallback" class="mt-3 text-center text-micro text-fg-subtle">
+                <p v-if="isFallback" class="mt-3 text-center text-caption text-fg-subtle">
                   {{ t('download.fallbackNote') }}
                 </p>
-                <p v-else class="mt-3 flex items-center justify-center gap-1.5 text-micro text-fg-subtle">
+                <p v-else class="mt-3 flex items-center justify-center gap-1.5 text-caption text-fg-subtle">
                   <Icon name="lucide:monitor-dot" class="size-3.5" aria-hidden="true" />
                   {{ t('download.detectedDevice', { platform: detectedPlatformName }) }}
                 </p>
@@ -317,7 +329,7 @@ useSeoMeta({
                       <Icon :name="item.icon" class="size-5" aria-hidden="true" />
                     </span>
                     <span class="mt-3 block text-caption font-semibold">{{ item.name }}</span>
-                    <span class="mt-1 block text-micro leading-relaxed text-fg-subtle">{{ item.hint }}</span>
+                    <span class="mt-1 block text-caption leading-relaxed text-fg-subtle">{{ item.hint }}</span>
                   </button>
                 </div>
               </div>
@@ -333,7 +345,7 @@ useSeoMeta({
                       v-for="option in channels"
                       :key="option.value"
                       type="button"
-                      class="h-10 rounded-btn border text-caption font-semibold transition-colors"
+                      class="h-11 rounded-btn border text-caption font-semibold transition-colors"
                       :class="
                         channel === option.value
                           ? 'border-accent bg-accent text-on-accent'
@@ -354,7 +366,7 @@ useSeoMeta({
                       v-for="option in formatOptions"
                       :key="option.value"
                       type="button"
-                      class="h-10 rounded-btn border text-caption font-semibold transition-colors"
+                      class="h-11 rounded-btn border text-caption font-semibold transition-colors"
                       :class="
                         format === option.value
                           ? 'border-accent bg-accent text-on-accent'
@@ -366,6 +378,7 @@ useSeoMeta({
                       {{ option.label }}
                     </button>
                   </div>
+                  <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ formatHint }}</p>
                 </fieldset>
 
                 <div
@@ -407,12 +420,12 @@ useSeoMeta({
                     :label="t('download.sourceLabel')"
                     @update:model-value="setDownloadSource"
                   />
-                  <p class="mt-2 text-micro leading-relaxed text-fg-subtle" aria-live="polite">
+                  <p class="mt-2 text-caption leading-relaxed text-fg-subtle" aria-live="polite">
                     {{ selectedSourceDescription }}
                   </p>
                 </div>
 
-                <p v-if="status === 'error'" class="mt-4 text-micro text-fg-muted">
+                <p v-if="status === 'error'" class="mt-4 text-caption text-fg-muted">
                   {{ t('download.error') }}
                   <button
                     type="button"
@@ -422,7 +435,7 @@ useSeoMeta({
                     {{ t('download.retry') }}
                   </button>
                 </p>
-                <p v-else-if="status === 'success' && !selectedLink" class="mt-4 text-micro text-fg-muted">
+                <p v-else-if="status === 'success' && !selectedLink" class="mt-4 text-caption text-fg-muted">
                   {{ t('download.unavailable') }}
                 </p>
               </div>

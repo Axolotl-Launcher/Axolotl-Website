@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
     <button
       ref="trigger"
       type="button"
-      class="mt-2 flex h-11 w-full items-center justify-between gap-3 rounded-btn border border-border bg-surface-2 px-3 text-left text-caption text-fg transition-colors hover:border-border-strong"
+      class="mt-2 flex h-11 w-full items-center justify-between gap-3 rounded-btn border border-border bg-surface-2 px-3 text-left text-caption text-fg transition-colors hover:border-border-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       :aria-expanded="open"
       aria-haspopup="listbox"
       :aria-labelledby="`${id}-label`"
@@ -158,8 +158,12 @@ onBeforeUnmount(() => {
             role="option"
             :aria-selected="option.value === props.modelValue"
             :aria-disabled="option.unavailable || undefined"
-            class="cursor-pointer rounded-[0.65rem] px-3 py-2.5 transition-colors"
-            :class="index === activeIndex ? 'bg-surface-2' : ''"
+            class="relative cursor-pointer rounded-[0.65rem] px-3 py-2.5 transition-colors"
+            :class="
+              index === activeIndex
+                ? 'bg-accent/10 before:absolute before:inset-y-1.5 before:left-0 before:w-0.5 before:rounded-full before:bg-accent before:content-[\'\']'
+                : ''
+            "
             @click="select(option)"
             @mouseenter="activeIndex = index"
           >
@@ -177,7 +181,7 @@ onBeforeUnmount(() => {
                 {{ option.meta }}
               </span>
             </span>
-            <span class="mt-0.5 block text-micro leading-relaxed text-fg-subtle">
+            <span class="mt-0.5 block text-caption leading-relaxed text-fg-subtle">
               {{ option.description }}
             </span>
           </li>
@@ -186,3 +190,10 @@ onBeforeUnmount(() => {
     </AnimatePresence>
   </div>
 </template>
+
+<style scoped>
+button[aria-haspopup='listbox']:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+</style>
