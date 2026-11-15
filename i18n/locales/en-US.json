@@ -278,6 +278,10 @@
   },
   "docs": {
     "title": "Documentation",
+    "searchPlaceholder": "Search docs…",
+    "searchLoading": "Loading index…",
+    "searchError": "Could not load the search index.",
+    "searchEmpty": "No matching docs.",
     "lead": "From installation to advanced configuration, the Axolotl handbook is maintained in one knowledge base.",
     "emptyTitle": "The knowledge base is syncing",
     "emptyBody": "Documentation is authored in Feishu. Once the sync finishes, guides will appear here grouped by topic.",
@@ -287,7 +291,10 @@
     "openInFeishu": "Open in Feishu",
     "translationFallback": "This page has no translation yet; the Chinese original is shown.",
     "notFound": "Document not found",
-    "backToDocs": "Back to docs"
+    "backToDocs": "Back to docs",
+    "searchResults": "{count} results",
+    "searchHint": "Type to search the docs.",
+    "closeSearch": "Close search"
   },
   "notFound": {
     "title": "Page not found",

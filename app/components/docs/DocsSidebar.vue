@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DocsSearch from './DocsSearch.vue'
+
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
@@ -19,6 +21,7 @@ function isActive(slug: string) {
       {{ t('docs.title') }}
       <Icon name="lucide:chevron-down" class="size-4 transition-transform group-open:rotate-180" />
     </summary>
+    <DocsSearch class="mt-4" />
     <nav class="mt-4 space-y-5" :aria-label="t('docs.title')">
       <div v-for="group in groups" :key="group.name">
         <p class="font-mono text-micro font-semibold tracking-[0.18em] text-fg-subtle uppercase">{{ group.name }}</p>
@@ -43,12 +46,7 @@ function isActive(slug: string) {
 
   <aside class="hidden lg:block">
     <div class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
-      <NuxtLink
-        :to="localePath({ path: '/docs' })"
-        class="font-mono text-micro font-semibold tracking-[0.18em] text-fg-subtle uppercase"
-      >
-        {{ t('docs.title') }}
-      </NuxtLink>
+      <DocsSearch />
       <nav class="mt-5 space-y-6" :aria-label="t('docs.title')">
         <div v-for="group in groups" :key="group.name">
           <p class="text-caption font-semibold text-fg-subtle">{{ group.name }}</p>

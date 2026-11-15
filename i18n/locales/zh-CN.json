@@ -278,6 +278,10 @@
   },
   "docs": {
     "title": "文档",
+    "searchPlaceholder": "搜索文档…",
+    "searchLoading": "正在加载索引…",
+    "searchError": "搜索索引加载失败。",
+    "searchEmpty": "没有匹配的文档。",
     "lead": "从安装到进阶配置，Axolotl 的使用手册由知识库统一维护。",
     "emptyTitle": "知识库正在同步",
     "emptyBody": "文档由飞书知识库提供。同步完成后，这里会自动出现按主题整理的指南。",
@@ -287,7 +291,10 @@
     "openInFeishu": "在飞书中查看",
     "translationFallback": "此页尚无对应语言版本，当前显示中文原文。",
     "notFound": "未找到该文档",
-    "backToDocs": "返回文档"
+    "backToDocs": "返回文档",
+    "searchResults": "找到 {count} 条结果",
+    "searchHint": "输入关键词搜索文档。",
+    "closeSearch": "关闭搜索"
   },
   "notFound": {
     "title": "页面不存在",

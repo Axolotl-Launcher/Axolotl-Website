@@ -162,3 +162,14 @@ test.describe('search', () => {
     await expect(page.getByText('安装与更新')).toBeVisible()
   })
 })
+
+test.describe('docs search', () => {
+  test('opens the search modal', async ({ page }) => {
+    await page.goto('/docs')
+    await page.getByRole('button', { name: '搜索文档…' }).click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole('searchbox').fill('安装')
+    await expect(dialog.getByRole('link', { name: '安装与更新' })).toBeVisible()
+  })
+})
