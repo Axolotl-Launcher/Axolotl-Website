@@ -12,7 +12,11 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <nav class="sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pl-2" :aria-label="t('docs.onThisPage')">
+  <nav
+    class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pl-2"
+    data-lenis-prevent
+    :aria-label="t('docs.onThisPage')"
+  >
     <p class="font-mono text-micro font-semibold tracking-[0.18em] text-fg-subtle uppercase">
       {{ t('docs.onThisPage') }}
     </p>

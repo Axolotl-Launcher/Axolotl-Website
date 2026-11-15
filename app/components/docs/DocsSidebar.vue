@@ -42,7 +42,7 @@ function isActive(slug: string) {
   </details>
 
   <aside class="hidden lg:block">
-    <div class="sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2">
+    <div class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
       <NuxtLink
         :to="localePath({ path: '/docs' })"
         class="font-mono text-micro font-semibold tracking-[0.18em] text-fg-subtle uppercase"

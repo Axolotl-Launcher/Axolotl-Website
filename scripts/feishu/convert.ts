@@ -6,8 +6,33 @@ export interface FeishuConvertContext {
   route: string
   linkMap: Map<string, string>
   imageMap: Map<string, string>
+  docTitleMap?: Map<string, string>
   warnings: string[]
   errors: string[]
+}
+
+function decodeLinkUrl(url: string) {
+  if (!/^https?%3A/i.test(url)) return url
+  try {
+    return decodeURIComponent(url)
+  } catch {
+    return url
+  }
+}
+
+function normalizeLinkUrl(url: string, context: FeishuConvertContext): string | null {
+  const decoded = decodeLinkUrl(url).trim()
+  if (!decoded) return null
+  if (/^(https?:\/\/|mailto:|#)/i.test(decoded)) return decoded
+
+  if (/\.(?:png|jpe?g|gif|webp|svg)(?:[?#].*)?$/i.test(decoded)) return null
+
+  const title = decoded
+    .replace(/^.*\//, '')
+    .replace(/\.md$/i, '')
+    .replace(/^\d+[-_.]?\s*/, '')
+    .trim()
+  return context.docTitleMap?.get(title) ?? null
 }
 
 const FEISHU_URL_PATTERN = /https?:\/\/[^\s)<>"']+/g
@@ -238,14 +263,17 @@ function renderElements(elements: FeishuElement[] | undefined, context: FeishuCo
         if (style.italic) text = `*${text}*`
         if (style.strikethrough) text = `~~${text}~~`
         if (style.underline) text = `<u>${text}</u>`
-        if (style.link?.url) text = `[${text}](${style.link.url})`
+        if (style.link?.url) {
+          const href = normalizeLinkUrl(style.link.url, context)
+          if (href) text = `[${text}](${href})`
+        }
         return text
       }
       if (element.mention_doc) {
         const token = element.mention_doc.token ?? ''
         const route = context.linkMap.get(token)
         const label = element.mention_doc.title ?? '文档'
-        const href = route ?? element.mention_doc.url ?? ''
+        const href = normalizeLinkUrl(route ?? element.mention_doc.url ?? '', context)
         return href ? `[${label}](${href})` : label
       }
       if (element.equation) return `$${element.equation.content ?? ''}$`

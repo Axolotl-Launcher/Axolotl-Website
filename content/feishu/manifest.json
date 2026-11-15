@@ -1,0 +1,549 @@
+{
+  "version": 1,
+  "docs": [
+    {
+      "slug": "getting-started",
+      "group": "开始使用",
+      "order": 1,
+      "locales": {
+        "zh-CN": {
+          "title": "欢迎使用 Axolotl Launcher",
+          "description": "次世代 Minecraft 桌面客户端——全能、美观、全平台覆盖。",
+          "updatedAt": "2026-08-13T05:53:16.000Z",
+          "nodeToken": "EnhBw3qUEi58AfkxVTUc9BL1nih",
+          "objToken": "AX0IdZgK2oarJZxxh6Wcy010nqd",
+          "file": "content/feishu/docs/zh-cn/getting-started.md",
+          "hash": "cd19c6085b8cad2b",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/EnhBw3qUEi58AfkxVTUc9BL1nih"
+        }
+      }
+    },
+    {
+      "slug": "installation",
+      "group": "开始使用",
+      "order": 2,
+      "locales": {
+        "zh-CN": {
+          "title": "安装与更新",
+          "description": "保姆级安装教程，照着点就行。",
+          "updatedAt": "2026-10-07T09:38:51.000Z",
+          "nodeToken": "TXoowBAoQi3lHqkcgGpcE8NZnoc",
+          "objToken": "ETMDd4hA7oZTXYxiWx4c7h2RnOh",
+          "file": "content/feishu/docs/zh-cn/installation.md",
+          "hash": "c0800c3eb96767ec",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/TXoowBAoQi3lHqkcgGpcE8NZnoc"
+        }
+      }
+    },
+    {
+      "slug": "first-launch",
+      "group": "开始使用",
+      "order": 3,
+      "locales": {
+        "zh-CN": {
+          "title": "快速上手",
+          "description": "装好 Axolotl 之后，跟着这三篇就能开玩啦！\\(・ω・\\)ノ",
+          "updatedAt": "2026-08-30T14:00:23.000Z",
+          "nodeToken": "V6NUwoWsUiHI2QkcMWOcpsOxncg",
+          "objToken": "BcDod9Cp5ox08px3NZacNc9rnpX",
+          "file": "content/feishu/docs/zh-cn/first-launch.md",
+          "hash": "ac835533de58fa1b",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/V6NUwoWsUiHI2QkcMWOcpsOxncg"
+        }
+      }
+    },
+    {
+      "slug": "sign-in",
+      "group": "开始使用",
+      "order": 4,
+      "locales": {
+        "zh-CN": {
+          "title": "登录账户",
+          "description": "登录的视频教程为 从零上手MC 登录篇",
+          "updatedAt": "2026-08-30T14:00:40.000Z",
+          "nodeToken": "DzymwKtMNiGbzEk7lUDcoUvInFh",
+          "objToken": "NZ2fdUa6Ooap24xvkvmc8XMynQh",
+          "file": "content/feishu/docs/zh-cn/sign-in.md",
+          "hash": "24eeb2dabecf708a",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/DzymwKtMNiGbzEk7lUDcoUvInFh"
+        }
+      }
+    },
+    {
+      "slug": "create-instance",
+      "group": "开始使用",
+      "order": 5,
+      "locales": {
+        "zh-CN": {
+          "title": "创建实例",
+          "description": "账户登录好了，现在创建一个属于你的\\&\\ 34;游戏环境\\&\\ 34;——在 Axolotl 里叫 实例 。",
+          "updatedAt": "2026-08-30T14:04:02.000Z",
+          "nodeToken": "MLN3w2bjQirWqCkwCQHcYQJKnW2",
+          "objToken": "EtgsdX8t3ojF53xGUs9cqLGqnqc",
+          "file": "content/feishu/docs/zh-cn/create-instance.md",
+          "hash": "ba855294f5cca8d5",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/MLN3w2bjQirWqCkwCQHcYQJKnW2"
+        }
+      }
+    },
+    {
+      "slug": "install-content",
+      "group": "开始使用",
+      "order": 6,
+      "locales": {
+        "zh-CN": {
+          "title": "安装内容",
+          "description": "玩过原版之后，你可能会想：能不能加点好玩的？",
+          "updatedAt": "2026-08-30T14:04:12.000Z",
+          "nodeToken": "WJIBwMU5AiypvdkAShTcIiGTnKf",
+          "objToken": "CST6dJkiUodGJmxfbIzcJc3RnOd",
+          "file": "content/feishu/docs/zh-cn/install-content.md",
+          "hash": "6b7b4c03dcaef195",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/WJIBwMU5AiypvdkAShTcIiGTnKf"
+        }
+      }
+    },
+    {
+      "slug": "install-update",
+      "group": "快速教程",
+      "order": 7,
+      "locales": {
+        "zh-CN": {
+          "title": "怎么安装启动器和更新启动器",
+          "description": "注：如果您在这份教程中遇到任何问题，请查询《常见使用问题》",
+          "updatedAt": "2026-11-14T03:57:51.000Z",
+          "nodeToken": "UlOYwgTsHi4RI1kbwl1cI0uBnnh",
+          "objToken": "RnoLdCe4eorHt7x1MpUcNJCfnkq",
+          "file": "content/feishu/docs/zh-cn/install-update.md",
+          "hash": "41e9259f22bdacfe",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/UlOYwgTsHi4RI1kbwl1cI0uBnnh"
+        }
+      }
+    },
+    {
+      "slug": "first-world",
+      "group": "快速教程",
+      "order": 8,
+      "locales": {
+        "zh-CN": {
+          "title": "怎么开始玩MC | 创建新世界",
+          "description": "启动器打开后默认在主页。极简主页只有一句问候语和一个最近实例，点「开始游戏」直接玩：",
+          "updatedAt": "2026-11-13T16:13:43.000Z",
+          "nodeToken": "KM0awa9SfiSS4HkK0QdcvxfGnTd",
+          "objToken": "TvB2dZINpolHEVxYVmEcmYwJnSd",
+          "file": "content/feishu/docs/zh-cn/first-world.md",
+          "hash": "d0f7ddd08f16a8ce",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/KM0awa9SfiSS4HkK0QdcvxfGnTd"
+        }
+      }
+    },
+    {
+      "slug": "manage-instances",
+      "group": "快速教程",
+      "order": 9,
+      "locales": {
+        "zh-CN": {
+          "title": "怎么管理实例 | 关于实例的所有",
+          "description": "侧边栏点 实例库 ，所有实例都在这里：",
+          "updatedAt": "2026-11-14T03:24:24.000Z",
+          "nodeToken": "UfIbwClLqiQfwhkHlcKcuEm4nnf",
+          "objToken": "Uj0RdDoMloU5PxxFYHEcvwcdnRf",
+          "file": "content/feishu/docs/zh-cn/manage-instances.md",
+          "hash": "bc8354be747ebf49",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/UfIbwClLqiQfwhkHlcKcuEm4nnf"
+        }
+      }
+    },
+    {
+      "slug": "modpacks",
+      "group": "快速教程",
+      "order": 10,
+      "locales": {
+        "zh-CN": {
+          "title": "怎么安装模组和整合包 | 内容中心",
+          "description": "侧边栏点 发现内容 。顶部标签切换内容类型： 整合包 / 模组 / 资源包 / 数据包 / 地图 / 光影包 / 投影 / 服务器 / 收藏夹 。",
+          "updatedAt": "2026-11-14T03:26:46.000Z",
+          "nodeToken": "XRmxw4KtmidHs0k4Ge2ct0Xjnsh",
+          "objToken": "G8emdlatiolkUjxOonFcWrkDnUe",
+          "file": "content/feishu/docs/zh-cn/modpacks.md",
+          "hash": "d529aeb775c51b95",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/XRmxw4KtmidHs0k4Ge2ct0Xjnsh"
+        }
+      }
+    },
+    {
+      "slug": "join-server",
+      "group": "快速教程",
+      "order": 11,
+      "locales": {
+        "zh-CN": {
+          "title": "怎么和好友联机、开服 | 多人游戏",
+          "description": "启动器的多人游戏分两块： 联机房间 （跟朋友联机打存档）和 服务器 （管理自己的服务端，这需要比较强的动手能力和网络技术，请确保你已理解相关计算机技术后，再使用服务器功能，结尾有相关知识的简单介绍）。",
+          "updatedAt": "2026-11-14T04:00:04.000Z",
+          "nodeToken": "YbRQwafpNiz9yfkekeRcZJCynGd",
+          "objToken": "LzREdHf8doj5WOxOo4zcqwHDnRc",
+          "file": "content/feishu/docs/zh-cn/join-server.md",
+          "hash": "7999b61f9baa23b6",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/YbRQwafpNiz9yfkekeRcZJCynGd"
+        }
+      }
+    },
+    {
+      "slug": "change-skin",
+      "group": "快速教程",
+      "order": 12,
+      "locales": {
+        "zh-CN": {
+          "title": "正版怎么换皮肤 | 皮肤和个性化",
+          "description": "侧边栏点 皮肤选择器 （衣架图标）：",
+          "updatedAt": "2026-11-14T03:45:15.000Z",
+          "nodeToken": "RDz4wLI0riH3ufknAgucz4nXn8e",
+          "objToken": "XzU5dcXjyo64XpxKzMXcYbGFnAF",
+          "file": "content/feishu/docs/zh-cn/change-skin.md",
+          "hash": "b90f0f82552860b6",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/RDz4wLI0riH3ufknAgucz4nXn8e"
+        }
+      }
+    },
+    {
+      "slug": "lab-guide",
+      "group": "快速教程",
+      "order": 13,
+      "locales": {
+        "zh-CN": {
+          "title": "实验室功能介绍",
+          "description": "实验室是启动器内置的工具箱，7 个小工具全部本地运行，不用开浏览器：",
+          "updatedAt": "2026-11-14T03:48:41.000Z",
+          "nodeToken": "Auqhw9uPfiTmKRkeqAXcuTuunoe",
+          "objToken": "Vo1fdQuEOo8sXRxwywtc8REOnAf",
+          "file": "content/feishu/docs/zh-cn/lab-guide.md",
+          "hash": "7e2864fb4731ea15",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/Auqhw9uPfiTmKRkeqAXcuTuunoe"
+        }
+      }
+    },
+    {
+      "slug": "interface",
+      "group": "使用指南",
+      "order": 14,
+      "locales": {
+        "zh-CN": {
+          "title": "游戏库与实例",
+          "description": "实例 是 Axolotl 里最重要的概念，理解它很简单：",
+          "updatedAt": "2026-08-13T05:47:08.000Z",
+          "nodeToken": "M22ywvbTjiRMFIk63XCcueEHnzd",
+          "objToken": "JY29dNBehoaS87xwoB4czEGQn9g",
+          "file": "content/feishu/docs/zh-cn/interface.md",
+          "hash": "eb9ee0c188404cb7",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/M22ywvbTjiRMFIk63XCcueEHnzd"
+        }
+      }
+    },
+    {
+      "slug": "what-is-instance",
+      "group": "使用指南",
+      "order": 15,
+      "locales": {
+        "zh-CN": {
+          "title": "什么是实例",
+          "description": "实例 \\(Instance\\) 是 Axolotl 的核心概念，用大白话讲：",
+          "updatedAt": "2026-08-13T05:47:31.000Z",
+          "nodeToken": "BIppwTo6Sif1lZkD02JclpEGnyd",
+          "objToken": "BxEHd8eT6oIXFexY55pcnPJFn6d",
+          "file": "content/feishu/docs/zh-cn/what-is-instance.md",
+          "hash": "e126896185d0e10f",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/BIppwTo6Sif1lZkD02JclpEGnyd"
+        }
+      }
+    },
+    {
+      "slug": "instance-transfer",
+      "group": "使用指南",
+      "order": 16,
+      "locales": {
+        "zh-CN": {
+          "title": "创建与导入导出",
+          "description": "在首页点 创建 \\(Create\\) ：",
+          "updatedAt": "2026-08-13T05:47:33.000Z",
+          "nodeToken": "PQKawMbLrimzL5kj8ggcCIpKn9e",
+          "objToken": "ZusFdCYZ2o768gxc2hAc0w9dnUh",
+          "file": "content/feishu/docs/zh-cn/instance-transfer.md",
+          "hash": "824caa8475f93aef",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/PQKawMbLrimzL5kj8ggcCIpKn9e"
+        }
+      }
+    },
+    {
+      "slug": "instance-details",
+      "group": "使用指南",
+      "order": 17,
+      "locales": {
+        "zh-CN": {
+          "title": "实例详情页",
+          "description": "在游戏库里点进任意实例，就来到它的详情页。顶部有几个标签页，新手先把前两个用明白就够。",
+          "updatedAt": "2026-08-13T05:47:35.000Z",
+          "nodeToken": "MZJMwP8DWiulgQkmvsscfyE5nFe",
+          "objToken": "E7OTdjRc3oY9h9xoEGpcE49Onje",
+          "file": "content/feishu/docs/zh-cn/instance-details.md",
+          "hash": "a828751d70976ea6",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/MZJMwP8DWiulgQkmvsscfyE5nFe"
+        }
+      }
+    },
+    {
+      "slug": "content-center",
+      "group": "使用指南",
+      "order": 18,
+      "locales": {
+        "zh-CN": {
+          "title": "内容中心",
+          "description": "想装模组、装整合包？都在 浏览 \\(Browse\\) 页面，这里聚合了全球两大模组平台的内容：",
+          "updatedAt": "2026-08-13T05:47:11.000Z",
+          "nodeToken": "Z659wDBuViIC4akQn9Jcpagtnte",
+          "objToken": "WbH8dwpR1oFxiMxoys5cDd43nyb",
+          "file": "content/feishu/docs/zh-cn/content-center.md",
+          "hash": "36bbabbddd2144e7",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/Z659wDBuViIC4akQn9Jcpagtnte"
+        }
+      }
+    },
+    {
+      "slug": "browse-search",
+      "group": "使用指南",
+      "order": 19,
+      "locales": {
+        "zh-CN": {
+          "title": "浏览与搜索",
+          "description": "<table <tbody <tr <td",
+          "updatedAt": "2026-08-13T05:47:38.000Z",
+          "nodeToken": "Y33UwnsakiE3nskVSsZcIKEwnih",
+          "objToken": "GYSsdlC7vo1xvyxgJLwcVuQtn4e",
+          "file": "content/feishu/docs/zh-cn/browse-search.md",
+          "hash": "4521c2890ec8832e",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/Y33UwnsakiE3nskVSsZcIKEwnih"
+        }
+      }
+    },
+    {
+      "slug": "content-install",
+      "group": "使用指南",
+      "order": 20,
+      "locales": {
+        "zh-CN": {
+          "title": "安装与升级",
+          "description": "1. 在项目页点 安装 按钮",
+          "updatedAt": "2026-08-13T05:47:40.000Z",
+          "nodeToken": "Zp5Rww9M3inXjvk5nFXcgKBMnbh",
+          "objToken": "DohNdE6mzoZDFLxgAIocRTPvn3c",
+          "file": "content/feishu/docs/zh-cn/content-install.md",
+          "hash": "10fcfb193a6b3787",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/Zp5Rww9M3inXjvk5nFXcgKBMnbh"
+        }
+      }
+    },
+    {
+      "slug": "project-details",
+      "group": "使用指南",
+      "order": 21,
+      "locales": {
+        "zh-CN": {
+          "title": "项目详情页",
+          "description": "点进任意一个模组/整合包，你会看到这些区域：",
+          "updatedAt": "2026-08-27T12:48:28.000Z",
+          "nodeToken": "Y1aOwiDTtiY9YCkK0IVcYPghnrf",
+          "objToken": "KaoodTcjmoBVSuxexoscabt8nne",
+          "file": "content/feishu/docs/zh-cn/project-details.md",
+          "hash": "1c5105e9f6d812c8",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/Y1aOwiDTtiY9YCkK0IVcYPghnrf"
+        }
+      }
+    },
+    {
+      "slug": "skins",
+      "group": "使用指南",
+      "order": 22,
+      "locales": {
+        "zh-CN": {
+          "title": "皮肤与个性化",
+          "description": "皮肤 就是你在游戏里角色的外观。默认的 Steve / Alex 看腻了？换上自己喜欢的皮肤，游戏体验完全不一样。",
+          "updatedAt": "2026-08-13T05:47:13.000Z",
+          "nodeToken": "A0AEwmqpJiYYKlk6saOcNqJkn3c",
+          "objToken": "KU8AdlIaCoS3A1xF5UscBawqnwf",
+          "file": "content/feishu/docs/zh-cn/skins.md",
+          "hash": "783880ce6078056c",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/A0AEwmqpJiYYKlk6saOcNqJkn3c"
+        }
+      }
+    },
+    {
+      "slug": "multiplayer",
+      "group": "使用指南",
+      "order": 23,
+      "locales": {
+        "zh-CN": {
+          "title": "多人游戏",
+          "description": "单人玩久了，想和朋友一起玩？这就是 服务器 的世界。",
+          "updatedAt": "2026-08-23T05:34:07.000Z",
+          "nodeToken": "Bbc2wjdNXiMCb8kXJIGcdlFIn1b",
+          "objToken": "LwpAdY4aDob5wVx6T01cql7Jnfh",
+          "file": "content/feishu/docs/zh-cn/multiplayer.md",
+          "hash": "7e844b4d47cd8be4",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/Bbc2wjdNXiMCb8kXJIGcdlFIn1b"
+        }
+      }
+    },
+    {
+      "slug": "lab",
+      "group": "使用指南",
+      "order": 24,
+      "locales": {
+        "zh-CN": {
+          "title": "实验室",
+          "description": "实验室 \\(Lab\\) 是 Axolotl 内置的实用工具箱。",
+          "updatedAt": "2026-08-13T05:57:51.000Z",
+          "nodeToken": "DoJLwQaVciWsWLk89Q6coMqfnLe",
+          "objToken": "TpUvddSaEoGmgkxwRyjcwdgqnbd",
+          "file": "content/feishu/docs/zh-cn/lab.md",
+          "hash": "c88a88369a344ec0",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/DoJLwQaVciWsWLk89Q6coMqfnLe"
+        }
+      }
+    },
+    {
+      "slug": "seed-map",
+      "group": "使用指南",
+      "order": 25,
+      "locales": {
+        "zh-CN": {
+          "title": "种子地图",
+          "description": "种子 \\(Seed\\) 是 Minecraft 生成世界时用的\\&\\ 34;随机数钥匙\\&\\ 34;——同一个种子，生成的世界完全一样。",
+          "updatedAt": "2026-08-13T05:47:43.000Z",
+          "nodeToken": "XQhhwQcZ2inhK4kEUMXcuBw3ngd",
+          "objToken": "HlADdZrnmo0V2ix641ocSRQsnOd",
+          "file": "content/feishu/docs/zh-cn/seed-map.md",
+          "hash": "1bbc943dd5924c60",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/XQhhwQcZ2inhK4kEUMXcuBw3ngd"
+        }
+      }
+    },
+    {
+      "slug": "projection-preview",
+      "group": "使用指南",
+      "order": 26,
+      "locales": {
+        "zh-CN": {
+          "title": "投影预览",
+          "description": "投影文件 是建筑图纸——别人精心设计的建筑，会保存成 .schem / .schematic 文件分享。",
+          "updatedAt": "2026-08-13T05:47:45.000Z",
+          "nodeToken": "QF9IwXsqtiitwEkYaLHcsjEnn5d",
+          "objToken": "KuDFdSvdnoD6HzxzClNcHqK3nRd",
+          "file": "content/feishu/docs/zh-cn/projection-preview.md",
+          "hash": "9f64cc8f083ffcc8",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/QF9IwXsqtiitwEkYaLHcsjEnn5d"
+        }
+      }
+    },
+    {
+      "slug": "recipe-generator",
+      "group": "使用指南",
+      "order": 27,
+      "locales": {
+        "zh-CN": {
+          "title": "配方生成器",
+          "description": "配方生成器 让你 可视化地设计游戏里的合成配方 ——比如让\\&\\ 34;泥土\\&\\ 34;能合成\\&\\ 34;钻石\\&\\ 34;！",
+          "updatedAt": "2026-08-13T05:47:47.000Z",
+          "nodeToken": "N8i5wBz6GisrXfk1TqScyEtln1c",
+          "objToken": "Kutddox7GoDTPtxAU4kcoADan2b",
+          "file": "content/feishu/docs/zh-cn/recipe-generator.md",
+          "hash": "0a5358a1fee989ce",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/N8i5wBz6GisrXfk1TqScyEtln1c"
+        }
+      }
+    },
+    {
+      "slug": "gradient-text",
+      "group": "使用指南",
+      "order": 28,
+      "locales": {
+        "zh-CN": {
+          "title": "渐变文字",
+          "description": "渐变文字 让你一键生成 Minecraft 里的 渐变色文字 ——红橙黄绿青蓝紫那种过渡效果。",
+          "updatedAt": "2026-08-13T05:47:49.000Z",
+          "nodeToken": "QDjOwPVFMiO8TMkyx2HcGL2Enbg",
+          "objToken": "ClJTduqFXodiy3xBSnjco1LUnze",
+          "file": "content/feishu/docs/zh-cn/gradient-text.md",
+          "hash": "8b87d5436e041aab",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/QDjOwPVFMiO8TMkyx2HcGL2Enbg"
+        }
+      }
+    },
+    {
+      "slug": "mod-translation",
+      "group": "使用指南",
+      "order": 29,
+      "locales": {
+        "zh-CN": {
+          "title": "模组翻译",
+          "description": "模组翻译 是给\\&\\ 34;没汉化/汉化不全的模组\\&\\ 34;做翻译的工具。国外很多好玩的模组只有英文，看不懂怎么办？自己翻！",
+          "updatedAt": "2026-08-13T05:47:51.000Z",
+          "nodeToken": "FZbSwDid9iFHjvkmFIlcNHrInyh",
+          "objToken": "AuNTdYdlmo6XkYxuIDrcEjYqnJ6",
+          "file": "content/feishu/docs/zh-cn/mod-translation.md",
+          "hash": "7b449acea627e70e",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/FZbSwDid9iFHjvkmFIlcNHrInyh"
+        }
+      }
+    },
+    {
+      "slug": "settings",
+      "group": "使用指南",
+      "order": 30,
+      "locales": {
+        "zh-CN": {
+          "title": "设置里的内容是做什么的 | 设置详解",
+          "description": "设置页左侧分三组： 界面 / 游戏 / 数据与隐私 ，顶部有搜索框，找设置直接搜：",
+          "updatedAt": "2026-11-14T03:52:57.000Z",
+          "nodeToken": "DuOmwhs9jixD25kWNurcODiCn6b",
+          "objToken": "KouPdXbTaow8sxxe2XVck8Vfnxe",
+          "file": "content/feishu/docs/zh-cn/settings.md",
+          "hash": "4004568a1c0e8b76",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/DuOmwhs9jixD25kWNurcODiCn6b"
+        }
+      }
+    },
+    {
+      "slug": "faq",
+      "group": "帮助",
+      "order": 31,
+      "locales": {
+        "zh-CN": {
+          "title": "常见使用问题 (FAQ)",
+          "description": "本文档包含一些常见的问题，如果你有功能相关的问题，可以前往本知识库的下一篇文档查看。",
+          "updatedAt": "2026-11-14T04:02:51.000Z",
+          "nodeToken": "VtOWwGrsoiu4QHkLv2YcyzSznne",
+          "objToken": "VtKydqwCjohIoixQCsicroN2nCg",
+          "file": "content/feishu/docs/zh-cn/faq.md",
+          "hash": "08a2a64110046183",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/VtOWwGrsoiu4QHkLv2YcyzSznne"
+        }
+      }
+    },
+    {
+      "slug": "contributing",
+      "group": "帮助",
+      "order": 32,
+      "locales": {
+        "zh-CN": {
+          "title": "支持与贡献",
+          "description": "Axolotl Launcher 的进步离不开社区的支持！",
+          "updatedAt": "2026-08-29T11:17:06.000Z",
+          "nodeToken": "VENVwA0kJiGe7Dk3OijcdGXXn5b",
+          "objToken": "FtIudEtG9oKbLExlt2kcG82wnEb",
+          "file": "content/feishu/docs/zh-cn/contributing.md",
+          "hash": "9202095c85f545d1",
+          "url": "https://gcnpznwdnhl4.feishu.cn/wiki/VENVwA0kJiGe7Dk3OijcdGXXn5b"
+        }
+      }
+    }
+  ]
+}

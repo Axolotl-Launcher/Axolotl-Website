@@ -77,7 +77,7 @@ const updatedLabel = computed(() => {
 
 <template>
   <DocsShell v-if="page" :toc="page.body?.toc?.links">
-    <article class="max-w-3xl">
+    <article class="max-w-4xl">
       <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">{{ page.group }}</p>
       <h1 class="mt-4 text-section">{{ page.title }}</h1>
       <p v-if="page.description" class="mt-4 text-lead text-fg-muted">{{ page.description }}</p>

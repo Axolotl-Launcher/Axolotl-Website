@@ -74,9 +74,12 @@ async function main() {
 
   const resolved = await resolveDocuments(client)
   const linkMap = new Map<string, string>()
+  const docTitleMap = new Map<string, string>()
   for (const document of resolved) {
     linkMap.set(document.node.node_token, document.route)
     linkMap.set(document.node.obj_token, document.route)
+    docTitleMap.set(document.node.title, document.route)
+    docTitleMap.set(document.config.slug, document.route)
   }
 
   const manifest: FeishuManifest = { version: 1, docs: [] }
@@ -84,13 +87,13 @@ async function main() {
   let translatedDocuments = 0
 
   for (const document of resolved) {
-    const result = await syncDocument(client, document, linkMap, webBase)
+    const result = await syncDocument(client, document, linkMap, docTitleMap, webBase)
     if (!result) continue
     translatedDocuments += 1
 
     const entry = manifestBySlug.get(document.config.slug) ?? {
       slug: document.config.slug,
-      group: groupFor(document.config.group, locale),
+      group: groupFor(document.config.group, document.locale),
       order: document.config.order,
       locales: {},
     }
@@ -156,10 +159,33 @@ async function resolveDocuments(client: FeishuClient): Promise<ResolvedDocument[
   return resolved
 }
 
+function normalizeDocumentLinks(content: string, docTitleMap: Map<string, string>) {
+  return content
+    .replace(/%5C/gi, '')
+    .replace(/\\([._\-/])/g, '$1')
+    .replace(/\[([^\]]+)\]\((https?%3A[^)]+)\)/gi, (_, label: string, url: string) => {
+      try {
+        return `[${label}](${decodeURIComponent(url)})`
+      } catch {
+        return `[${label}](${url})`
+      }
+    })
+    .replace(/\[([^\]]+)\]\(([^)]+\.md)\)/gi, (_, label: string, url: string) => {
+      const title = url
+        .replace(/^.*\//, '')
+        .replace(/\.md$/i, '')
+        .replace(/^\d+[-_.]?\s*/, '')
+      const route = docTitleMap.get(title)
+      return route ? `[${label}](${route})` : label
+    })
+    .replace(/\[([^\]]+)\]\((?:\.\/)?images\/[^)]+\)/gi, '$1')
+}
+
 async function syncDocument(
   client: FeishuClient,
   document: ResolvedDocument,
   linkMap: Map<string, string>,
+  docTitleMap: Map<string, string>,
   webBase: string,
 ) {
   const { config, locale, node } = document
@@ -209,12 +235,16 @@ async function syncDocument(
     slug: config.slug,
     route: document.route,
     linkMap,
+    docTitleMap,
     imageMap,
     warnings,
     errors,
   }
 
-  const content = markdown ? convertFeishuMarkdown(markdown, context) : blocksToMarkdown(blocks, context)
+  const content = normalizeDocumentLinks(
+    markdown ? convertFeishuMarkdown(markdown, context) : blocksToMarkdown(blocks, context),
+    docTitleMap,
+  )
 
   if (!content.trim()) {
     errors.push(`${label}: converted document is empty`)
