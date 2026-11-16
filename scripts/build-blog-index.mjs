@@ -80,7 +80,8 @@ for (const [directory, fallbackLocale] of [
   }
 }
 
-const serialized = JSON.stringify({ posts }, null, 0)
+// Match Prettier's JSON output so the committed shared index passes `prettier --check`.
+const serialized = `${JSON.stringify({ posts }, null, 2)}\n`
 fs.mkdirSync(path.join(root, 'public'), { recursive: true })
 fs.writeFileSync(path.join(root, 'public/blog-index.json'), serialized)
 fs.writeFileSync(path.join(root, 'shared/blog-index.json'), serialized)

@@ -1,1 +1,160 @@
-{"posts":[{"slug":"crash-logs","locale":"zh-CN","versions":[{"timestamp":1793491200,"title":"崩溃之后：先读日志，再点修复","description":"从崩溃报告定位模组冲突、Java 问题和内存不足。","authors":["Axolotl Team"],"tags":["排错","日志"],"cover":"/showcase/recent-backups-1280.webp","body":"游戏崩溃时，启动器会保留日志和崩溃报告。修复按钮能解决一部分安装问题，但先读日志通常更快。\n\n## 先看最后 50 行\n\n打开实例的日志，直接跳到末尾。真正的异常通常出现在：\n\n- `Caused by:` 后面的第一行；\n- `java.lang.` 开头的异常；\n- 模组加载器列出的 `Missing`、`Incompatible` 或 `Duplicate`。\n\n如果日志以 `OutOfMemoryError` 结束，先调整内存，而不是删模组。\n\n## 三类常见原因\n\n**模组冲突。** 同一功能被两个模组实现，或依赖版本不匹配。日志会给出模组 ID，按 ID 禁用其中一个再试。\n\n**Java 不匹配。** 表现为启动即退出，日志里出现 `UnsupportedClassVersionError`。切换到对应版本的游戏 Java。\n\n**安装不完整。** 下载中断导致库文件缺失。用实例菜单里的修复功能重新校验文件。\n\n## 修复的顺序\n\n1. 复制当前实例，保留现场。\n2. 禁用最近新增的模组，确认能否启动。\n3. 能启动后逐个恢复，定位到具体模组。\n4. 确认稳定后，再删掉临时副本。\n\n不要一次禁用十几个模组。那样即使游戏能启动，也不知道是谁的问题。\n\n## 求助时带上什么\n\n附上完整日志文件、游戏版本、加载器版本和 Java 版本。只发一张报错截图，通常无法判断原因。","isUpdate":false}]},{"slug":"first-launch","locale":"zh-CN","versions":[{"timestamp":1793491200,"title":"第一次启动：账户、Java 与内存","description":"从登录到进入游戏，把首次启动需要做的四件事一次讲清楚。","authors":["Axolotl Team"],"tags":["入门","Java"],"cover":"/showcase/recent-lab-1600.webp","body":"第一次打开 Axolotl，最重要的是让启动器知道三件事：用哪个账户、用哪套 Java、给游戏多少内存。其余设置都可以之后再调。\n\n## 1. 登录账户\n\n在账户页选择 Microsoft 登录，按浏览器提示完成授权。启动器只保存登录会话，不会保存你的密码。如果你使用离线账户或自建认证服务，可以在同一页面切换到对应方式。\n\n登录后建议先确认账户状态：头像、用户名和皮肤是否正常。如果皮肤没有刷新，重新进入账户页即可。\n\n## 2. 选择 Java\n\nJava 版本需要与 Minecraft 版本匹配。启动器会优先使用你选择的运行时；没有合适版本时，会提示你安装或选择其他路径。\n\n- 新版游戏通常需要 Java 21 或更高版本。\n- 旧版整合包可能锁定 Java 8 或 Java 17。\n- 不要同时把多个 Java 路径指向同一个目录。\n\n如果你不确定，保留默认的“自动选择”，让启动器按版本决定。\n\n## 3. 分配内存\n\n内存不是越大越好。给游戏分配过多内存，反而会让垃圾回收停顿更明显，也会挤占系统和其他程序。\n\n| 场景           | 建议内存 |\n| -------------- | -------- |\n| 原版或轻量整合 | 2–4 GB   |\n| 中型整合包     | 4–6 GB   |\n| 大型整合包     | 6–8 GB   |\n\n同时给操作系统留出至少 4 GB。8 GB 内存的电脑不建议把游戏分配到 6 GB 以上。\n\n## 4. 选择游戏目录\n\n默认目录位于用户目录下。把游戏目录放在空间充足、非网络同步盘的本地磁盘上，可以减少文件锁和读写冲突。\n\n完成这四步后，回到主页选择版本并启动。第一次启动会下载资源，耗时取决于网络和磁盘速度。","isUpdate":false},{"timestamp":1793577600,"title":"第一次启动：账户、Java 与内存","description":"从登录到进入游戏，把首次启动需要做的四件事一次讲清楚。","authors":["Axolotl Team"],"tags":["入门","Java"],"cover":"/showcase/recent-lab-1600.webp","body":"第一次打开 Axolotl，最重要的是让启动器知道三件事：用哪个账户、用哪套 Java、给游戏多少内存。其余设置都可以之后再调。\n\n## 1. 登录账户\n\n在账户页选择 Microsoft 登录，按浏览器提示完成授权。启动器只保存登录会话，不会保存你的密码。如果你使用离线账户或自建认证服务，可以在同一页面切换到对应方式。\n\n登录后建议先确认账户状态：头像、用户名和皮肤是否正常。如果皮肤没有刷新，重新进入账户页即可。\n\n## 2. 选择 Java\n\nJava 版本需要与 Minecraft 版本匹配。启动器会优先使用你选择的运行时；没有合适版本时，会提示你安装或选择其他路径。\n\n- 新版游戏通常需要 Java 21 或更高版本。\n- 旧版整合包可能锁定 Java 8 或 Java 17。\n- 不要同时把多个 Java 路径指向同一个目录。\n\n如果你不确定，保留默认的“自动选择”，让启动器按版本决定。\n\n## 3. 分配内存\n\n内存不是越大越好。给游戏分配过多内存，反而会让垃圾回收停顿更明显，也会挤占系统和其他程序。\n\n| 场景           | 建议内存 |\n| -------------- | -------- |\n| 原版或轻量整合 | 2–4 GB   |\n| 中型整合包     | 4–6 GB   |\n| 大型整合包     | 6–8 GB   |\n\n同时给操作系统留出至少 4 GB。8 GB 内存的电脑不建议把游戏分配到 6 GB 以上。\n\n## 4. 选择游戏目录\n\n默认目录位于用户目录下。把游戏目录放在空间充足、非网络同步盘的本地磁盘上，可以减少文件锁和读写冲突。\n\n完成这四步后，回到主页选择版本并启动。第一次启动会下载资源，耗时取决于网络和磁盘速度。","isUpdate":true}]},{"slug":"instance-isolation","locale":"zh-CN","versions":[{"timestamp":1793491200,"title":"为什么每个整合包都应该住在自己的实例里","description":"实例隔离如何避免模组冲突、版本串味和存档丢失。","authors":["Axolotl Team"],"tags":["实例","整合包"],"cover":"/showcase/launcher-home.webp","body":"把不同整合包装进同一个 `.minecraft`，短期看省事，长期看几乎一定会出问题。模组版本、配置文件、资源包和存档会互相覆盖，最后很难判断是哪个改动导致崩溃。\n\n## 一个实例是一套完整环境\n\nAxolotl 的实例包含独立的：\n\n- 游戏版本与加载器；\n- 模组、资源包和光影；\n- 配置文件与按键绑定；\n- 存档、日志和崩溃报告；\n- Java 与内存设置。\n\n启动器在启动时只挂载当前实例的目录，所以两个整合包可以使用不同版本的同一个模组，而不会互相干扰。\n\n## 隔离带来的三个好处\n\n**排错更快。** 崩溃时只需要看当前实例的日志，不必在一堆无关模组里猜。\n\n**回滚更安全。** 更新整合包前复制一份实例，出问题直接切回旧副本。\n\n**迁移更简单。** 整个实例目录可以打包带走，换电脑后导入即可继续。\n\n## 什么时候可以共享\n\n原版实例之间共享资源包通常没问题；但整合包、光影和自定义配置建议各自独立。存档如果需要在多个实例间使用，复制而不是软链接，避免两个实例同时写入。\n\n## 一个实用习惯\n\n在安装新整合包前，先给它起一个能看懂的名字，例如“1.20.1 机械动力 生存”。一周后你仍然知道它是干什么的，这比任何整理技巧都有效。","isUpdate":false}]},{"slug":"crash-logs","locale":"en-US","versions":[{"timestamp":1793491200,"title":"After a crash: read the log before you repair","description":"Use the crash report to find mod conflicts, Java mismatches and memory pressure.","authors":["Axolotl Team"],"tags":["Troubleshooting","Logs"],"cover":"/showcase/recent-backups-1280.webp","body":"When the game crashes, the launcher keeps the log and the crash report. The repair action fixes some installation problems, but reading the end of the log is usually faster.\n\n## Start with the last 50 lines\n\nOpen the instance log and jump to the end. The useful exception is usually:\n\n- the first line after `Caused by:`;\n- a `java.lang.` exception;\n- a `Missing`, `Incompatible` or `Duplicate` entry from the mod loader.\n\nIf the log ends with `OutOfMemoryError`, adjust memory before removing mods.\n\n## Three common causes\n\n**Mod conflict.** Two mods implement the same feature, or a dependency version does not match. The log names the mod ID; disable one and retry.\n\n**Java mismatch.** The game exits immediately with `UnsupportedClassVersionError`. Switch the instance to the Java version the game expects.\n\n**Incomplete installation.** An interrupted download leaves a library missing. Run repair from the instance menu to verify files again.\n\n## A safe repair order\n\n1. Copy the instance and preserve the current state.\n2. Disable the most recently added mod and try to launch.\n3. If it starts, restore mods one at a time until the culprit appears.\n4. Delete the temporary copy only after the instance is stable.\n\nDo not disable a dozen mods at once. Even if the game starts, you will not know which one was responsible.\n\n## What to include in a bug report\n\nAttach the full log, the game version, the loader version and the Java version. A screenshot of the error alone rarely contains enough context.","isUpdate":false}]},{"slug":"first-launch","locale":"en-US","versions":[{"timestamp":1793491200,"title":"First launch: accounts, Java and memory","description":"The four things worth getting right before you start the game.","authors":["Axolotl Team"],"tags":["Getting started","Java"],"cover":"/showcase/recent-lab-1600.webp","body":"The first time you open Axolotl, three things matter most: which account you use, which Java runtime the game gets, and how much memory it may allocate. Everything else can wait.\n\n## 1. Sign in\n\nChoose Microsoft sign-in on the Accounts page and finish the authorization in your browser. The launcher stores the session, never your password. Offline accounts and custom authentication services are available on the same page.\n\nAfter signing in, check that the avatar, username and skin look right. If the skin has not refreshed, reopen the Accounts page.\n\n## 2. Pick a Java runtime\n\nThe Java version must match the Minecraft version. The launcher prefers the runtime you choose and prompts you to install or locate another one when no suitable version exists.\n\n- Recent game versions usually need Java 21 or newer.\n- Older modpacks may require Java 8 or Java 17.\n- Do not point several Java entries at the same directory.\n\nIf you are unsure, leave the automatic choice in place and let the launcher decide per version.\n\n## 3. Allocate memory\n\nMore memory is not automatically better. Oversized heaps make garbage-collection pauses worse and starve the rest of the system.\n\n| Workload                  | Suggested memory |\n| ------------------------- | ---------------- |\n| Vanilla or light modpacks | 2–4 GB           |\n| Medium modpacks           | 4–6 GB           |\n| Large modpacks            | 6–8 GB           |\n\nLeave at least 4 GB for the operating system. On an 8 GB machine, avoid giving the game more than 6 GB.\n\n## 4. Choose a game directory\n\nThe default lives under your user directory. Keep it on a local disk with enough free space, and avoid network-synced folders: they cause file locks and read/write conflicts.\n\nWith those four steps done, pick a version on the home page and launch. The first start downloads assets, so it takes longer than later launches.","isUpdate":false},{"timestamp":1793577600,"title":"First launch: accounts, Java and memory","description":"The four things worth getting right before you start the game.","authors":["Axolotl Team"],"tags":["Getting started","Java"],"cover":"/showcase/recent-lab-1600.webp","body":"The first time you open Axolotl, three things matter most: which account you use, which Java runtime the game gets, and how much memory it may allocate. Everything else can wait.\n\n## 1. Sign in\n\nChoose Microsoft sign-in on the Accounts page and finish the authorization in your browser. The launcher stores the session, never your password. Offline accounts and custom authentication services are available on the same page.\n\nAfter signing in, check that the avatar, username and skin look right. If the skin has not refreshed, reopen the Accounts page.\n\n## 2. Pick a Java runtime\n\nThe Java version must match the Minecraft version. The launcher prefers the runtime you choose and prompts you to install or locate another one when no suitable version exists.\n\n- Recent game versions usually need Java 21 or newer.\n- Older modpacks may require Java 8 or Java 17.\n- Do not point several Java entries at the same directory.\n\nIf you are unsure, leave the automatic choice in place and let the launcher decide per version.\n\n## 3. Allocate memory\n\nMore memory is not automatically better. Oversized heaps make garbage-collection pauses worse and starve the rest of the system.\n\n| Workload                  | Suggested memory |\n| ------------------------- | ---------------- |\n| Vanilla or light modpacks | 2–4 GB           |\n| Medium modpacks           | 4–6 GB           |\n| Large modpacks            | 6–8 GB           |\n\nLeave at least 4 GB for the operating system. On an 8 GB machine, avoid giving the game more than 6 GB.\n\n## 4. Choose a game directory\n\nThe default lives under your user directory. Keep it on a local disk with enough free space, and avoid network-synced folders: they cause file locks and read/write conflicts.\n\nWith those four steps done, pick a version on the home page and launch. The first start downloads assets, so it takes longer than later launches.","isUpdate":true}]},{"slug":"instance-isolation","locale":"en-US","versions":[{"timestamp":1793491200,"title":"Why every modpack deserves its own instance","description":"How isolation prevents mod conflicts, version bleed and lost worlds.","authors":["Axolotl Team"],"tags":["Instances","Modpacks"],"cover":"/showcase/launcher-home.webp","body":"Installing several modpacks into one `.minecraft` folder looks convenient until mod versions, configs, resource packs and worlds start overwriting each other. At that point it is hard to tell which change caused the crash.\n\n## An instance is a complete environment\n\nAn Axolotl instance keeps its own:\n\n- game version and loader;\n- mods, resource packs and shaders;\n- configuration files and key bindings;\n- worlds, logs and crash reports;\n- Java and memory settings.\n\nThe launcher mounts only the current instance at launch, so two modpacks can use different versions of the same mod without interfering.\n\n## Three practical benefits\n\n**Faster diagnosis.** A crash only involves the current instance's log, not a pile of unrelated mods.\n\n**Safer rollback.** Copy an instance before updating a modpack; if the update breaks, switch back to the copy.\n\n**Simpler migration.** The whole instance folder can be packed up and imported on another machine.\n\n## What can be shared\n\nVanilla instances can usually share resource packs. Modpacks, shaders and custom configs should stay separate. If a world must be used by several instances, copy it instead of symlinking it, so two instances never write at once.\n\n## One habit worth keeping\n\nName a new instance something you will still understand in a week, such as \"1.20.1 Create survival\". That beats any filing system.","isUpdate":false}]}]}
+{
+  "posts": [
+    {
+      "slug": "crash-logs",
+      "locale": "zh-CN",
+      "versions": [
+        {
+          "timestamp": 1793491200,
+          "title": "崩溃之后：先读日志，再点修复",
+          "description": "从崩溃报告定位模组冲突、Java 问题和内存不足。",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "排错",
+            "日志"
+          ],
+          "cover": "/showcase/recent-backups-1280.webp",
+          "body": "游戏崩溃时，启动器会保留日志和崩溃报告。修复按钮能解决一部分安装问题，但先读日志通常更快。\n\n## 先看最后 50 行\n\n打开实例的日志，直接跳到末尾。真正的异常通常出现在：\n\n- `Caused by:` 后面的第一行；\n- `java.lang.` 开头的异常；\n- 模组加载器列出的 `Missing`、`Incompatible` 或 `Duplicate`。\n\n如果日志以 `OutOfMemoryError` 结束，先调整内存，而不是删模组。\n\n## 三类常见原因\n\n**模组冲突。** 同一功能被两个模组实现，或依赖版本不匹配。日志会给出模组 ID，按 ID 禁用其中一个再试。\n\n**Java 不匹配。** 表现为启动即退出，日志里出现 `UnsupportedClassVersionError`。切换到对应版本的游戏 Java。\n\n**安装不完整。** 下载中断导致库文件缺失。用实例菜单里的修复功能重新校验文件。\n\n## 修复的顺序\n\n1. 复制当前实例，保留现场。\n2. 禁用最近新增的模组，确认能否启动。\n3. 能启动后逐个恢复，定位到具体模组。\n4. 确认稳定后，再删掉临时副本。\n\n不要一次禁用十几个模组。那样即使游戏能启动，也不知道是谁的问题。\n\n## 求助时带上什么\n\n附上完整日志文件、游戏版本、加载器版本和 Java 版本。只发一张报错截图，通常无法判断原因。",
+          "isUpdate": false
+        }
+      ]
+    },
+    {
+      "slug": "first-launch",
+      "locale": "zh-CN",
+      "versions": [
+        {
+          "timestamp": 1793491200,
+          "title": "第一次启动：账户、Java 与内存",
+          "description": "从登录到进入游戏，把首次启动需要做的四件事一次讲清楚。",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "入门",
+            "Java"
+          ],
+          "cover": "/showcase/recent-lab-1600.webp",
+          "body": "第一次打开 Axolotl，最重要的是让启动器知道三件事：用哪个账户、用哪套 Java、给游戏多少内存。其余设置都可以之后再调。\n\n## 1. 登录账户\n\n在账户页选择 Microsoft 登录，按浏览器提示完成授权。启动器只保存登录会话，不会保存你的密码。如果你使用离线账户或自建认证服务，可以在同一页面切换到对应方式。\n\n登录后建议先确认账户状态：头像、用户名和皮肤是否正常。如果皮肤没有刷新，重新进入账户页即可。\n\n## 2. 选择 Java\n\nJava 版本需要与 Minecraft 版本匹配。启动器会优先使用你选择的运行时；没有合适版本时，会提示你安装或选择其他路径。\n\n- 新版游戏通常需要 Java 21 或更高版本。\n- 旧版整合包可能锁定 Java 8 或 Java 17。\n- 不要同时把多个 Java 路径指向同一个目录。\n\n如果你不确定，保留默认的“自动选择”，让启动器按版本决定。\n\n## 3. 分配内存\n\n内存不是越大越好。给游戏分配过多内存，反而会让垃圾回收停顿更明显，也会挤占系统和其他程序。\n\n| 场景           | 建议内存 |\n| -------------- | -------- |\n| 原版或轻量整合 | 2–4 GB   |\n| 中型整合包     | 4–6 GB   |\n| 大型整合包     | 6–8 GB   |\n\n同时给操作系统留出至少 4 GB。8 GB 内存的电脑不建议把游戏分配到 6 GB 以上。\n\n## 4. 选择游戏目录\n\n默认目录位于用户目录下。把游戏目录放在空间充足、非网络同步盘的本地磁盘上，可以减少文件锁和读写冲突。\n\n完成这四步后，回到主页选择版本并启动。第一次启动会下载资源，耗时取决于网络和磁盘速度。",
+          "isUpdate": false
+        },
+        {
+          "timestamp": 1793577600,
+          "title": "第一次启动：账户、Java 与内存",
+          "description": "从登录到进入游戏，把首次启动需要做的四件事一次讲清楚。",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "入门",
+            "Java"
+          ],
+          "cover": "/showcase/recent-lab-1600.webp",
+          "body": "第一次打开 Axolotl，最重要的是让启动器知道三件事：用哪个账户、用哪套 Java、给游戏多少内存。其余设置都可以之后再调。\n\n## 1. 登录账户\n\n在账户页选择 Microsoft 登录，按浏览器提示完成授权。启动器只保存登录会话，不会保存你的密码。如果你使用离线账户或自建认证服务，可以在同一页面切换到对应方式。\n\n登录后建议先确认账户状态：头像、用户名和皮肤是否正常。如果皮肤没有刷新，重新进入账户页即可。\n\n## 2. 选择 Java\n\nJava 版本需要与 Minecraft 版本匹配。启动器会优先使用你选择的运行时；没有合适版本时，会提示你安装或选择其他路径。\n\n- 新版游戏通常需要 Java 21 或更高版本。\n- 旧版整合包可能锁定 Java 8 或 Java 17。\n- 不要同时把多个 Java 路径指向同一个目录。\n\n如果你不确定，保留默认的“自动选择”，让启动器按版本决定。\n\n## 3. 分配内存\n\n内存不是越大越好。给游戏分配过多内存，反而会让垃圾回收停顿更明显，也会挤占系统和其他程序。\n\n| 场景           | 建议内存 |\n| -------------- | -------- |\n| 原版或轻量整合 | 2–4 GB   |\n| 中型整合包     | 4–6 GB   |\n| 大型整合包     | 6–8 GB   |\n\n同时给操作系统留出至少 4 GB。8 GB 内存的电脑不建议把游戏分配到 6 GB 以上。\n\n## 4. 选择游戏目录\n\n默认目录位于用户目录下。把游戏目录放在空间充足、非网络同步盘的本地磁盘上，可以减少文件锁和读写冲突。\n\n完成这四步后，回到主页选择版本并启动。第一次启动会下载资源，耗时取决于网络和磁盘速度。",
+          "isUpdate": true
+        }
+      ]
+    },
+    {
+      "slug": "instance-isolation",
+      "locale": "zh-CN",
+      "versions": [
+        {
+          "timestamp": 1793491200,
+          "title": "为什么每个整合包都应该住在自己的实例里",
+          "description": "实例隔离如何避免模组冲突、版本串味和存档丢失。",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "实例",
+            "整合包"
+          ],
+          "cover": "/showcase/launcher-home.webp",
+          "body": "把不同整合包装进同一个 `.minecraft`，短期看省事，长期看几乎一定会出问题。模组版本、配置文件、资源包和存档会互相覆盖，最后很难判断是哪个改动导致崩溃。\n\n## 一个实例是一套完整环境\n\nAxolotl 的实例包含独立的：\n\n- 游戏版本与加载器；\n- 模组、资源包和光影；\n- 配置文件与按键绑定；\n- 存档、日志和崩溃报告；\n- Java 与内存设置。\n\n启动器在启动时只挂载当前实例的目录，所以两个整合包可以使用不同版本的同一个模组，而不会互相干扰。\n\n## 隔离带来的三个好处\n\n**排错更快。** 崩溃时只需要看当前实例的日志，不必在一堆无关模组里猜。\n\n**回滚更安全。** 更新整合包前复制一份实例，出问题直接切回旧副本。\n\n**迁移更简单。** 整个实例目录可以打包带走，换电脑后导入即可继续。\n\n## 什么时候可以共享\n\n原版实例之间共享资源包通常没问题；但整合包、光影和自定义配置建议各自独立。存档如果需要在多个实例间使用，复制而不是软链接，避免两个实例同时写入。\n\n## 一个实用习惯\n\n在安装新整合包前，先给它起一个能看懂的名字，例如“1.20.1 机械动力 生存”。一周后你仍然知道它是干什么的，这比任何整理技巧都有效。",
+          "isUpdate": false
+        }
+      ]
+    },
+    {
+      "slug": "crash-logs",
+      "locale": "en-US",
+      "versions": [
+        {
+          "timestamp": 1793491200,
+          "title": "After a crash: read the log before you repair",
+          "description": "Use the crash report to find mod conflicts, Java mismatches and memory pressure.",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "Troubleshooting",
+            "Logs"
+          ],
+          "cover": "/showcase/recent-backups-1280.webp",
+          "body": "When the game crashes, the launcher keeps the log and the crash report. The repair action fixes some installation problems, but reading the end of the log is usually faster.\n\n## Start with the last 50 lines\n\nOpen the instance log and jump to the end. The useful exception is usually:\n\n- the first line after `Caused by:`;\n- a `java.lang.` exception;\n- a `Missing`, `Incompatible` or `Duplicate` entry from the mod loader.\n\nIf the log ends with `OutOfMemoryError`, adjust memory before removing mods.\n\n## Three common causes\n\n**Mod conflict.** Two mods implement the same feature, or a dependency version does not match. The log names the mod ID; disable one and retry.\n\n**Java mismatch.** The game exits immediately with `UnsupportedClassVersionError`. Switch the instance to the Java version the game expects.\n\n**Incomplete installation.** An interrupted download leaves a library missing. Run repair from the instance menu to verify files again.\n\n## A safe repair order\n\n1. Copy the instance and preserve the current state.\n2. Disable the most recently added mod and try to launch.\n3. If it starts, restore mods one at a time until the culprit appears.\n4. Delete the temporary copy only after the instance is stable.\n\nDo not disable a dozen mods at once. Even if the game starts, you will not know which one was responsible.\n\n## What to include in a bug report\n\nAttach the full log, the game version, the loader version and the Java version. A screenshot of the error alone rarely contains enough context.",
+          "isUpdate": false
+        }
+      ]
+    },
+    {
+      "slug": "first-launch",
+      "locale": "en-US",
+      "versions": [
+        {
+          "timestamp": 1793491200,
+          "title": "First launch: accounts, Java and memory",
+          "description": "The four things worth getting right before you start the game.",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "Getting started",
+            "Java"
+          ],
+          "cover": "/showcase/recent-lab-1600.webp",
+          "body": "The first time you open Axolotl, three things matter most: which account you use, which Java runtime the game gets, and how much memory it may allocate. Everything else can wait.\n\n## 1. Sign in\n\nChoose Microsoft sign-in on the Accounts page and finish the authorization in your browser. The launcher stores the session, never your password. Offline accounts and custom authentication services are available on the same page.\n\nAfter signing in, check that the avatar, username and skin look right. If the skin has not refreshed, reopen the Accounts page.\n\n## 2. Pick a Java runtime\n\nThe Java version must match the Minecraft version. The launcher prefers the runtime you choose and prompts you to install or locate another one when no suitable version exists.\n\n- Recent game versions usually need Java 21 or newer.\n- Older modpacks may require Java 8 or Java 17.\n- Do not point several Java entries at the same directory.\n\nIf you are unsure, leave the automatic choice in place and let the launcher decide per version.\n\n## 3. Allocate memory\n\nMore memory is not automatically better. Oversized heaps make garbage-collection pauses worse and starve the rest of the system.\n\n| Workload                  | Suggested memory |\n| ------------------------- | ---------------- |\n| Vanilla or light modpacks | 2–4 GB           |\n| Medium modpacks           | 4–6 GB           |\n| Large modpacks            | 6–8 GB           |\n\nLeave at least 4 GB for the operating system. On an 8 GB machine, avoid giving the game more than 6 GB.\n\n## 4. Choose a game directory\n\nThe default lives under your user directory. Keep it on a local disk with enough free space, and avoid network-synced folders: they cause file locks and read/write conflicts.\n\nWith those four steps done, pick a version on the home page and launch. The first start downloads assets, so it takes longer than later launches.",
+          "isUpdate": false
+        },
+        {
+          "timestamp": 1793577600,
+          "title": "First launch: accounts, Java and memory",
+          "description": "The four things worth getting right before you start the game.",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "Getting started",
+            "Java"
+          ],
+          "cover": "/showcase/recent-lab-1600.webp",
+          "body": "The first time you open Axolotl, three things matter most: which account you use, which Java runtime the game gets, and how much memory it may allocate. Everything else can wait.\n\n## 1. Sign in\n\nChoose Microsoft sign-in on the Accounts page and finish the authorization in your browser. The launcher stores the session, never your password. Offline accounts and custom authentication services are available on the same page.\n\nAfter signing in, check that the avatar, username and skin look right. If the skin has not refreshed, reopen the Accounts page.\n\n## 2. Pick a Java runtime\n\nThe Java version must match the Minecraft version. The launcher prefers the runtime you choose and prompts you to install or locate another one when no suitable version exists.\n\n- Recent game versions usually need Java 21 or newer.\n- Older modpacks may require Java 8 or Java 17.\n- Do not point several Java entries at the same directory.\n\nIf you are unsure, leave the automatic choice in place and let the launcher decide per version.\n\n## 3. Allocate memory\n\nMore memory is not automatically better. Oversized heaps make garbage-collection pauses worse and starve the rest of the system.\n\n| Workload                  | Suggested memory |\n| ------------------------- | ---------------- |\n| Vanilla or light modpacks | 2–4 GB           |\n| Medium modpacks           | 4–6 GB           |\n| Large modpacks            | 6–8 GB           |\n\nLeave at least 4 GB for the operating system. On an 8 GB machine, avoid giving the game more than 6 GB.\n\n## 4. Choose a game directory\n\nThe default lives under your user directory. Keep it on a local disk with enough free space, and avoid network-synced folders: they cause file locks and read/write conflicts.\n\nWith those four steps done, pick a version on the home page and launch. The first start downloads assets, so it takes longer than later launches.",
+          "isUpdate": true
+        }
+      ]
+    },
+    {
+      "slug": "instance-isolation",
+      "locale": "en-US",
+      "versions": [
+        {
+          "timestamp": 1793491200,
+          "title": "Why every modpack deserves its own instance",
+          "description": "How isolation prevents mod conflicts, version bleed and lost worlds.",
+          "authors": [
+            "Axolotl Team"
+          ],
+          "tags": [
+            "Instances",
+            "Modpacks"
+          ],
+          "cover": "/showcase/launcher-home.webp",
+          "body": "Installing several modpacks into one `.minecraft` folder looks convenient until mod versions, configs, resource packs and worlds start overwriting each other. At that point it is hard to tell which change caused the crash.\n\n## An instance is a complete environment\n\nAn Axolotl instance keeps its own:\n\n- game version and loader;\n- mods, resource packs and shaders;\n- configuration files and key bindings;\n- worlds, logs and crash reports;\n- Java and memory settings.\n\nThe launcher mounts only the current instance at launch, so two modpacks can use different versions of the same mod without interfering.\n\n## Three practical benefits\n\n**Faster diagnosis.** A crash only involves the current instance's log, not a pile of unrelated mods.\n\n**Safer rollback.** Copy an instance before updating a modpack; if the update breaks, switch back to the copy.\n\n**Simpler migration.** The whole instance folder can be packed up and imported on another machine.\n\n## What can be shared\n\nVanilla instances can usually share resource packs. Modpacks, shaders and custom configs should stay separate. If a world must be used by several instances, copy it instead of symlinking it, so two instances never write at once.\n\n## One habit worth keeping\n\nName a new instance something you will still understand in a week, such as \"1.20.1 Create survival\". That beats any filing system.",
+          "isUpdate": false
+        }
+      ]
+    }
+  ]
+}
