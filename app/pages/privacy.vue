@@ -35,7 +35,7 @@ useHead({
     eyebrow="隐私政策"
     title="隐私政策"
     description="本政策说明 Axolotl Launcher 官方网站和桌面应用处理数据的方式，以及第三方服务可能接收的信息。"
-    updated-at="2026 年 11 月 15 日"
+    updated-at="2026 年 11 月 16 日"
   >
     <h2>1. 适用范围</h2>
     <p>
@@ -51,8 +51,8 @@ useHead({
     </ul>
     <p>
       这些偏好保存在浏览器 Cookie 或 localStorage 中，你可通过浏览器设置清除。语言选择通过 URL 前缀（例如
-      /en）表达，不写入 Cookie。网站不使用广告
-      Cookie，也不接入第三方分析或反馈收集服务。站内搜索使用构建时生成的本地索引（MiniSearch），查询不会发送给第三方搜索服务；知识库是飞书文档的构建时静态快照，访问网站不会连接飞书。下载页会在浏览器内读取
+      /en）表达，不写入 Cookie。网站不使用广告 Cookie；页面访问统计由 Umami Cloud 提供，该服务不使用
+      Cookie，仅记录汇总的访问信息（例如页面路径、来源、浏览器与操作系统、国家或地区），用于了解网站使用情况。站内搜索使用构建时生成的本地索引（MiniSearch），查询不会发送给第三方搜索服务；知识库是飞书文档的构建时静态快照，访问网站不会连接飞书。下载页会在浏览器内读取
       User-Agent
       以识别操作系统并推荐构建，该信息不会由网站额外上传。点击支持档位时，网站接口会向爱发电获取收银台链接并跳转，支付由爱发电处理，本站不保存支付信息。
     </p>
@@ -85,6 +85,7 @@ useHead({
       地址、设备和网络请求信息。可能涉及的服务包括：
     </p>
     <ul>
+      <li>Umami Cloud（页面访问统计）；</li>
       <li>Microsoft 和 Minecraft 的登录、资料及游戏服务；</li>
       <li>你选择的第三方 Yggdrasil 认证服务；</li>
       <li>Modrinth、CurseForge 及内容作者提供的 API 和下载地址；</li>
@@ -138,7 +139,7 @@ useHead({
     eyebrow="Privacy Policy"
     title="Privacy Policy"
     description="This policy explains how the Axolotl Launcher official website and desktop application handle data, and what information third-party services may receive."
-    updated-at="November 15, 2026"
+    updated-at="November 16, 2026"
   >
     <h2>1. Scope</h2>
     <p>
@@ -159,12 +160,14 @@ useHead({
     <p>
       These preferences are stored in browser cookies or localStorage and can be cleared through your browser settings.
       Language is expressed through the URL prefix (for example, /en) and is not stored in a cookie. The website uses no
-      advertising cookies and no third-party analytics or feedback-collection service. Site search uses a locally built
-      MiniSearch index, so queries are not sent to a third-party search service. The knowledge base is a static snapshot
-      of Feishu documents generated at build time; visiting the website does not connect to Feishu. The download page
-      reads the User-Agent in the browser to detect the operating system and recommend a build; the website does not
-      upload that information separately. When you choose a support tier, the site API obtains an Afdian checkout link
-      and redirects you; Afdian processes the payment, and this site does not store payment information.
+      advertising cookies. Page-view analytics are provided by Umami Cloud, which uses no cookies and records only
+      aggregated visit information such as page paths, referrers, browser and operating system, and country or region to
+      understand site usage. Site search uses a locally built MiniSearch index, so queries are not sent to a third-party
+      search service. The knowledge base is a static snapshot of Feishu documents generated at build time; visiting the
+      website does not connect to Feishu. The download page reads the User-Agent in the browser to detect the operating
+      system and recommend a build; the website does not upload that information separately. When you choose a support
+      tier, the site API obtains an Afdian checkout link and redirects you; Afdian processes the payment, and this site
+      does not store payment information.
     </p>
     <p>
       Website hosting and network infrastructure providers may process routine request information such as IP addresses,
@@ -205,6 +208,7 @@ useHead({
       operation. Services that may be involved include:
     </p>
     <ul>
+      <li>Umami Cloud for page-view analytics;</li>
       <li>Microsoft and Minecraft sign-in, profile, and game services;</li>
       <li>Third-party Yggdrasil authentication services you choose;</li>
       <li>APIs and download addresses provided by Modrinth, CurseForge, and content authors;</li>

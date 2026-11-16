@@ -170,6 +170,11 @@ export default defineNuxtConfig({
       updateArtifactUrl: 'https://dist.axlmc.org',
       gitlinkReleasesUrl: 'https://www.gitlink.org.cn/xinvxueyuan/Axolotl/releases/download',
       launcherDemo: launcherDemoEntry(),
+      umami: {
+        enabled: true,
+        scriptUrl: 'https://cloud.umami.is/script.js',
+        websiteId: '26be554f-21dc-494e-bccd-025fd36d6fa1',
+      },
     },
   },
 

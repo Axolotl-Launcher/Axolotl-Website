@@ -1,4 +1,22 @@
 <script setup lang="ts">
+const config = useRuntimeConfig()
+const umami = config.public.umami
+
+// Cookie-less page-view analytics. The snippet is only emitted when a
+// website id is configured, so previews and local builds can opt out.
+useHead({
+  script:
+    umami?.enabled && umami.websiteId
+      ? [
+          {
+            src: umami.scriptUrl,
+            defer: true,
+            'data-website-id': umami.websiteId,
+          },
+        ]
+      : [],
+})
+
 // Smooth scrolling is provided by nuxt-lenis. Anchors keep in-page links
 // working, and Lenis honors prefers-reduced-motion by default.
 const lenisOptions = {
