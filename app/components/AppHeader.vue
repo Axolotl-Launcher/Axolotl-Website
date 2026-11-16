@@ -154,11 +154,11 @@ watch(
             :target="collapsed ? undefined : '_blank'"
             :rel="collapsed ? undefined : 'noreferrer'"
             :aria-label="ctaLabel"
-            class="ml-1 inline-flex h-9 items-center justify-center overflow-hidden rounded-btn border text-caption font-semibold transition-[background-color,color,border-color,padding,box-shadow] duration-300 ease-out max-sm:hidden"
+            class="relative ml-1 inline-flex h-9 items-center justify-center overflow-hidden rounded-btn border text-caption font-semibold transition-[background-color,color,border-color,padding,box-shadow] duration-300 ease-out max-sm:hidden"
             :class="
               collapsed
                 ? 'border-transparent bg-accent px-2.5 text-[color:var(--on-accent)] shadow-[0_10px_30px_-12px_var(--accent-glow)]'
-                : 'border-border bg-surface-2/70 px-2.5 text-fg hover:border-border-strong hover:bg-surface-2'
+                : 'star-chip border-border bg-surface-2/70 px-2.5 text-fg hover:border-border-strong hover:bg-surface-2'
             "
           >
             <span
@@ -244,3 +244,50 @@ watch(
     </dialog>
   </header>
 </template>
+
+<style scoped>
+@property --star-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* A comet of accent light travels around the star chip's 1px border. */
+.star-chip::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--star-angle),
+    transparent 0deg,
+    var(--accent) 40deg,
+    transparent 110deg,
+    transparent 360deg
+  );
+  content: '';
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: star-sweep 2.8s linear infinite;
+}
+
+@keyframes star-sweep {
+  to {
+    --star-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-chip::before {
+    animation: none;
+  }
+}
+</style>
