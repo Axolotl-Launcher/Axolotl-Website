@@ -16,6 +16,13 @@ The official website for [Axolotl Launcher](https://axlmc.org), built as a stati
 - `@nuxtjs/device` for visitor OS detection; unsupported devices fall back to the Windows download
 - Native HTML dialogs, popovers and view transitions (no component library)
 
+### Module choices
+
+- `@nuxtjs/mdc` is registered explicitly so the MDC parser and components remain available outside Content.
+- `motion-v/nuxt`, `nuxt-lenis`, `nuxt-icons`, `@vueuse/nuxt`, `@nuxt/image`, `@nuxt/icon`, `@nuxtjs/device`, `@nuxtjs/i18n` and `@nuxtjs/seo` are consumed as Nuxt modules.
+- `swiper`, `tippy.js` and `dayjs` stay as direct libraries. `nuxt-swiper` pins Swiper 12 while this site uses Swiper 14; there is no maintained Nuxt module for Tippy; and `@nuxtjs/dayjs` mutates a global locale, which is unsafe during static prerender. They are wired through small local plugins instead.
+- Tailwind CSS 4 uses `@tailwindcss/vite`, the supported Nuxt 4 integration; the older Nuxt Tailwind module targets the previous setup.
+
 `experimental.nitroAutoImports` stays enabled because `@nuxtjs/i18n` 10.6.0 still imports `useRuntimeConfig` from Nitro's `#imports`; remove it once i18n supports the Nuxt 5 defaults.
 
 DevTools 4 requires Vite 8 and therefore Nuxt 4.5+. It only exists in development; press `Shift` + `Alt` + `D` in the browser to open it.
