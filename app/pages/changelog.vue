@@ -24,11 +24,31 @@ interface Announcement {
 const { t, locale } = useI18n()
 const config = useRuntimeConfig()
 
-const announcements = (catalog.announcements as Announcement[])
+const allAnnouncements = (catalog.announcements as Announcement[])
   .slice()
   .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+
+// Channels are derived from the release version: a suffix such as `-beta.1`
+// marks a build that only ships on the all-channels feed.
+const channel = ref('all')
+const channelTabs = computed(() => [
+  { value: 'all', label: t('changelog.tabAll') },
+  { value: 'stable', label: t('changelog.tabStable') },
+  { value: 'beta', label: t('changelog.tabBeta') },
+])
+
+const announcements = computed(() => {
+  if (channel.value === 'beta') return allAnnouncements.filter((entry) => entry.version.includes('-'))
+  if (channel.value === 'stable') return allAnnouncements.filter((entry) => !entry.version.includes('-'))
+  return allAnnouncements
+})
+
 const visible = ref(12)
-const hasMore = computed(() => visible.value < announcements.length)
+const hasMore = computed(() => visible.value < announcements.value.length)
+
+watch(channel, () => {
+  visible.value = 12
+})
 
 const changeKinds = [
   { key: 'added' as const, label: 'changelog.added' },
@@ -70,7 +90,9 @@ useSeoMeta({
       <p class="mt-4 text-lead text-fg-muted">{{ t('changelog.lead') }}</p>
     </header>
 
-    <ol v-if="announcements.length" class="mt-12 border-l border-divider">
+    <BaseTabs v-model="channel" class="mt-8" :options="channelTabs" :label="t('changelog.channelLabel')" />
+
+    <ol v-if="announcements.length" class="mt-10 border-l border-divider">
       <li
         v-for="(entry, index) in announcements"
         v-show="index < visible"
