@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useMediaQuery } from '@vueuse/core'
+
 defineProps<{
   label: string
   src: string
@@ -13,11 +15,10 @@ const mounted = ref(false)
 const prepared = ref(false)
 const ready = ref(false)
 const failed = ref(false)
-const phone = ref(false)
+const phone = useMediaQuery(PHONE)
 const progress = ref(0)
 const launchCount = ref(0)
 let disposed = false
-let phoneQuery: MediaQueryList | null = null
 
 function start() {
   started.value = true
@@ -26,7 +27,6 @@ function start() {
 }
 
 function startUnlessPhone() {
-  phone.value = phoneQuery?.matches ?? false
   if (!started.value && !phone.value) start()
 }
 
@@ -53,15 +53,11 @@ async function retry() {
   start()
 }
 
-onMounted(() => {
-  phoneQuery = window.matchMedia(PHONE)
-  phoneQuery.addEventListener('change', startUnlessPhone)
-  startUnlessPhone()
-})
+onMounted(startUnlessPhone)
+watch(phone, startUnlessPhone)
 
 onBeforeUnmount(() => {
   disposed = true
-  phoneQuery?.removeEventListener('change', startUnlessPhone)
 })
 </script>
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useEventListener } from '@vueuse/core'
 import { useId } from 'vue'
 import type { DownloadSource } from '~/utils/download-sources'
 
@@ -95,15 +96,7 @@ function onDocumentPointerDown(event: PointerEvent) {
   if (!root.value?.contains(event.target as Node)) closeMenu()
 }
 
-watch(open, (value) => {
-  if (!import.meta.client) return
-  if (value) document.addEventListener('pointerdown', onDocumentPointerDown)
-  else document.removeEventListener('pointerdown', onDocumentPointerDown)
-})
-
-onBeforeUnmount(() => {
-  if (import.meta.client) document.removeEventListener('pointerdown', onDocumentPointerDown)
-})
+useEventListener('pointerdown', onDocumentPointerDown)
 </script>
 
 <template>

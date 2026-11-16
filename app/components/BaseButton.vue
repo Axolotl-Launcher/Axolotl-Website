@@ -41,7 +41,7 @@ const sizes: Record<Size, string> = {
 
 const classes = computed(() =>
   twMerge(
-    'inline-flex select-none items-center justify-center gap-2 rounded-btn font-semibold whitespace-nowrap transition-[background-color,border-color,color,transform,box-shadow] duration-200 ease-out disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex items-center justify-center gap-2 rounded-btn font-semibold whitespace-nowrap transition-[background-color,border-color,color,transform,box-shadow] duration-200 ease-out select-none disabled:pointer-events-none disabled:opacity-50',
     variants[props.variant],
     sizes[props.size],
     props.block && 'w-full',

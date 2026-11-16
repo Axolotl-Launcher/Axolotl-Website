@@ -1,3 +1,4 @@
+import { useLocalStorage } from '@vueuse/core'
 import type { DownloadSource } from '~/utils/download-sources'
 import { createDownloadSources, getDownloadSource, isDownloadSource } from '~/utils/download-sources'
 
@@ -13,26 +14,16 @@ export function useDownloadSource() {
   })
 
   const selectedSource = useState<DownloadSource>('axolotl-download-source', () => 'auto')
+  const storedSource = useLocalStorage<DownloadSource | null>(DOWNLOAD_SOURCE_STORAGE_KEY, null)
   const resolvedSource = computed(() => getDownloadSource(selectedSource.value, sources))
 
   function setDownloadSource(source: DownloadSource) {
     selectedSource.value = source
-    if (import.meta.client) {
-      try {
-        localStorage.setItem(DOWNLOAD_SOURCE_STORAGE_KEY, source)
-      } catch {
-        // Browser privacy settings can disable storage; the in-memory choice still works.
-      }
-    }
+    storedSource.value = source
   }
 
   onMounted(() => {
-    try {
-      const savedSource = localStorage.getItem(DOWNLOAD_SOURCE_STORAGE_KEY)
-      if (isDownloadSource(savedSource)) selectedSource.value = savedSource
-    } catch {
-      // Keep the recommended source when persistent storage is unavailable.
-    }
+    if (isDownloadSource(storedSource.value)) selectedSource.value = storedSource.value
   })
 
   return { selectedSource, resolvedSource, setDownloadSource, sources }

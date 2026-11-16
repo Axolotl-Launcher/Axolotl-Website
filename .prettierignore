@@ -10,3 +10,5 @@ packages
 
 # Agent skill references are not part of the site build
 /.agents/
+
+.content

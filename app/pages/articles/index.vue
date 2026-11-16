@@ -1,16 +1,28 @@
 <script setup lang="ts">
+import { LOCALE_DIRECTORIES } from '#shared/types/docs'
+import { content } from '~/utils/content'
+
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 
 const contentLocale = computed(() => toContentLocale(locale.value))
 const { data: articles } = await useAsyncData(
   () => `articles-index-${contentLocale.value}`,
-  () =>
-    queryCollection('articles')
-      .where('locale', '=', contentLocale.value)
-      .where('draft', '=', false)
-      .order('publishedAt', 'DESC')
-      .all(),
+  async () => {
+    const directory = LOCALE_DIRECTORIES[contentLocale.value]
+    const entries = await content.list()
+    return entries
+      .filter((entry) => entry.path.startsWith(`/articles/${directory}/`) && entry.data.draft !== true)
+      .map((entry) => ({
+        path: entry.path,
+        title: entry.data.title ?? '',
+        description: entry.data.description ?? '',
+        cover: entry.data.cover ?? '',
+        publishedAt: entry.data.publishedAt ?? '',
+        tags: entry.data.tags ?? [],
+      }))
+      .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt))
+  },
   { watch: [contentLocale] },
 )
 

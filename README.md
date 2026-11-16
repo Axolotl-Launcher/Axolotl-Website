@@ -7,8 +7,10 @@ The official website for [Axolotl Launcher](https://axlmc.org), built as a stati
 - Nuxt 4.6 with the static preset, Vue 3.5 and TypeScript
 - Nuxt 5 compatibility preview (`future.compatibilityVersion: 5`): Vite Environment API, case-sensitive routing, typed routes and client payload extraction
 - Tailwind CSS 4 with site-owned design tokens (light, dark and OLED themes)
-- `@nuxt/content` for articles and local Markdown (MDC) documentation
+- `comark-content` for articles and local Markdown documentation, hydrated from a build-time snapshot
 - `@comark/vue` and `comark` for Markdown parsing and component rendering
+- `zod` for frontmatter validation and `@vueuse/core` for browser utilities
+- `ultracite` for the formatter base and the `pnpm check` wrapper
 - `@nuxt/icon` with the Lucide set for UI icons, plus `nuxt-icons` for local brand SVGs in `app/assets/icons`
 - `@nuxtjs/i18n` with `zh-CN` (default, no prefix) and `en` (`/en/*`)
 - `@nuxtjs/seo` for sitemaps, robots and `llms.txt`
@@ -18,7 +20,7 @@ The official website for [Axolotl Launcher](https://axlmc.org), built as a stati
 
 ### Module choices
 
-- `@comark/vue` provides the Markdown components and parser for blog articles and documentation; components are imported directly because its Nuxt auto-imports collide with the MDC module bundled by `@nuxt/content`. `@nuxt/content` remains the content layer.
+- `@comark/vue` provides the Markdown components and parser; `comark-content` reads the local Markdown files, validates their frontmatter with Zod, and exposes a snapshot that the static site can query without a server.
 - `motion-v/nuxt`, `nuxt-lenis`, `nuxt-icons`, `@vueuse/nuxt`, `@nuxt/image`, `@nuxt/icon`, `@nuxtjs/device`, `@nuxtjs/i18n` and `@nuxtjs/seo` are consumed as Nuxt modules.
 - `swiper`, `tippy.js` and `dayjs` stay as direct libraries. `nuxt-swiper` pins Swiper 12 while this site uses Swiper 14; there is no maintained Nuxt module for Tippy; and `@nuxtjs/dayjs` mutates a global locale, which is unsafe during static prerender. They are wired through small local plugins instead.
 - Tailwind CSS 4 uses `@tailwindcss/vite`, the supported Nuxt 4 integration; the older Nuxt Tailwind module targets the previous setup.
@@ -58,7 +60,7 @@ Set `NUXT_AFDIAN_USER_ID` and `NUXT_AFDIAN_TOKEN` in `.env` (or the deployment e
 
 ## Documentation
 
-Docs are local Markdown files under `content/docs/<locale>/` and are rendered with Comark's MDC-compatible syntax. Each file keeps its navigation metadata in frontmatter (`title`, `description`, `locale`, `slug`, `group`, `order`, `updatedAt`). Add or edit the file, then run `pnpm build`; `scripts/build-search-index.ts` indexes it automatically. No external knowledge base or credentials are involved.
+Docs and articles are local Markdown files under `content/docs/<locale>/` and `content/articles/<locale>/`, rendered with Comark's MDC-compatible syntax. Frontmatter is validated by the Zod schema in `shared/schemas/content.ts` when `content.ts` builds the snapshot. Add or edit a file, then run `pnpm content:snapshot` (or `pnpm dev`/`pnpm build`, which do it automatically); `scripts/build-search-index.ts` indexes it automatically. No external knowledge base or server is involved.
 
 Articles are normal Markdown under `content/articles`. Legal pages are maintained as Vue pages in `app/pages` so their wording is reviewed in code.
 

@@ -52,7 +52,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/devtools',
     '@nuxtjs/device',
-    '@nuxt/content',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',
     '@nuxt/image',
@@ -90,14 +89,6 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
       script: [{ innerHTML: themeInit, tagPosition: 'head' }],
-    },
-  },
-
-  content: {
-    build: {
-      markdown: {
-        toc: { depth: 3, searchDepth: 3 },
-      },
     },
   },
 

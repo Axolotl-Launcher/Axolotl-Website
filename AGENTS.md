@@ -53,6 +53,9 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 Documentation is repository-authored Markdown under `content/docs/<locale>/` and is rendered with Comark's MDC-compatible syntax:
 
 - Each file keeps `title`, `description`, `locale`, `slug`, `group`, `order` and `updatedAt` in its frontmatter.
+- `shared/schemas/content.ts` validates frontmatter with Zod; invalid files fail the snapshot step.
+- `content.ts` writes `.content/default/{snapshot,manifest}.json`; run `pnpm content:snapshot` after editing content (`pnpm dev` and `pnpm build` do it automatically).
+- `app/utils/content.ts` hydrates that snapshot, so the static site needs no content server at runtime.
 - `scripts/build-search-index.ts` indexes the local docs at build time.
 - No documentation content is fetched from an external service; deployments only need the repository.
 - Articles and legal documents remain repository-authored.
@@ -60,6 +63,8 @@ Documentation is repository-authored Markdown under `content/docs/<locale>/` and
 ## Design and UI
 
 Preserve the original design primitives: the pink brand scale, the light/dark/OLED surface ladders, the Inter-based fluid typography and the `data-theme` switching contract. New components should consume the semantic utilities generated from `app/assets/css/tokens.css` (`bg-surface-1`, `text-fg-muted`, `border-divider`, `text-section`, etc.) rather than hard-coded colours.
+
+Use `@vueuse/core` for browser APIs (event listeners, media queries, storage, observers, timers) instead of hand-written `addEventListener`, `matchMedia`, `localStorage` or observer code. Ultracite provides the formatter base; `pnpm check` runs its CLI.
 
 Prefer native platform capabilities (View Transitions, `<dialog>`, container queries, `color-mix()`, OKLCH-ready tokens) over dependencies. Keep client-side JavaScript small; the site should remain useful before hydration.
 

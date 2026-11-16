@@ -1,3 +1,5 @@
+import { useLocalStorage, useMediaQuery } from '@vueuse/core'
+
 export type ThemeMode = 'light' | 'dark' | 'oled' | 'system'
 export type ResolvedTheme = 'light' | 'dark' | 'oled'
 
@@ -11,6 +13,7 @@ export function useTheme() {
     sameSite: 'lax',
   })
   const mode = useState<ThemeMode>('axolotl-theme', () => cookie.value ?? 'system')
+  const storedMode = useLocalStorage<ThemeMode | null>(STORAGE_KEY, null)
   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
 
   const resolved = computed<ResolvedTheme>(() => {
@@ -34,8 +37,8 @@ export function useTheme() {
   function setMode(next: ThemeMode) {
     mode.value = next
     cookie.value = next
+    storedMode.value = next
     if (import.meta.client) {
-      localStorage.setItem(STORAGE_KEY, next)
       applyDom(next === 'system' ? (prefersDark.value ? 'dark' : 'light') : next)
     }
   }
@@ -45,9 +48,8 @@ export function useTheme() {
   }
 
   onMounted(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored && MODES.includes(stored as ThemeMode)) {
-      mode.value = stored as ThemeMode
+    if (storedMode.value && MODES.includes(storedMode.value)) {
+      mode.value = storedMode.value
     }
     applyDom(resolved.value)
   })

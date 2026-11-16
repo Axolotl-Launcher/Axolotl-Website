@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useEventListener } from '@vueuse/core'
+
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
@@ -67,14 +69,11 @@ watch(collapsed, (value) => {
   }
 })
 
-onMounted(() => {
-  syncHeader()
-  window.addEventListener('resize', syncHeader)
-})
+onMounted(syncHeader)
+useEventListener('resize', syncHeader)
 
 onBeforeUnmount(() => {
   if (labelTimer) clearTimeout(labelTimer)
-  window.removeEventListener('resize', syncHeader)
 })
 
 const nav = computed(() => [

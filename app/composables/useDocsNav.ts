@@ -1,4 +1,6 @@
 import type { SiteLocale } from '#shared/types/docs'
+import { LOCALE_DIRECTORIES } from '#shared/types/docs'
+import { content } from '~/utils/content'
 
 export interface DocsNavItem {
   title: string
@@ -21,15 +23,17 @@ export function useDocsNav() {
   const { data: docs } = useAsyncData(
     () => `docs-nav-${contentLocale.value}`,
     async () => {
-      const entries = await queryCollection('docs').where('locale', '=', contentLocale.value).all()
+      const directory = LOCALE_DIRECTORIES[contentLocale.value]
+      const entries = await content.list()
       return entries
+        .filter((entry) => entry.path.startsWith(`/docs/${directory}/`))
         .map((entry) => ({
-          title: entry.title ?? '',
-          description: entry.description ?? '',
-          slug: entry.slug ?? '',
-          group: entry.group ?? 'Docs',
-          order: entry.order ?? 0,
-          updatedAt: entry.updatedAt ?? '',
+          title: entry.data.title ?? '',
+          description: entry.data.description ?? '',
+          slug: entry.data.slug ?? '',
+          group: entry.data.group ?? 'Docs',
+          order: entry.data.order ?? 0,
+          updatedAt: entry.data.updatedAt ?? '',
         }))
         .sort((left, right) => left.order - right.order || left.title.localeCompare(right.title))
     },

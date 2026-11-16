@@ -8,6 +8,8 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - '@comark/vue'
   - comark
+  - comark-content
+  - ultracite
   - '@iconify-json/lucide'
   - '@nuxtjs/mdc'
   - better-sqlite3

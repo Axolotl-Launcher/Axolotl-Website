@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useEventListener, useMediaQuery, useMutationObserver, useResizeObserver, useTimeoutFn } from '@vueuse/core'
+
 const props = defineProps<{
   src: string
   label: string
@@ -9,11 +11,13 @@ const READY_TIMEOUT = 90_000
 
 type DemoTheme = 'light' | 'dark' | 'oled'
 
+const prefersLight = useMediaQuery('(prefers-color-scheme: light)')
+
 function siteTheme(): DemoTheme {
   const root = document.documentElement
   const selected = root.dataset.theme
   if (selected === 'light' || selected === 'dark' || selected === 'oled') return selected
-  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+  return prefersLight.value ? 'light' : 'dark'
 }
 
 const startTheme = siteTheme()
@@ -21,12 +25,13 @@ const frameSrc = computed(() => `${props.src}?theme=${startTheme}`)
 
 const frame = ref<HTMLElement | null>(null)
 const iframe = ref<HTMLIFrameElement | null>(null)
+const themeRoot = ref<HTMLElement | null>(null)
 const scale = ref(1)
 let theme = startTheme
-let resizeObserver: ResizeObserver | null = null
-let themeObserver: MutationObserver | null = null
-let readyTimer: ReturnType<typeof setTimeout> | undefined
 let ready = false
+const { start: startReadyTimer, stop: stopReadyTimer } = useTimeoutFn(() => emit('failed'), READY_TIMEOUT, {
+  immediate: false,
+})
 
 function postTheme() {
   iframe.value?.contentWindow?.postMessage(
@@ -50,26 +55,19 @@ function onMessage(event: MessageEvent) {
   if (ready || event.source !== iframe.value?.contentWindow) return
   if ((event.data as { type?: unknown } | null)?.type !== 'axolotl-demo:ready') return
   ready = true
-  clearTimeout(readyTimer)
+  stopReadyTimer()
   emit('ready')
 }
 
-onMounted(() => {
-  readyTimer = setTimeout(() => emit('failed'), READY_TIMEOUT)
-  window.addEventListener('message', onMessage)
-  resizeObserver = new ResizeObserver(([entry]) => {
-    if (entry) scale.value = entry.contentRect.width / 1280
-  })
-  if (frame.value) resizeObserver.observe(frame.value)
-  themeObserver = new MutationObserver(followSiteTheme)
-  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+useEventListener('message', onMessage)
+useResizeObserver(frame, ([entry]) => {
+  if (entry) scale.value = entry.contentRect.width / 1280
 })
+useMutationObserver(themeRoot, followSiteTheme, { attributes: true, attributeFilter: ['data-theme'] })
 
-onBeforeUnmount(() => {
-  clearTimeout(readyTimer)
-  window.removeEventListener('message', onMessage)
-  resizeObserver?.disconnect()
-  themeObserver?.disconnect()
+onMounted(() => {
+  themeRoot.value = document.documentElement
+  startReadyTimer()
 })
 </script>
 

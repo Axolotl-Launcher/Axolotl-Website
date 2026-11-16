@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLocalStorage, useMediaQuery } from '@vueuse/core'
 import type { Sponsor } from '~/types/sponsors'
 
 const props = withDefaults(
@@ -12,11 +13,12 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
-const dismissed = ref(false)
 const paused = ref(false)
 const index = ref(props.sponsors.length ? props.startIndex % props.sponsors.length : 0)
 const current = computed(() => props.sponsors[index.value] ?? null)
 const storageId = computed(() => `axolotl:sponsor-dismissed:${props.storageKey}`)
+const dismissed = useLocalStorage(storageId, false)
+const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
 let timer: ReturnType<typeof setInterval> | undefined
 
 function stopTimer() {
@@ -29,7 +31,7 @@ function stopTimer() {
 function startTimer() {
   stopTimer()
   if (dismissed.value || props.sponsors.length < 2) return
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  if (reducedMotion.value) return
   timer = setInterval(() => {
     if (!paused.value && !dismissed.value) {
       index.value = (index.value + 1) % props.sponsors.length
@@ -37,14 +39,7 @@ function startTimer() {
   }, 6000)
 }
 
-onMounted(() => {
-  try {
-    dismissed.value = localStorage.getItem(storageId.value) === '1'
-  } catch {
-    dismissed.value = false
-  }
-  startTimer()
-})
+onMounted(startTimer)
 
 onBeforeUnmount(stopTimer)
 
@@ -56,11 +51,6 @@ function select(next: number) {
 function dismiss() {
   dismissed.value = true
   stopTimer()
-  try {
-    localStorage.setItem(storageId.value, '1')
-  } catch {
-    // Storage can be unavailable in private browsing; hiding for this visit is enough.
-  }
 }
 </script>
 
