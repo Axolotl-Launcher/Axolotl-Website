@@ -190,7 +190,7 @@ jobs:
                   git fetch --no-tags --depth=1 origin "$BEFORE" || true
                 fi
                 if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-                  changed=$(git diff --name-only "$BEFORE" "$AFTER" -- releases/ app/ content/ i18n/ public/ shared/ scripts/ feishu.config.ts content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
+                  changed=$(git diff --name-only "$BEFORE" "$AFTER" -- releases/ app/ content/ i18n/ public/ server/ shared/ scripts/ feishu.config.ts content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
                 else
                   echo '::warning::The pre-push commit is unavailable after a history rewrite. Automatic deployment is skipped; run this workflow with force-deploy to publish.'
                   changed=''

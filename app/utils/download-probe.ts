@@ -21,7 +21,10 @@ const DEFAULT_TIMEOUT_MS = 2000
 
 /**
  * Measures the response latency of one mirror. A HEAD request keeps the probe
- * cheap; `no-cors` lets it run without asking every mirror for CORS headers.
+ * cheap. The probe is CORS-readable on purpose: an opaque `no-cors` response
+ * hides the status code, so a 404 or 5xx would look healthy and auto-selection
+ * could send the download to a broken mirror. Mirrors that do not expose CORS
+ * are treated as unverified and lose to one that does.
  */
 export async function probeDownloadCandidate(
   candidate: DownloadCandidate,
@@ -35,13 +38,16 @@ export async function probeDownloadCandidate(
   const timer = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
-    await fetchFn(candidate.url, {
+    const response = await fetchFn(candidate.url, {
       method: 'HEAD',
-      mode: 'no-cors',
+      mode: 'cors',
       cache: 'no-store',
       redirect: 'follow',
       signal: controller.signal,
     })
+    if (response.type === 'opaque' || !response.ok) {
+      return { ...candidate, ok: false, latencyMs: null }
+    }
     return { ...candidate, ok: true, latencyMs: Math.max(0, Math.round(now() - startedAt)) }
   } catch {
     return { ...candidate, ok: false, latencyMs: null }

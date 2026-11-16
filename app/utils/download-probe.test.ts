@@ -40,6 +40,18 @@ describe('probeDownloadCandidate', () => {
     })
     expect(result).toEqual({ ...candidates[1], ok: false, latencyMs: null })
   })
+
+  it('marks an HTTP error as unavailable', async () => {
+    const fetchFn = vi.fn(async () => new Response(null, { status: 404 })) as unknown as typeof fetch
+    const result = await probeDownloadCandidate(candidates[0]!, { fetch: fetchFn, now: sequence([0]) })
+    expect(result).toEqual({ ...candidates[0], ok: false, latencyMs: null })
+  })
+
+  it('treats an opaque response as unverified', async () => {
+    const fetchFn = vi.fn(async () => ({ type: 'opaque', ok: false, status: 0 }) as Response) as unknown as typeof fetch
+    const result = await probeDownloadCandidate(candidates[0]!, { fetch: fetchFn, now: sequence([0]) })
+    expect(result).toEqual({ ...candidates[0], ok: false, latencyMs: null })
+  })
 })
 
 describe('probeDownloadSources', () => {
