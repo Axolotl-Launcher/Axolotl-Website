@@ -160,6 +160,20 @@ useHead(() => ({
           <div class="docs-prose prose mt-8 max-w-none">
             <MDC :value="selectedVersion.body" />
           </div>
+          <footer v-if="selectedVersion.tags.length" class="mt-12 border-t border-divider pt-6">
+            <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+              {{ t('blog.tags') }}
+            </p>
+            <ul class="mt-3 flex flex-wrap gap-2">
+              <li v-for="tag in selectedVersion.tags" :key="tag">
+                <span
+                  class="inline-flex items-center rounded-pill border border-border bg-surface-1 px-2.5 py-1 text-micro text-fg-muted"
+                >
+                  #{{ tag }}
+                </span>
+              </li>
+            </ul>
+          </footer>
         </article>
         <p v-else class="text-caption text-fg-muted">{{ t('blog.empty') }}</p>
       </div>
