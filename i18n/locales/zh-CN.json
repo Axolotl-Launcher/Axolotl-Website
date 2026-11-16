@@ -300,10 +300,17 @@
     "mainAuthor": "主要作者",
     "coAuthors": "共同作者",
     "coAuthorRole": "共同作者",
+    "official": "官方账号",
     "license": "内容许可",
-    "licenseShort": "博客文字采用 CC BY-SA 4.0 许可。",
     "licenseDetails": "许可说明",
-    "licenseTip": "你可以转载、改编这些文字，但需署名、注明是否修改，并以相同许可共享；完整条款以 Creative Commons 官方文本为准。",
+    "licenseAllow": "你可以自由",
+    "licenseAllowShare": "以任何媒介复制与分发本文",
+    "licenseAllowAdapt": "改编、混合或以本文为基础创作",
+    "licenseRequire": "你需要遵守",
+    "licenseRequireAttribution": "署名作者、注明来源并保留许可声明",
+    "licenseRequireShareAlike": "改编作品须以相同许可共享",
+    "licenseDeny": "你不得",
+    "licenseDenyExtraRestrictions": "追加法律条款或技术措施限制他人行使许可权利",
     "empty": "暂无博客文章。",
     "indexTitle": "博客",
     "articleIndex": "文章索引",
@@ -313,7 +320,6 @@
     "versions": "全部版本",
     "versionsTitle": "版本历史",
     "versionsLead": "这篇文章的所有历史快照。",
-    "backToArticle": "返回文章",
-    "licenseCitation": "引用：博客文字采用 CC BY-SA 4.0 许可；转载或改编需署名、注明修改，并以相同许可共享。"
+    "backToArticle": "返回文章"
   }
 }

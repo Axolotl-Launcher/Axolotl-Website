@@ -20,13 +20,22 @@ const genderIcon = genderIcons[main.gender] ?? 'lucide:users'
       {{ t('blog.mainAuthor') }}
     </p>
     <div class="mt-3 flex items-start gap-3">
-      <img
-        :src="main.avatar"
-        :alt="main.name"
-        width="48"
-        height="48"
-        class="size-12 shrink-0 rounded-full border border-border bg-surface-2 object-cover"
-      />
+      <span class="relative shrink-0">
+        <img
+          :src="main.avatar"
+          :alt="main.name"
+          width="48"
+          height="48"
+          class="size-12 rounded-full border border-border bg-surface-2 object-cover"
+        />
+        <span
+          role="img"
+          :aria-label="t('blog.official')"
+          class="absolute -right-0.5 -bottom-0.5 grid size-4 place-items-center rounded-full bg-accent text-on-accent ring-2 ring-surface-1"
+        >
+          <Icon name="lucide:check" class="size-2.5" aria-hidden="true" />
+        </span>
+      </span>
       <div class="min-w-0">
         <p class="flex items-center gap-1.5 text-caption font-semibold text-fg">
           {{ main.name }}

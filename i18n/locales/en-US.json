@@ -300,10 +300,17 @@
     "mainAuthor": "Main author",
     "coAuthors": "Co-authors",
     "coAuthorRole": "Co-author",
+    "official": "Official account",
     "license": "Content license",
-    "licenseShort": "Blog text is licensed under CC BY-SA 4.0.",
     "licenseDetails": "License details",
-    "licenseTip": "You may repost or adapt this text with attribution, a note about changes, and the same license; the full terms are on the Creative Commons site.",
+    "licenseAllow": "You are free to",
+    "licenseAllowShare": "Copy and redistribute the text in any medium or format",
+    "licenseAllowAdapt": "Remix, transform and build upon the text",
+    "licenseRequire": "Under these terms",
+    "licenseRequireAttribution": "Credit the authors, note the source and keep the license notice",
+    "licenseRequireShareAlike": "Share adaptations under the same license",
+    "licenseDeny": "You may not",
+    "licenseDenyExtraRestrictions": "Add legal terms or technical measures that restrict the license",
     "empty": "No blog posts yet.",
     "indexTitle": "Blog",
     "articleIndex": "Article index",
@@ -313,7 +320,6 @@
     "versions": "All versions",
     "versionsTitle": "Version history",
     "versionsLead": "Every historical snapshot of this article.",
-    "backToArticle": "Back to article",
-    "licenseCitation": "Citation: blog text is licensed CC BY-SA 4.0; reposts or adaptations need attribution, a change note, and the same license."
+    "backToArticle": "Back to article"
   }
 }
