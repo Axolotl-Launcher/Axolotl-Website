@@ -35,14 +35,17 @@ const ctaLabel = computed(() => {
 
 const menuDialog = ref<HTMLDialogElement | null>(null)
 
-// The header changes shape only when the reader crosses 12% of the page,
-// regardless of scroll direction. Short pages never reach the threshold.
+// The header changes shape when the reader crosses 12% of the page, but never
+// later than one viewport height, so very long articles still collapse the bar
+// promptly. Short pages never reach either threshold.
 const { y } = useWindowScroll()
 const collapsed = ref(false)
 
 function syncHeader() {
   if (!import.meta.client) return
-  collapsed.value = window.scrollY > document.documentElement.scrollHeight * 0.12
+  const pageThreshold = document.documentElement.scrollHeight * 0.12
+  const viewportThreshold = window.innerHeight
+  collapsed.value = window.scrollY > Math.min(pageThreshold, viewportThreshold)
 }
 
 watch(y, syncHeader)
@@ -120,7 +123,7 @@ watch(
         class="flex items-center gap-4 transition-[background-color,border-color,border-radius,padding,box-shadow] duration-300 motion-reduce:transition-none"
         :class="
           collapsed
-            ? 'mx-auto h-12 w-fit max-w-full gap-2 rounded-pill border border-border bg-[color-mix(in_oklab,var(--surface-0)_50%,var(--surface-4))]/95 px-4 shadow-[0_18px_50px_-24px_rgb(0_0_0/0.4),0_0_36px_-8px_var(--accent-glow)] backdrop-blur-2xl'
+            ? 'mx-auto h-12 w-fit max-w-full gap-2 rounded-pill border border-border/85 bg-[color-mix(in_oklab,var(--surface-0)_75%,var(--surface-4))]/95 px-4 shadow-[0_18px_50px_-24px_rgb(0_0_0/0.4),0_0_36px_-8px_var(--accent-glow)] backdrop-blur-2xl'
             : 'w-full'
         "
       >
