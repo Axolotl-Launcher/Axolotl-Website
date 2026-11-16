@@ -6,6 +6,8 @@ minimumReleaseAge: 10080
 # These are pinned on purpose (framework and build tooling adopted during the
 # rebuild); everything else still waits out the cooling-off period.
 minimumReleaseAgeExclude:
+  - '@comark/vue'
+  - comark
   - '@iconify-json/lucide'
   - '@nuxtjs/mdc'
   - better-sqlite3

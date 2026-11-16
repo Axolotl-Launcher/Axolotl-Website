@@ -14,6 +14,7 @@ export default defineContentConfig({
         order: z.number().default(0),
         description: z.string().default(''),
         updatedAt: z.string(),
+        rawbody: z.string(),
       }),
     }),
     articles: defineCollection({

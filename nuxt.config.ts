@@ -52,10 +52,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/devtools',
     '@nuxtjs/device',
-    // Content already pulls MDC in as a module dependency; registering it
-    // explicitly keeps the Markdown pipeline configurable and available to
-    // pages directly (MDC, MDCRenderer, parseMarkdown).
-    '@nuxtjs/mdc',
     '@nuxt/content',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',

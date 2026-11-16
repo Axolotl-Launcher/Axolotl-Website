@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { MarkdownDocument } from '@comark/vue'
+import { parseMarkdown as parseComark } from '@comark/vue/parse'
+import shiki from '@comark/vue/plugins/shiki'
+import toc from '@comark/vue/plugins/toc'
+
 const route = useRoute()
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
@@ -13,26 +18,40 @@ const slug = computed(() => {
 const { data } = await useAsyncData(
   () => `doc-${contentLocale.value}-${slug.value}`,
   async () => {
-    if (!slug.value) return { page: null, fallback: false }
+    if (!slug.value) return { page: null, fallback: false, document: null }
     const primary = await queryCollection('docs')
       .where('locale', '=', contentLocale.value)
       .where('slug', '=', slug.value)
       .first()
-    if (primary) return { page: primary, fallback: false }
+    if (primary) {
+      return {
+        page: primary,
+        fallback: false,
+        document: await parseComark(primary.rawbody, { plugins: [toc(), shiki()] }),
+      }
+    }
 
     if (contentLocale.value !== 'zh-CN') {
       const original = await queryCollection('docs')
         .where('locale', '=', 'zh-CN')
         .where('slug', '=', slug.value)
         .first()
-      if (original) return { page: original, fallback: true }
+      if (original) {
+        return {
+          page: original,
+          fallback: true,
+          document: await parseComark(original.rawbody, { plugins: [toc(), shiki()] }),
+        }
+      }
     }
-    return { page: null, fallback: false }
+    return { page: null, fallback: false, document: null }
   },
   { watch: [contentLocale, slug] },
 )
 
 const page = computed(() => data.value?.page)
+const document = computed(() => data.value?.document ?? null)
+const tocLinks = computed(() => document.value?.meta?.toc?.links ?? [])
 const fallback = computed(() => data.value?.fallback ?? false)
 
 if (!page.value) {
@@ -76,7 +95,7 @@ const updatedLabel = computed(() => {
 </script>
 
 <template>
-  <DocsShell v-if="page" :toc="page.body?.toc?.links">
+  <DocsShell v-if="page && document" :toc="tocLinks">
     <article class="max-w-4xl">
       <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">{{ page.group }}</p>
       <h1 class="mt-4 text-section">{{ page.title }}</h1>
@@ -95,7 +114,7 @@ const updatedLabel = computed(() => {
       </div>
 
       <div class="docs-prose prose mt-9 max-w-none">
-        <ContentRenderer :value="page" />
+        <MarkdownDocument :value="document" />
       </div>
     </article>
   </DocsShell>

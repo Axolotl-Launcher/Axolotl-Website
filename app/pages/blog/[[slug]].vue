@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Markdown } from '@comark/vue'
+import shiki from '@comark/vue/plugins/shiki'
 import BlogAuthors from '~/components/blog/BlogAuthors.vue'
 import BlogLicense from '~/components/blog/BlogLicense.vue'
 import BlogTimeline from '~/components/blog/BlogTimeline.vue'
@@ -161,7 +163,7 @@ useHead(() => ({
             </div>
           </header>
           <div class="docs-prose prose mt-8 max-w-none">
-            <MDC :value="selectedVersion.body" />
+            <Markdown :value="selectedVersion.body" :plugins="[shiki()]" />
           </div>
           <footer v-if="selectedVersion.tags.length" class="mt-12 border-t border-divider pt-6">
             <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">

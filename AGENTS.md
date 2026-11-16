@@ -39,7 +39,7 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 - `app/assets/css/` — Tailwind 4 entry and the design tokens/themes. `tokens.css` and `themes.css` are the source of truth for the brand palette, surfaces and typography.
 - `app/assets/icons/` — local brand SVGs for `nuxt-icons`, rendered with `<NuxtIcon name="…">`. UI icons use the Lucide set through `@nuxt/icon`.
 - `app/utils/` and `app/composables/` — download resolution, i18n helpers, docs navigation and theme state.
-- `content/docs/` — local Markdown (MDC) documentation, one directory per content locale.
+- `content/docs/` — local Markdown documentation, one directory per content locale.
 - `content/articles/` — repository-authored Markdown. Legal pages are Vue routes under `app/pages/`.
 - `i18n/locales/` — zh-CN and en-US UI messages (`en` is the URL prefix, `en-US` is the content locale).
 - `public/` — static assets, favicons and the launcher demo build. `public/launcher-demo/` is fetched by `scripts/fetch-launcher-demo.ts` and ignored.
@@ -50,7 +50,7 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 
 ## Knowledge Base
 
-Documentation is repository-authored Markdown under `content/docs/<locale>/` and uses the native MDC pipeline:
+Documentation is repository-authored Markdown under `content/docs/<locale>/` and is rendered with Comark's MDC-compatible syntax:
 
 - Each file keeps `title`, `description`, `locale`, `slug`, `group`, `order` and `updatedAt` in its frontmatter.
 - `scripts/build-search-index.ts` indexes the local docs at build time.
