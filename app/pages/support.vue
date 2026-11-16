@@ -26,6 +26,7 @@ interface Cooperation {
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const site = useSiteConfig()
+const { sponsors } = useSponsors()
 
 function pick(value: LocalizedText | undefined) {
   if (!value) return ''
@@ -182,6 +183,19 @@ useHead(() => ({
           </li>
         </ul>
       </div>
+    </section>
+
+    <section class="site-container py-14 sm:py-20">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div class="max-w-2xl">
+          <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+            {{ t('sponsors.eyebrow') }}
+          </p>
+          <h2 class="mt-4 text-section-sm">{{ t('sponsors.supportTitle') }}</h2>
+        </div>
+        <p class="max-w-sm text-body leading-relaxed text-fg-muted">{{ t('sponsors.supportLead') }}</p>
+      </div>
+      <SponsorGrid :sponsors="sponsors" class="mt-8" />
     </section>
 
     <section class="site-container py-14 sm:py-20">

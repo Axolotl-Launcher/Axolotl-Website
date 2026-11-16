@@ -1,0 +1,32 @@
+[
+  {
+    "id": "rainyun",
+    "name": "雨云 Rainyun",
+    "url": "https://www.rainyun.com/mystic_",
+    "logo": "/sponsors/rainyun.svg",
+    "description": {
+      "zh-CN": "新一代国产云计算服务商，为服主提供高性能、高性价比的游戏专用服务器。",
+      "en-US": "A Chinese cloud provider offering high-performance, cost-effective game servers for server owners."
+    }
+  },
+  {
+    "id": "codeflow",
+    "name": "CodeFlow",
+    "url": "https://codeflow.sh/register?invite=4UHP2KYH",
+    "logo": "/sponsors/codeflow.svg",
+    "description": {
+      "zh-CN": "更稳、更省地调用顶级 AI 模型，原生协议转发，多线路互为备份。",
+      "en-US": "Stable, cost-effective access to top AI models with native protocol forwarding and multi-route failover."
+    }
+  },
+  {
+    "id": "fastai",
+    "name": "FastAI",
+    "url": "https://www.fastaitoken.com/register?aff=KBGN38QZUXNZ",
+    "logo": "/sponsors/fastai.svg",
+    "description": {
+      "zh-CN": "面向开发者的 AI API 聚合平台，兼容 OpenAI 协议，支持主流大模型。",
+      "en-US": "An AI API aggregator for developers, compatible with the OpenAI protocol and major models."
+    }
+  }
+]

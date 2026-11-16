@@ -9,6 +9,7 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const config = useRuntimeConfig()
+const { sponsors } = useSponsors()
 
 const contentLocale = computed(() => toContentLocale(locale.value))
 const posts = computed(() => (blogIndex.posts as BlogPost[]).filter((post) => post.locale === contentLocale.value))
@@ -176,6 +177,12 @@ useHead(() => ({
               </li>
             </ul>
           </footer>
+          <SponsorInline
+            v-if="selectedVersion.sponsored"
+            :sponsors="sponsors"
+            :label="t('sponsors.article')"
+            class="mt-8"
+          />
         </article>
         <p v-else class="text-caption text-fg-muted">{{ t('blog.empty') }}</p>
       </div>

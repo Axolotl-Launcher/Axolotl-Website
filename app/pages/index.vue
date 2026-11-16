@@ -4,6 +4,7 @@ import latestRelease from '~~/releases/latest.json'
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const config = useRuntimeConfig()
+const { sponsors } = useSponsors()
 
 const lang = computed(() => (locale.value === 'zh-CN' ? 'zh' : 'en'))
 const latestVersion = latestRelease.tag_name.replace(/^v/, '')
@@ -334,6 +335,21 @@ useHead({
             class="h-auto w-full"
           />
         </div>
+      </div>
+    </section>
+
+    <section class="border-t border-border">
+      <div class="site-container py-section">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-2xl">
+            <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+              {{ t('sponsors.eyebrow') }}
+            </p>
+            <h2 class="mt-4 text-section-sm text-balance">{{ t('sponsors.title') }}</h2>
+          </div>
+          <p class="max-w-sm text-body leading-relaxed text-fg-muted">{{ t('sponsors.lead') }}</p>
+        </div>
+        <SponsorGrid :sponsors="sponsors" class="mt-10" />
       </div>
     </section>
 

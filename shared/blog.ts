@@ -7,6 +7,7 @@ export interface BlogVersion {
   cover?: string | null
   body: string
   isUpdate: boolean
+  sponsored: boolean
 }
 
 export interface BlogPost {

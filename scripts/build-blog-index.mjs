@@ -69,6 +69,7 @@ for (const [directory, fallbackLocale] of [
         tags: Array.isArray(data.tags) ? data.tags : [],
         cover: data.cover ?? null,
         body: body.trim(),
+        sponsored: data.sponsored === 'true',
       })
     }
 

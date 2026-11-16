@@ -14,6 +14,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const config = useRuntimeConfig()
+const { sponsors } = useSponsors()
 
 const ready = ref(false)
 const selectionValid = ref(false)
@@ -335,6 +336,13 @@ useSeoMeta({
             </span>
           </NuxtLink>
         </div>
+      </section>
+
+      <section class="mx-auto mt-14 max-w-[58rem]">
+        <p class="text-center font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+          {{ t('sponsors.thanks') }}
+        </p>
+        <SponsorInline :sponsors="sponsors" class="mt-4" />
       </section>
 
       <div class="mx-auto mt-10 flex max-w-[58rem] flex-wrap items-center justify-center gap-3">

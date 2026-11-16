@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const localePath = useLocalePath()
+const { sponsors } = useSponsors()
 const year = new Date().getFullYear()
 
 const columns = computed(() => [
@@ -32,6 +33,14 @@ const columns = computed(() => [
 
 <template>
   <footer class="mt-section border-t border-border">
+    <div class="border-b border-border">
+      <div class="site-container flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
+        <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+          {{ t('sponsors.footer') }}
+        </p>
+        <SponsorLogos :sponsors="sponsors" />
+      </div>
+    </div>
     <div class="site-container grid gap-10 py-12 md:grid-cols-[1.4fr_repeat(3,1fr)] md:py-16">
       <div>
         <AppLogo />

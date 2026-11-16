@@ -5,6 +5,8 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { groups } = useDocsNav()
+const { sponsors } = useSponsors()
+const primarySponsor = computed(() => sponsors.value[0] ?? null)
 
 function href(slug: string) {
   return localePath({ path: docsPath(locale.value, slug) })
@@ -47,6 +49,13 @@ function isActive(slug: string) {
   <aside class="hidden lg:block">
     <div class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
       <DocsSearch />
+      <SponsorSidebarCard
+        v-if="primarySponsor"
+        :sponsor="primarySponsor"
+        dismissible
+        storage-key="docs-sidebar"
+        class="mt-4"
+      />
       <nav class="mt-5 space-y-6" :aria-label="t('docs.title')">
         <div v-for="group in groups" :key="group.name">
           <p class="text-caption font-semibold text-fg-subtle">{{ group.name }}</p>
