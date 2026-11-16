@@ -69,7 +69,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: 'node e2e/static-server.mjs',
+        command: 'tsx e2e/static-server.ts',
         url: 'http://localhost:4173',
         // Never reuse: a dev server left on this port would serve different
         // markup than the build output these tests are meant to observe.

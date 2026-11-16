@@ -1,6 +1,6 @@
 # Axolotl Website
 
-This repository is the official Axolotl Launcher website: a statically generated Nuxt 4.6 site using the Nuxt 5 compatibility preview (`future.compatibilityVersion: 5`), Vue 3.5, Tailwind CSS 4 and a small, site-owned component layer. Use spaces, never tabs.
+This repository is the official Axolotl Launcher website: a statically generated Nuxt 4.6 site using the Nuxt 5 compatibility preview (`future.compatibilityVersion: 5`), Vue 3.5, Tailwind CSS 4 and a small, site-owned component layer. Use spaces, never tabs. All source and tooling files are TypeScript (`.ts`); `pnpm lint` runs `scripts/check-typescript.ts` and rejects JavaScript files or Vue `<script>` blocks without `lang="ts"`.
 
 The launcher itself (desktop app, release pipeline and announcement catalog) lives in [Axolotl-Launcher/Axolotl](https://github.com/Axolotl-Launcher/Axolotl). `releases/` is generated there and pushed here; do not edit it by hand.
 
@@ -39,22 +39,21 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 - `app/assets/css/` — Tailwind 4 entry and the design tokens/themes. `tokens.css` and `themes.css` are the source of truth for the brand palette, surfaces and typography.
 - `app/assets/icons/` — local brand SVGs for `nuxt-icons`, rendered with `<NuxtIcon name="…">`. UI icons use the Lucide set through `@nuxt/icon`.
 - `app/utils/` and `app/composables/` — download resolution, i18n helpers, docs navigation and theme state.
-- `content/docs/` — local MDX documentation, one directory per content locale.
+- `content/docs/` — local Markdown (MDC) documentation, one directory per content locale.
 - `content/articles/` — repository-authored Markdown. Legal pages are Vue routes under `app/pages/`.
 - `i18n/locales/` — zh-CN and en-US UI messages (`en` is the URL prefix, `en-US` is the content locale).
-- `public/` — static assets, favicons and the launcher demo build. `public/launcher-demo/` is fetched by `scripts/fetch-launcher-demo.mjs` and ignored.
+- `public/` — static assets, favicons and the launcher demo build. `public/launcher-demo/` is fetched by `scripts/fetch-launcher-demo.ts` and ignored.
 - `shared/` — types and constants shared by the site and build scripts.
-- `content/transformers/mdx.mjs` — feeds `.mdx` files through the MDC parser; `scripts/check-media.mjs` validates prerendered media references.
+- `scripts/check-media.ts` validates prerendered media references.
 - `releases/` — generated release data. Do not edit.
 - `deploy/` — OpenResty configuration for the production host.
 
 ## Knowledge Base
 
-Documentation is repository-authored MDX under `content/docs/<locale>/`:
+Documentation is repository-authored Markdown under `content/docs/<locale>/` and uses the native MDC pipeline:
 
 - Each file keeps `title`, `description`, `locale`, `slug`, `group`, `order` and `updatedAt` in its frontmatter.
-- `content/transformers/mdx.mjs` teaches Nuxt Content to parse `.mdx` with the same MDC pipeline as `.md`.
-- `scripts/build-search-index.mjs` indexes the local docs at build time.
+- `scripts/build-search-index.ts` indexes the local docs at build time.
 - No documentation content is fetched from an external service; deployments only need the repository.
 - Articles and legal documents remain repository-authored.
 

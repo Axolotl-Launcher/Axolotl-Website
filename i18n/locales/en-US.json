@@ -291,7 +291,7 @@
     "lead": "From installation to advanced configuration, the Axolotl handbook lives here.",
     "emptyTitle": "Documentation is being prepared",
     "emptyBody": "Guides will appear here, grouped by topic, once they are added.",
-    "emptyHint": "Maintainers: add MDX documents under content/docs.",
+    "emptyHint": "Maintainers: add Markdown documents under content/docs.",
     "onThisPage": "On this page",
     "updatedAt": "Updated {date}",
     "translationFallback": "This page has no translation yet; the Chinese original is shown.",

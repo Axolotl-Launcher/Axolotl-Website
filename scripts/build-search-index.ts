@@ -47,7 +47,7 @@ for (const [directory, fallbackLocale] of [
   const docsDirectory = path.join(root, 'content/docs', directory)
   if (!fs.existsSync(docsDirectory)) continue
 
-  for (const file of fs.readdirSync(docsDirectory).filter((name) => name.endsWith('.mdx'))) {
+  for (const file of fs.readdirSync(docsDirectory).filter((name) => name.endsWith('.md'))) {
     const { data, body } = parseFrontmatter(fs.readFileSync(path.join(docsDirectory, file), 'utf8'))
     if (!data.slug || !data.title) continue
     const locale = data.locale ?? fallbackLocale

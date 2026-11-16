@@ -7,7 +7,7 @@ The official website for [Axolotl Launcher](https://axlmc.org), built as a stati
 - Nuxt 4.6 with the static preset, Vue 3.5 and TypeScript
 - Nuxt 5 compatibility preview (`future.compatibilityVersion: 5`): Vite Environment API, case-sensitive routing, typed routes and client payload extraction
 - Tailwind CSS 4 with site-owned design tokens (light, dark and OLED themes)
-- `@nuxt/content` for articles and local MDX documentation
+- `@nuxt/content` for articles and local Markdown (MDC) documentation
 - `@nuxtjs/mdc` for MDC parsing, prose components and runtime Markdown rendering
 - `@nuxt/icon` with the Lucide set for UI icons, plus `nuxt-icons` for local brand SVGs in `app/assets/icons`
 - `@nuxtjs/i18n` with `zh-CN` (default, no prefix) and `en` (`/en/*`)
@@ -27,6 +27,8 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
+All source and tooling files are TypeScript; `pnpm lint` enforces this with `scripts/check-typescript.ts`.
+
 Useful checks:
 
 ```bash
@@ -39,7 +41,7 @@ pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
-The production build is written to `.output/public` and served by OpenResty. Every route must be prerendered; there is no SPA fallback. `pnpm build` fails on broken internal links (`nuxt-link-checker`) and on missing local media references (`scripts/check-media.mjs`).
+The production build is written to `.output/public` and served by OpenResty. Every route must be prerendered; there is no SPA fallback. `pnpm build` fails on broken internal links (`nuxt-link-checker`) and on missing local media references (`scripts/check-media.ts`).
 
 ## Support checkout
 
@@ -49,7 +51,7 @@ Set `NUXT_AFDIAN_USER_ID` and `NUXT_AFDIAN_TOKEN` in `.env` (or the deployment e
 
 ## Documentation
 
-Docs are local MDX files under `content/docs/<locale>/` and are rendered by `@nuxt/content`. Each file keeps its navigation metadata in frontmatter (`title`, `description`, `locale`, `slug`, `group`, `order`, `updatedAt`). Add or edit the file, then run `pnpm build`; `scripts/build-search-index.mjs` indexes it automatically. No external knowledge base or credentials are involved.
+Docs are local Markdown files under `content/docs/<locale>/` and use the native MDC pipeline of `@nuxt/content`. Each file keeps its navigation metadata in frontmatter (`title`, `description`, `locale`, `slug`, `group`, `order`, `updatedAt`). Add or edit the file, then run `pnpm build`; `scripts/build-search-index.ts` indexes it automatically. No external knowledge base or credentials are involved.
 
 Articles are normal Markdown under `content/articles`. Legal pages are maintained as Vue pages in `app/pages` so their wording is reviewed in code.
 

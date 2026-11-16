@@ -6,7 +6,7 @@ export default defineContentConfig({
   collections: {
     docs: defineCollection({
       type: 'page',
-      source: { include: 'docs/**/*.mdx', prefix: '' },
+      source: { include: 'docs/**/*.md', prefix: '' },
       schema: z.object({
         locale,
         slug: z.string(),

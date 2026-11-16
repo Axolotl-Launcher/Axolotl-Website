@@ -291,7 +291,7 @@
     "lead": "从安装到进阶配置，Axolotl 的使用手册都在这里。",
     "emptyTitle": "文档正在整理",
     "emptyBody": "文档尚未就绪。稍后这里会出现按主题整理的指南。",
-    "emptyHint": "维护者：在 content/docs 中添加 MDX 文档。",
+    "emptyHint": "维护者：在 content/docs 中添加 Markdown 文档。",
     "onThisPage": "本页目录",
     "updatedAt": "更新于 {date}",
     "translationFallback": "此页尚无对应语言版本，当前显示中文原文。",

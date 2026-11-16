@@ -112,7 +112,7 @@ useHead({
     </p>
     <p>
       官方网站以静态页面提供项目介绍、文档、下载入口和支持渠道。下载文件可能来自官方更新服务、GitHub 或
-      GitLink；文档以本地 MDX
+      GitLink；文档以本地 MDC
       文件存放在仓库中，构建时渲染为静态页面，访问网站不会连接外部知识库；站内搜索在浏览器本地完成。支持档位由爱发电处理支付，适用爱发电自身的条款与隐私政策。
     </p>
     <p>
@@ -246,9 +246,9 @@ useHead({
     <p>
       The official website provides project information, documentation, download entry points, and support channels as
       static pages. Downloads may be served by the official update service, GitHub, or GitLink. Knowledge-base content
-      is stored as local MDX files in the repository and rendered into static pages at build time; visiting the website
-      does not connect to an external knowledge base. Site search runs locally in the browser. Support tiers are paid
-      through Afdian and are subject to Afdian's own terms and privacy policy.
+      is stored as local Markdown (MDC) files in the repository and rendered into static pages at build time; visiting
+      the website does not connect to an external knowledge base. Site search runs locally in the browser. Support tiers
+      are paid through Afdian and are subject to Afdian's own terms and privacy policy.
     </p>
     <p>
       The launcher connects to Microsoft, Minecraft, Modrinth, CurseForge, GitHub, the Update Server, custom Yggdrasil
