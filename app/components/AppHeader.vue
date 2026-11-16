@@ -3,6 +3,8 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const route = useRoute()
+const config = useRuntimeConfig()
+const githubUrl = config.public.githubUrl
 
 const menuDialog = ref<HTMLDialogElement | null>(null)
 
@@ -18,12 +20,30 @@ function syncHeader() {
 
 watch(y, syncHeader)
 
+// The header CTA is a GitHub shortcut while the bar is expanded. Once the bar
+// collapses into its pill, the icon flips to a download arrow and the label
+// expands after the flip, so the wider pill does not pop in all at once.
+const showLabel = ref(false)
+let labelTimer: ReturnType<typeof setTimeout> | undefined
+
+watch(collapsed, (value) => {
+  if (labelTimer) clearTimeout(labelTimer)
+  if (value) {
+    labelTimer = setTimeout(() => {
+      showLabel.value = true
+    }, 300)
+  } else {
+    showLabel.value = false
+  }
+})
+
 onMounted(() => {
   syncHeader()
   window.addEventListener('resize', syncHeader)
 })
 
 onBeforeUnmount(() => {
+  if (labelTimer) clearTimeout(labelTimer)
   window.removeEventListener('resize', syncHeader)
 })
 
@@ -102,10 +122,36 @@ watch(
 
           <ThemeToggle />
 
-          <BaseButton :to="localePath({ path: '/download' })" size="sm" class="ml-1 max-sm:hidden">
-            <Icon name="lucide:download" class="size-4" />
-            {{ t('actions.download') }}
-          </BaseButton>
+          <NuxtLink
+            :to="collapsed ? localePath({ path: '/download' }) : githubUrl"
+            :target="collapsed ? undefined : '_blank'"
+            :rel="collapsed ? undefined : 'noreferrer'"
+            :aria-label="collapsed ? t('actions.download') : 'GitHub'"
+            class="ml-1 inline-flex h-9 items-center justify-center overflow-hidden rounded-btn text-caption font-semibold transition-[background-color,color,padding,box-shadow] duration-300 ease-out max-sm:hidden"
+            :class="
+              collapsed
+                ? 'bg-accent px-2.5 text-[color:var(--on-accent)] shadow-[0_10px_30px_-12px_var(--accent-glow)]'
+                : 'w-9 text-fg-muted hover:bg-surface-2 hover:text-fg'
+            "
+          >
+            <span
+              class="relative grid size-4 shrink-0 place-items-center transition-transform duration-300 ease-out [transform-style:preserve-3d]"
+              :class="collapsed ? '[transform:rotateY(180deg)]' : ''"
+            >
+              <Icon name="lucide:github" class="size-4 [backface-visibility:hidden]" aria-hidden="true" />
+              <Icon
+                name="lucide:download"
+                class="absolute size-4 [transform:rotateY(180deg)] [backface-visibility:hidden]"
+                aria-hidden="true"
+              />
+            </span>
+            <span
+              class="overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin-left] duration-300 ease-out"
+              :class="showLabel ? 'ml-2 max-w-40 opacity-100' : 'max-w-0 opacity-0'"
+            >
+              {{ t('actions.download') }}
+            </span>
+          </NuxtLink>
 
           <button
             type="button"
