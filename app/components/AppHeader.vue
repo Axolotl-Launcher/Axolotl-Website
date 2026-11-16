@@ -5,6 +5,33 @@ const switchLocalePath = useSwitchLocalePath()
 const route = useRoute()
 const config = useRuntimeConfig()
 const githubUrl = config.public.githubUrl
+const repoApi = githubUrl.replace('https://github.com/', 'https://api.github.com/repos/')
+
+// The expanded header surfaces the repository's star count. It is fetched in
+// the browser so static builds never depend on GitHub's API at build time.
+const stars = ref<number | null>(null)
+
+onMounted(async () => {
+  try {
+    const response = await fetch(repoApi, { headers: { Accept: 'application/vnd.github+json' } })
+    if (!response.ok) return
+    const data = (await response.json()) as { stargazers_count?: number }
+    if (typeof data.stargazers_count === 'number') stars.value = data.stargazers_count
+  } catch {
+    // The count is decorative; the header stays usable when GitHub is unreachable.
+  }
+})
+
+const starText = computed(() => {
+  const count = stars.value
+  if (count === null) return ''
+  return count < 1000 ? String(count) : `${(count / 1000).toFixed(1).replace(/\.0$/, '')}k`
+})
+
+const ctaLabel = computed(() => {
+  if (collapsed.value) return t('actions.download')
+  return starText.value ? `GitHub · ${starText.value}` : 'GitHub'
+})
 
 const menuDialog = ref<HTMLDialogElement | null>(null)
 
@@ -126,12 +153,12 @@ watch(
             :to="collapsed ? localePath({ path: '/download' }) : githubUrl"
             :target="collapsed ? undefined : '_blank'"
             :rel="collapsed ? undefined : 'noreferrer'"
-            :aria-label="collapsed ? t('actions.download') : 'GitHub'"
-            class="ml-1 inline-flex h-9 items-center justify-center overflow-hidden rounded-btn text-caption font-semibold transition-[background-color,color,padding,box-shadow] duration-300 ease-out max-sm:hidden"
+            :aria-label="ctaLabel"
+            class="ml-1 inline-flex h-9 items-center justify-center overflow-hidden rounded-btn border text-caption font-semibold transition-[background-color,color,border-color,padding,box-shadow] duration-300 ease-out max-sm:hidden"
             :class="
               collapsed
-                ? 'bg-accent px-2.5 text-[color:var(--on-accent)] shadow-[0_10px_30px_-12px_var(--accent-glow)]'
-                : 'w-9 text-fg-muted hover:bg-surface-2 hover:text-fg'
+                ? 'border-transparent bg-accent px-2.5 text-[color:var(--on-accent)] shadow-[0_10px_30px_-12px_var(--accent-glow)]'
+                : 'border-border bg-surface-2/70 px-2.5 text-fg hover:border-border-strong hover:bg-surface-2'
             "
           >
             <span
@@ -144,6 +171,13 @@ watch(
                 class="absolute size-4 [transform:rotateY(180deg)] [backface-visibility:hidden]"
                 aria-hidden="true"
               />
+            </span>
+            <span
+              v-if="!collapsed && starText"
+              class="ml-1.5 inline-flex items-center gap-1 text-micro font-medium text-fg-muted"
+            >
+              <Icon name="lucide:star" class="size-3.5 text-accent" aria-hidden="true" />
+              <span class="tabular-nums">{{ starText }}</span>
             </span>
             <span
               class="overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin-left] duration-300 ease-out"
