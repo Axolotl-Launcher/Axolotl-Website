@@ -68,7 +68,14 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
-  css: ['lenis/dist/lenis.css', '~/assets/css/main.css'],
+  css: [
+    'lenis/dist/lenis.css',
+    'swiper/css',
+    'tippy.js/dist/tippy.css',
+    'tippy.js/animations/scale.css',
+    '~/assets/css/tippy.css',
+    '~/assets/css/main.css',
+  ],
 
   alias: {
     '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
