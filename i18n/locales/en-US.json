@@ -317,6 +317,7 @@
     "licenseRequireShareAlike": "Share adaptations under the same license",
     "licenseDeny": "You may not",
     "licenseDenyExtraRestrictions": "Add legal terms or technical measures that restrict the license",
+    "notFound": "Article not found",
     "empty": "No blog posts yet.",
     "indexTitle": "Blog",
     "articleIndex": "Article index",

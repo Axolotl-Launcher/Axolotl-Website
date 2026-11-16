@@ -16,6 +16,7 @@ type SearchHit = SearchDocument & { score: number }
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
+const contentLocale = computed(() => toContentLocale(locale.value))
 
 const index = shallowRef<MiniSearch<SearchDocument> | null>(null)
 const dialog = ref<HTMLDialogElement | null>(null)
@@ -38,7 +39,7 @@ function runSearch() {
     fuzzy: 0.2,
     prefix: true,
   }) as unknown as SearchHit[]
-  results.value = hits.filter((hit) => hit.type === 'doc' && hit.locale === locale.value).slice(0, 8)
+  results.value = hits.filter((hit) => hit.type === 'doc' && hit.locale === contentLocale.value).slice(0, 8)
 }
 
 function ensureIndex() {

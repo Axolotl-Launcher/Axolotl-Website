@@ -1,6 +1,20 @@
 packages:
   - '.'
 
+# Keep a seven-day cooling-off period before adopting newly published packages.
+minimumReleaseAge: 10080
+# These are pinned on purpose (framework and build tooling adopted during the
+# rebuild); everything else still waits out the cooling-off period.
+minimumReleaseAgeExclude:
+  - '@iconify-json/lucide'
+  - '@nuxtjs/mdc'
+  - better-sqlite3
+  - framer-motion
+  - motion-dom
+  - motion-v
+  - prettier
+  - sanitize-html
+
 # pnpm 12 replaced onlyBuiltDependencies with an explicit allow-list.
 allowBuilds:
   '@parcel/watcher': true

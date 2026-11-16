@@ -34,12 +34,14 @@ const queryTimestamp = computed(() => {
   return Number.isFinite(value) && value > 0 ? value : null
 })
 
-const selectedPost = computed(
-  () =>
-    posts.value.find((post) => post.slug === slug.value) ??
-    posts.value.find((post) => post.slug === entries.value[0]?.slug) ??
-    null,
-)
+const selectedPost = computed(() => {
+  if (slug.value) return posts.value.find((post) => post.slug === slug.value) ?? null
+  return posts.value.find((post) => post.slug === entries.value[0]?.slug) ?? null
+})
+
+if (slug.value && !selectedPost.value) {
+  throw createError({ statusCode: 404, statusMessage: t('blog.notFound'), fatal: true })
+}
 
 const selectedVersion = computed(() => {
   if (!selectedPost.value) return null
