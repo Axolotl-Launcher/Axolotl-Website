@@ -26,11 +26,9 @@
     "lead": "以下合作方为 Axolotl 的持续开发、分发与社区运营提供支持。",
     "footer": "合作赞助商",
     "article": "本文由以下合作方支持",
-    "docs": "合作伙伴",
     "thanks": "感谢合作赞助商",
     "supportTitle": "合作赞助商",
     "supportLead": "这些伙伴帮助 Axolotl 保持免费、开源与无广告。",
-    "visit": "访问",
     "dismiss": "关闭赞助卡片",
     "showSponsor": "查看第 {n} 个赞助商"
   },

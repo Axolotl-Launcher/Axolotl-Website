@@ -200,7 +200,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     autoLastmod: true,
-    exclude: ['/api/**'],
+    exclude: ['/api/**', '/terms', '/en/terms', '/privacy', '/en/privacy'],
   },
 
   schemaOrg: {
@@ -257,6 +257,10 @@ export default defineNuxtConfig({
         '/en/privacy',
         '/blog',
         '/en/blog',
+        '/blog/terms',
+        '/en/blog/terms',
+        '/blog/privacy',
+        '/en/blog/privacy',
         ...blogPostRoutes(),
         '/llms.txt',
         '/api/support/checkout/coffee.json',

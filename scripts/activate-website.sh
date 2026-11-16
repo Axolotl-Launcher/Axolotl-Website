@@ -25,6 +25,8 @@ for page in \
     support/index.html en/support/index.html \
     terms/index.html en/terms/index.html \
     privacy/index.html en/privacy/index.html \
+    blog/terms/index.html en/blog/terms/index.html \
+    blog/privacy/index.html en/blog/privacy/index.html \
     search-index.json blog-index.json \
     robots.txt sitemap.xml llms.txt \
     api/support/checkout/coffee.json \

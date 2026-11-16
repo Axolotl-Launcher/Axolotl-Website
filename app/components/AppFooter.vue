@@ -17,15 +17,15 @@ const columns = computed(() => [
     title: t('footer.resources'),
     links: [
       { label: t('nav.docs'), to: localePath({ path: '/docs' }) },
-      { label: t('nav.articles'), to: localePath({ path: '/articles' }) },
+      { label: t('nav.blog'), to: localePath({ path: '/blog' }) },
       { label: t('nav.support'), to: localePath({ path: '/support' }) },
     ],
   },
   {
     title: t('footer.legal'),
     links: [
-      { label: t('nav.terms'), to: localePath({ path: '/terms' }) },
-      { label: t('nav.privacy'), to: localePath({ path: '/privacy' }) },
+      { label: t('nav.terms'), to: localePath({ path: '/blog/terms' }) },
+      { label: t('nav.privacy'), to: localePath({ path: '/blog/privacy' }) },
     ],
   },
 ])
