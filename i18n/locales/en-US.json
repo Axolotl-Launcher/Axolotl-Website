@@ -113,7 +113,7 @@
   "download": {
     "eyebrow": "DOWNLOADS",
     "title": "Download Axolotl",
-    "lead": "Choose the build for your system. Stable only carries released builds; All channels carries every build and may lag behind stable.",
+    "lead": "Choose the build for your system. Stable only carries released builds; All channels includes every build and never lags behind stable.",
     "channelLabel": "Version channel",
     "release": "Stable",
     "beta": "All channels",
@@ -160,7 +160,7 @@
     "stepPlatformLead": "We will pick the right package format for it.",
     "detectedDevice": "Current device: {platform} — selected for you",
     "stepOptionsTitle": "Choose a channel and format",
-    "stepOptionsLead": "Stable only carries released builds; All channels carries every build and may lag behind stable.",
+    "stepOptionsLead": "Stable only carries released builds; All channels includes every build and never lags behind stable.",
     "stepConfirmTitle": "Confirm your download",
     "stepConfirmLead": "Continue to the download result page.",
     "next": "Continue",

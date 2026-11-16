@@ -113,7 +113,7 @@
   "download": {
     "eyebrow": "DOWNLOADS",
     "title": "下载 Axolotl",
-    "lead": "选择适合你系统的构建。稳定版只包含正式发布；全通道包含所有构建，可能落后于稳定版。",
+    "lead": "选择适合你系统的构建。稳定版只包含正式发布；全通道包含全部构建，不会落后于稳定版。",
     "channelLabel": "版本通道",
     "release": "稳定版",
     "beta": "全通道",
@@ -160,7 +160,7 @@
     "stepPlatformLead": "我们会为你挑选合适的安装包格式。",
     "detectedDevice": "当前设备：{platform}，已为你预选",
     "stepOptionsTitle": "选择版本与格式",
-    "stepOptionsLead": "稳定版只包含正式发布；全通道包含所有构建，可能落后于稳定版。",
+    "stepOptionsLead": "稳定版只包含正式发布；全通道包含全部构建，不会落后于稳定版。",
     "stepConfirmTitle": "确认下载内容",
     "stepConfirmLead": "确认后前往下载结果页。",
     "next": "继续",
