@@ -18,8 +18,8 @@ export const changelogChannels: [ChangelogChannel, ...ChangelogChannel[]] = [
     matches: () => true,
   },
   {
-    value: 'stable',
-    labelKey: 'changelog.tabStable',
+    value: 'release',
+    labelKey: 'changelog.tabRelease',
     matches: (entry) => !isPrerelease(entry.version),
   },
   {
