@@ -6,7 +6,6 @@ const localePath = useLocalePath()
 const route = useRoute()
 const { groups } = useDocsNav()
 const { sponsors } = useSponsors()
-const primarySponsor = computed(() => sponsors.value[0] ?? null)
 
 function href(slug: string) {
   return localePath({ path: docsPath(locale.value, slug) })
@@ -50,8 +49,8 @@ function isActive(slug: string) {
     <div class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
       <DocsSearch />
       <SponsorSidebarCard
-        v-if="primarySponsor"
-        :sponsor="primarySponsor"
+        v-if="sponsors.length"
+        :sponsors="sponsors"
         dismissible
         storage-key="docs-sidebar"
         class="mt-4"

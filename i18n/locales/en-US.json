@@ -31,7 +31,8 @@
     "supportTitle": "Sponsors",
     "supportLead": "These partners help keep Axolotl free, open source and ad-free.",
     "visit": "Visit",
-    "dismiss": "Dismiss sponsor card"
+    "dismiss": "Dismiss sponsor card",
+    "showSponsor": "Show sponsor {n}"
   },
   "actions": {
     "download": "Download launcher",

@@ -10,7 +10,6 @@ defineProps<{ links: TocLink[] }>()
 
 const { t } = useI18n()
 const { sponsors } = useSponsors()
-const primarySponsor = computed(() => sponsors.value[0] ?? null)
 </script>
 
 <template>
@@ -40,6 +39,6 @@ const primarySponsor = computed(() => sponsors.value[0] ?? null)
         </li>
       </ul>
     </nav>
-    <SponsorSidebarCard v-if="primarySponsor" :sponsor="primarySponsor" class="mt-6" />
+    <SponsorSidebarCard v-if="sponsors.length" :sponsors="sponsors" :start-index="1" class="mt-6" />
   </div>
 </template>

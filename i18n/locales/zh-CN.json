@@ -31,7 +31,8 @@
     "supportTitle": "合作赞助商",
     "supportLead": "这些伙伴帮助 Axolotl 保持免费、开源与无广告。",
     "visit": "访问",
-    "dismiss": "关闭赞助卡片"
+    "dismiss": "关闭赞助卡片",
+    "showSponsor": "查看第 {n} 个赞助商"
   },
   "actions": {
     "download": "下载启动器",
