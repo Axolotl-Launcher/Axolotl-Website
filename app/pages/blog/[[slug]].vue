@@ -3,14 +3,15 @@ import BlogAuthors from '~/components/blog/BlogAuthors.vue'
 import BlogLicense from '~/components/blog/BlogLicense.vue'
 import BlogTimeline from '~/components/blog/BlogTimeline.vue'
 import blogIndex from '~~/shared/blog-index.json'
-import type { BlogPost, BlogVersionEntry } from '~~/shared/blog'
+import { BLOG_MAIN_AUTHOR, type BlogPost, type BlogVersionEntry } from '~~/shared/blog'
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const config = useRuntimeConfig()
 
-const posts = computed(() => (blogIndex.posts as BlogPost[]).filter((post) => post.locale === locale.value))
+const contentLocale = computed(() => toContentLocale(locale.value))
+const posts = computed(() => (blogIndex.posts as BlogPost[]).filter((post) => post.locale === contentLocale.value))
 
 const entries = computed<BlogVersionEntry[]>(() =>
   posts.value
@@ -67,6 +68,11 @@ const dateText = computed(() =>
       )
     : '',
 )
+const bylineText = computed(() => {
+  const authors = selectedVersion.value?.authors?.filter(Boolean) ?? []
+  if (!authors.length) return BLOG_MAIN_AUTHOR.name
+  return authors.join(locale.value.startsWith('zh') ? '、' : ', ')
+})
 
 useSeoMeta({
   title: () => (selectedVersion.value ? `${selectedVersion.value.title} — Axolotl Launcher` : t('blog.empty')),
@@ -116,6 +122,11 @@ useHead(() => ({
             <h1 class="mt-3 text-section text-balance">{{ selectedVersion.title }}</h1>
             <p class="mt-3 text-lead text-fg-muted">{{ selectedVersion.description }}</p>
             <div class="mt-4 flex flex-wrap items-center gap-2 text-micro text-fg-subtle">
+              <span class="inline-flex items-center gap-1 rounded-pill bg-surface-2 px-2 py-0.5">
+                <Icon name="lucide:pen-line" class="size-3" aria-hidden="true" />
+                {{ t('blog.byline') }} {{ bylineText }}
+              </span>
+              <span aria-hidden="true">·</span>
               <time :datetime="new Date(selectedVersion.timestamp * 1000).toISOString()">
                 {{ dateText }}
               </time>

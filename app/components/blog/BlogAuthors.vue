@@ -31,9 +31,9 @@ const genderIcon = genderIcons[main.gender] ?? 'lucide:users'
         <span
           role="img"
           :aria-label="t('blog.official')"
-          class="absolute -right-0.5 -bottom-0.5 grid size-4 place-items-center rounded-full bg-accent text-on-accent ring-2 ring-surface-1"
+          class="absolute -right-0.5 -bottom-0.5 grid size-4 place-items-center rounded-full bg-surface-1"
         >
-          <Icon name="lucide:check" class="size-2.5" aria-hidden="true" />
+          <Icon name="lucide:circle-letter-v" class="size-4 text-accent" aria-hidden="true" />
         </span>
       </span>
       <div class="min-w-0">

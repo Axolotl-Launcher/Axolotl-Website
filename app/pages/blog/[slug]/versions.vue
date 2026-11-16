@@ -12,7 +12,9 @@ const slug = computed(() => {
 })
 const post = computed(
   () =>
-    (blogIndex.posts as BlogPost[]).find((item) => item.slug === slug.value && item.locale === locale.value) ?? null,
+    (blogIndex.posts as BlogPost[]).find(
+      (item) => item.slug === slug.value && item.locale === toContentLocale(locale.value),
+    ) ?? null,
 )
 const versions = computed(() => (post.value ? [...post.value.versions].reverse() : []))
 const articleTitle = computed(() => post.value?.versions.at(-1)?.title ?? t('blog.versionsTitle'))
