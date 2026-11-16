@@ -2,7 +2,7 @@ import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt(
   {
-    ignores: ['public/**', 'content/feishu/**', 'packages/**', '.output/**', '.nuxt/**'],
+    ignores: ['public/**', 'content/docs/**', 'packages/**', '.output/**', '.nuxt/**'],
   },
   {
     rules: {

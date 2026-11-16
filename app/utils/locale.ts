@@ -1,4 +1,4 @@
-import type { SiteLocale } from '#shared/types/feishu'
+import type { SiteLocale } from '#shared/types/docs'
 
 export function toContentLocale(locale: string): SiteLocale {
   return locale === 'en' ? 'en-US' : 'zh-CN'

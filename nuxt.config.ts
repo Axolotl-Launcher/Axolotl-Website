@@ -99,6 +99,7 @@ export default defineNuxtConfig({
 
   content: {
     build: {
+      transformers: ['~~/content/transformers/mdx.mjs'],
       markdown: {
         toc: { depth: 3, searchDepth: 3 },
       },

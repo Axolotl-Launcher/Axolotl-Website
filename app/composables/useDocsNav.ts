@@ -1,4 +1,4 @@
-import type { SiteLocale } from '#shared/types/feishu'
+import type { SiteLocale } from '#shared/types/docs'
 
 export interface DocsNavItem {
   title: string

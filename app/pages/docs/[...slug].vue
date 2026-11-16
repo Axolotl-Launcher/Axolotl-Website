@@ -84,16 +84,6 @@ const updatedLabel = computed(() => {
 
       <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-caption text-fg-subtle">
         <span v-if="updatedLabel">{{ t('docs.updatedAt', { date: updatedLabel }) }}</span>
-        <a
-          v-if="page.feishu?.url"
-          :href="page.feishu.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="link-underline inline-flex items-center gap-1.5 text-accent"
-        >
-          {{ t('docs.openInFeishu') }}
-          <Icon name="lucide:arrow-up-right" class="size-3.5" />
-        </a>
       </div>
 
       <div

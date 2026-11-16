@@ -13,6 +13,7 @@ minimumReleaseAgeExclude:
   - motion-dom
   - motion-v
   - prettier
+  # Transitive via @nuxt/content; the pinned version predates the rebuild.
   - sanitize-html
 
 # pnpm 12 replaced onlyBuiltDependencies with an explicit allow-list.

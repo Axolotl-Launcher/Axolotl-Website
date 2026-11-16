@@ -11,7 +11,6 @@ Read the applicable instruction files before editing, even when your session sta
 | Changed area                    | Read                                                 |
 | ------------------------------- | ---------------------------------------------------- |
 | Agent instructions and Skills   | [.agents/AGENTS.md](.agents/AGENTS.md)               |
-| Feishu knowledge-base sync      | [scripts/feishu/](scripts/feishu/) and this file     |
 | Deployment and server operation | [deploy/](deploy/) and `scripts/activate-website.sh` |
 
 ## Development
@@ -40,25 +39,24 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 - `app/assets/css/` — Tailwind 4 entry and the design tokens/themes. `tokens.css` and `themes.css` are the source of truth for the brand palette, surfaces and typography.
 - `app/assets/icons/` — local brand SVGs for `nuxt-icons`, rendered with `<NuxtIcon name="…">`. UI icons use the Lucide set through `@nuxt/icon`.
 - `app/utils/` and `app/composables/` — download resolution, i18n helpers, docs navigation and theme state.
+- `content/docs/` — local MDX documentation, one directory per content locale.
 - `content/articles/` — repository-authored Markdown. Legal pages are Vue routes under `app/pages/`.
-- `content/feishu/` and `public/feishu/` — generated from Feishu by the sync script; never hand-edit.
 - `i18n/locales/` — zh-CN and en-US UI messages (`en` is the URL prefix, `en-US` is the content locale).
 - `public/` — static assets, favicons and the launcher demo build. `public/launcher-demo/` is fetched by `scripts/fetch-launcher-demo.mjs` and ignored.
 - `shared/` — types and constants shared by the site and build scripts.
-- `scripts/feishu/` — build-time Feishu knowledge-base exporter; `scripts/check-media.mjs` validates prerendered media references.
+- `content/transformers/mdx.mjs` — feeds `.mdx` files through the MDC parser; `scripts/check-media.mjs` validates prerendered media references.
 - `releases/` — generated release data. Do not edit.
 - `deploy/` — OpenResty configuration for the production host.
 
 ## Knowledge Base
 
-Documentation is authored in Feishu and sideloaded at build time:
+Documentation is repository-authored MDX under `content/docs/<locale>/`:
 
-- `feishu.config.ts` maps wiki node tokens to stable slugs, groups, order and locale.
-- `pnpm feishu:sync` resolves wiki nodes, exports Markdown through the Feishu Open API, downloads images, rewrites links and writes `content/feishu/` plus `public/feishu/`.
-- The committed snapshot is the build input; deployments do not need Feishu credentials.
-- Credentials live in `.env.local` (`FEISHU_APP_ID`, `FEISHU_APP_SECRET`) and GitHub Actions secrets for the sync workflow only. Never expose them to the client.
-- `pnpm feishu:validate` checks the snapshot's files, links and translations. CI runs it when a manifest exists.
-- Articles and legal documents remain repository-authored and are not synced from Feishu.
+- Each file keeps `title`, `description`, `locale`, `slug`, `group`, `order` and `updatedAt` in its frontmatter.
+- `content/transformers/mdx.mjs` teaches Nuxt Content to parse `.mdx` with the same MDC pipeline as `.md`.
+- `scripts/build-search-index.mjs` indexes the local docs at build time.
+- No documentation content is fetched from an external service; deployments only need the repository.
+- Articles and legal documents remain repository-authored.
 
 ## Design and UI
 

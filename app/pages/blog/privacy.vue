@@ -54,7 +54,8 @@ useHead({
       /en）表达，不写入 Cookie。网站不使用广告 Cookie；页面访问统计由 Umami Cloud 提供，该服务不使用
       Cookie，仅记录汇总的访问信息（例如页面路径、来源、浏览器与操作系统、国家或地区），用于了解网站使用情况。页头的
       GitHub 星标数通过 GitHub 公共 API
-      获取。站内搜索使用构建时生成的本地索引（MiniSearch），查询不会发送给第三方搜索服务；知识库是飞书文档的构建时静态快照，访问网站不会连接飞书。下载页会在浏览器内读取
+      获取。站内搜索使用构建时生成的本地索引（MiniSearch），查询不会发送给第三方搜索服务；文档以本地
+      Markdown（MDX）文件存放在仓库中，构建时渲染为静态页面，访问网站不会连接外部知识库。下载页会在浏览器内读取
       User-Agent
       以识别操作系统并推荐构建，该信息不会由网站额外上传。点击支持档位时，网站接口会向爱发电获取收银台链接并跳转，支付由爱发电处理，本站不保存支付信息。
     </p>
@@ -165,12 +166,12 @@ useHead({
       advertising cookies. Page-view analytics are provided by Umami Cloud, which uses no cookies and records only
       aggregated visit information such as page paths, referrers, browser and operating system, and country or region to
       understand site usage. The GitHub star count in the header is fetched from GitHub's public API. Site search uses a
-      locally built MiniSearch index, so queries are not sent to a third-party search service. The knowledge base is a
-      static snapshot of Feishu documents generated at build time; visiting the website does not connect to Feishu. The
-      download page reads the User-Agent in the browser to detect the operating system and recommend a build; the
-      website does not upload that information separately. When you choose a support tier, the site API obtains an
-      Afdian checkout link and redirects you; Afdian processes the payment, and this site does not store payment
-      information.
+      locally built MiniSearch index, so queries are not sent to a third-party search service. Documentation is stored
+      as local MDX files in the repository and rendered at build time; visiting the website does not connect to an
+      external knowledge base. The download page reads the User-Agent in the browser to detect the operating system and
+      recommend a build; the website does not upload that information separately. When you choose a support tier, the
+      site API obtains an Afdian checkout link and redirects you; Afdian processes the payment, and this site does not
+      store payment information.
     </p>
     <p>
       Website hosting and network infrastructure providers may process routine request information such as IP addresses,

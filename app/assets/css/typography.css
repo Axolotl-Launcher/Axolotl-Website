@@ -279,7 +279,7 @@ html[data-theme='oled'] .hero-poster {
   color: var(--accent-strong);
 }
 
-/* Feishu docs code blocks: keep the block readable in every theme and give the
+/* Docs code blocks: keep the block readable in every theme and give the
    Shiki output the same surface/radius language as the rest of the site. */
 .docs-prose.prose pre {
   margin-block: 1.75rem;

@@ -5,10 +5,6 @@ import MiniSearch from 'minisearch'
 const root = process.cwd()
 const outputFile = path.join(root, 'public/search-index.json')
 
-function readFile(relativePath) {
-  return fs.readFileSync(path.join(root, relativePath), 'utf8')
-}
-
 function unquote(value) {
   if ((value.startsWith("'") && value.endsWith("'")) || (value.startsWith('"') && value.endsWith('"'))) {
     return value.slice(1, -1)
@@ -43,21 +39,26 @@ function stripMarkdown(markdown) {
 }
 
 const documents = []
-const manifest = JSON.parse(readFile('content/feishu/manifest.json'))
 
-for (const doc of manifest.docs ?? []) {
-  for (const [locale, meta] of Object.entries(doc.locales ?? {})) {
-    if (!meta?.file || !meta?.title) continue
-    const filePath = path.join(root, meta.file)
-    if (!fs.existsSync(filePath)) continue
+for (const [directory, fallbackLocale] of [
+  ['zh-cn', 'zh-CN'],
+  ['en-us', 'en-US'],
+]) {
+  const docsDirectory = path.join(root, 'content/docs', directory)
+  if (!fs.existsSync(docsDirectory)) continue
+
+  for (const file of fs.readdirSync(docsDirectory).filter((name) => name.endsWith('.mdx'))) {
+    const { data, body } = parseFrontmatter(fs.readFileSync(path.join(docsDirectory, file), 'utf8'))
+    if (!data.slug || !data.title) continue
+    const locale = data.locale ?? fallbackLocale
     documents.push({
-      id: `doc:${locale}:${doc.slug}`,
+      id: `doc:${locale}:${data.slug}`,
       type: 'doc',
       locale,
-      title: meta.title,
-      description: meta.description ?? '',
-      body: stripMarkdown(fs.readFileSync(filePath, 'utf8')).slice(0, 6000),
-      url: `/docs/${doc.slug}`,
+      title: data.title,
+      description: data.description ?? '',
+      body: stripMarkdown(body).slice(0, 6000),
+      url: locale === 'zh-CN' ? `/docs/${data.slug}` : `/en/docs/${data.slug}`,
     })
   }
 }
