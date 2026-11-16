@@ -117,10 +117,10 @@ watch(
       <Motion
         layout
         :transition="{ type: 'spring', stiffness: 300, damping: 30, mass: 0.7 }"
-        class="flex items-center gap-4 transition-[background-color,border-color,border-radius,padding] duration-300 motion-reduce:transition-none"
+        class="flex items-center gap-4 transition-[background-color,border-color,border-radius,padding,box-shadow] duration-300 motion-reduce:transition-none"
         :class="
           collapsed
-            ? 'mx-auto h-12 w-fit max-w-full gap-2 rounded-pill border border-border/70 bg-surface-0/95 px-4 backdrop-blur-2xl'
+            ? 'mx-auto h-12 w-fit max-w-full gap-2 rounded-pill border border-border bg-[color-mix(in_oklab,var(--surface-0)_50%,var(--surface-4))]/95 px-4 shadow-[0_18px_50px_-24px_rgb(0_0_0/0.4),0_0_36px_-8px_var(--accent-glow)] backdrop-blur-2xl'
             : 'w-full'
         "
       >
