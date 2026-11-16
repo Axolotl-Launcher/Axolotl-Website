@@ -26,9 +26,11 @@
     "lead": "These partners support Axolotl's ongoing development, distribution and community work.",
     "footer": "Sponsors",
     "article": "Supported by",
+    "docs": "Partner",
     "thanks": "Thanks to our sponsors",
     "supportTitle": "Sponsors",
     "supportLead": "These partners help keep Axolotl free, open source and ad-free.",
+    "visit": "Visit",
     "dismiss": "Dismiss sponsor card",
     "showSponsor": "Show sponsor {n}"
   },

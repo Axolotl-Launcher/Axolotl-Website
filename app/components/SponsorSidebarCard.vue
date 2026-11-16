@@ -67,7 +67,7 @@ function dismiss() {
 <template>
   <div
     v-if="!dismissed && current"
-    class="relative"
+    class="relative rounded-card border border-border bg-surface-1 p-3 select-none"
     @mouseenter="paused = true"
     @mouseleave="paused = false"
     @focusin="paused = true"
@@ -76,20 +76,17 @@ function dismiss() {
     <button
       v-if="dismissible"
       type="button"
-      class="absolute top-0 right-0 z-10 grid size-5 place-items-center rounded-full bg-surface-1 text-fg-subtle transition-colors hover:bg-surface-2 hover:text-fg"
+      class="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-full text-fg-subtle transition-colors hover:bg-surface-2 hover:text-fg"
       :aria-label="t('sponsors.dismiss')"
       @click="dismiss"
     >
-      <Icon name="lucide:x" class="size-3" aria-hidden="true" />
+      <Icon name="lucide:x" class="size-3.5" aria-hidden="true" />
     </button>
+    <p class="pr-7 font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+      {{ t('sponsors.docs') }}
+    </p>
     <Transition name="sponsor-fade" mode="out-in">
-      <a
-        :key="current.id"
-        :href="current.url"
-        target="_blank"
-        rel="sponsored noopener noreferrer"
-        class="inline-flex pr-4"
-      >
+      <a :key="current.id" :href="current.url" target="_blank" rel="sponsored noopener noreferrer" class="mt-2 block">
         <img
           :src="current.logo"
           :alt="current.name"
@@ -97,8 +94,12 @@ function dismiss() {
           height="30"
           loading="lazy"
           decoding="async"
-          class="h-8 w-auto max-w-[8rem] opacity-80 dark:brightness-0 dark:invert"
+          class="h-7 w-auto max-w-[7.5rem] opacity-80 dark:brightness-0 dark:invert"
         />
+        <span class="mt-2 line-clamp-3 block text-micro leading-relaxed text-fg-muted">{{ current.description }}</span>
+        <span class="mt-2 inline-flex items-center gap-1 text-micro font-semibold text-accent-strong">
+          {{ t('sponsors.visit') }} →
+        </span>
       </a>
     </Transition>
     <div v-if="sponsors.length > 1" class="mt-2 flex items-center gap-1">

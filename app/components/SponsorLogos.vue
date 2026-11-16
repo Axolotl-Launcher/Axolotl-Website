@@ -5,7 +5,7 @@ defineProps<{ sponsors: Sponsor[] }>()
 </script>
 
 <template>
-  <ul class="flex flex-wrap items-center gap-x-6 gap-y-3">
+  <ul class="flex flex-wrap items-center gap-x-6 gap-y-3 select-none">
     <li v-for="sponsor in sponsors" :key="sponsor.id">
       <a
         :href="sponsor.url"

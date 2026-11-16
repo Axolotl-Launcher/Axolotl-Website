@@ -200,7 +200,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     autoLastmod: true,
-    exclude: ['/api/**', '/terms', '/en/terms', '/privacy', '/en/privacy'],
+    exclude: ['/api/**'],
   },
 
   schemaOrg: {
@@ -251,10 +251,6 @@ export default defineNuxtConfig({
         '/en/demo',
         '/support',
         '/en/support',
-        '/terms',
-        '/en/terms',
-        '/privacy',
-        '/en/privacy',
         '/blog',
         '/en/blog',
         '/blog/terms',

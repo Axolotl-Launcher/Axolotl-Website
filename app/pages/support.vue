@@ -201,7 +201,11 @@ useHead(() => ({
     <section class="site-container py-14 sm:py-20">
       <h2 class="text-section-sm">{{ t('support.cooperationTitle') }}</h2>
       <div class="mt-8 grid gap-4 md:grid-cols-2">
-        <div v-for="item in cooperation" :key="item.id" class="rounded-card border border-border bg-surface-1 p-6">
+        <div
+          v-for="item in cooperation"
+          :key="item.id"
+          class="rounded-card border border-border bg-surface-1 p-6 select-none"
+        >
           <h3 class="text-card font-semibold">{{ item.title }}</h3>
           <p class="mt-2 text-body leading-relaxed text-fg-muted">{{ item.description }}</p>
         </div>
