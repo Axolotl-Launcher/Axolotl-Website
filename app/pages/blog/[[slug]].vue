@@ -120,7 +120,6 @@ useHead(() => ({
               </NuxtLink>
             </div>
             <h1 class="mt-3 text-section text-balance">{{ selectedVersion.title }}</h1>
-            <p class="mt-3 text-lead text-fg-muted">{{ selectedVersion.description }}</p>
             <div class="mt-4 flex flex-wrap items-center gap-2 text-micro text-fg-subtle">
               <span class="inline-flex items-center gap-1 rounded-pill bg-surface-2 px-2 py-0.5">
                 <Icon name="lucide:pen-line" class="size-3" aria-hidden="true" />
@@ -140,6 +139,7 @@ useHead(() => ({
                 {{ t('blog.history') }}
               </span>
             </div>
+            <p class="mt-4 text-lead text-fg-muted">{{ selectedVersion.description }}</p>
             <NuxtLink
               v-if="selectedPost"
               :to="localePath({ path: `/blog/${selectedPost.slug}/versions` })"
