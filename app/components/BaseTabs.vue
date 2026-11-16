@@ -4,29 +4,44 @@ interface TabOption {
   label: string
 }
 
-defineProps<{
+const props = defineProps<{
   options: TabOption[]
   label?: string
 }>()
 
 const model = defineModel<string>({ required: true })
+
+// Tabs share the row equally, which lets the active indicator be positioned
+// from the index alone — no DOM measuring, so it also renders correctly in
+// the prerendered HTML.
+const activeIndex = computed(() => {
+  const index = props.options.findIndex((option) => option.value === model.value)
+  return index < 0 ? 0 : index
+})
 </script>
 
 <template>
   <div
-    class="inline-flex items-center gap-1 rounded-pill border border-border bg-surface-1 p-1"
+    class="relative grid rounded-pill border border-border bg-surface-1 p-1"
+    :style="{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }"
     role="group"
     :aria-label="label"
   >
+    <span
+      class="pointer-events-none absolute inset-y-1 left-1 rounded-pill bg-accent shadow-[0_6px_18px_-10px_var(--accent-glow)] transition-transform duration-300 ease-out motion-reduce:transition-none"
+      :style="{
+        width: `calc((100% - 0.5rem) / ${options.length})`,
+        transform: `translateX(${activeIndex * 100}%)`,
+      }"
+      aria-hidden="true"
+    />
     <button
       v-for="option in options"
       :key="option.value"
       type="button"
-      class="rounded-pill px-3.5 py-1.5 text-caption font-semibold transition-colors"
+      class="relative z-10 rounded-pill px-3.5 py-1.5 text-caption font-semibold transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:outline-none"
       :class="
-        model === option.value
-          ? 'bg-accent text-[color:var(--on-accent)] shadow-[0_6px_18px_-10px_var(--accent-glow)]'
-          : 'text-fg-muted hover:bg-surface-2 hover:text-fg'
+        model === option.value ? 'text-[color:var(--on-accent)]' : 'text-fg-muted hover:bg-surface-2 hover:text-fg'
       "
       :aria-pressed="model === option.value"
       @click="model = option.value"
