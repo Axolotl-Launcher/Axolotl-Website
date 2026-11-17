@@ -137,7 +137,8 @@ After every published `v*` release, the launcher repository's
 `sync-website-release-data.yml` workflow:
 
 1. Generates `releases/catalog.json` from the launcher's
-   `apps/app-frontend/src/announcements/catalog.ts` on `main`. Stable releases
+   `apps/app-frontend/src/announcements/catalog.ts` at the released tag, so
+   announcements written ahead of a release stay off the site. Stable releases
    also update `releases/latest.json`; beta releases preserve it.
 2. Commits the files to `main` here as **Axolotl Release Bot** when they changed.
    Unchanged data creates no commit.
