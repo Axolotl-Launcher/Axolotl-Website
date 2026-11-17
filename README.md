@@ -103,6 +103,30 @@ has a package, `/demo` shows a download link instead.
 - A failed lookup or download fails the build in CI. Elsewhere it only warns,
   and `/demo` keeps the package it already has, if any.
 
+## Contributors card
+
+`pnpm dev` and `pnpm build` also run `scripts/generate-contributors.mjs`, a
+build-time rewrite of
+[Axolotl-Launcher/contributors-img](https://github.com/Axolotl-Launcher/contributors-img).
+It fetches the contributors of `Axolotl-Launcher/Axolotl` from the GitHub API,
+strips the former contributors listed in `scripts/former-contributors.json`
+(vendored from that service), inlines every avatar as a data URL and writes the
+SVG card to the ignored `src/public/contributors.svg`, served at
+`/contributors.svg`.
+
+- `GITHUB_TOKEN` authenticates the contributor lookup. Without it, GitHub allows
+  60 requests an hour per IP address.
+- Contributor data and avatars are cached in `.cache/contributors-img/` for three
+  days, so repeated builds do not refetch them.
+- `AXOLOTL_CONTRIBUTORS_REPO=owner/name` renders another repository.
+  `AXOLOTL_CONTRIBUTORS_MAX`, `AXOLOTL_CONTRIBUTORS_COLUMNS` and
+  `AXOLOTL_CONTRIBUTORS_ANON=true` mirror the service's `max`, `columns` and
+  `anon` parameters (defaults 100, 12 and false).
+  `FORMER_CONTRIBUTORS_FILE` overrides the vendored exclusion list.
+  `AXOLOTL_CONTRIBUTORS=off` skips generation.
+- A failed lookup or download fails the build in CI. Elsewhere it only warns,
+  and the site keeps the card it already has, if any.
+
 ## Release data
 
 `releases/catalog.json` (changelog announcements) and `releases/latest.json`
