@@ -11,7 +11,7 @@ const latestVersion = latestRelease.tag_name.replace(/^v/, '')
 
 const githubUrl = 'https://github.com/Axolotl-Launcher/Axolotl'
 const contributorsUrl = `${githubUrl}/graphs/contributors`
-const contributorsImage = 'https://contributors.hikarilink.org/image?repo=Axolotl-Launcher/Axolotl&columns=16'
+const contributorsImage = '/contributors.svg'
 
 const posterVars = computed(() => ({
   '--poster-light': `url(/launcher-preview/poster-light-${lang.value}-2x.webp)`,

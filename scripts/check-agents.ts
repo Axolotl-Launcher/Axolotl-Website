@@ -38,6 +38,7 @@ const trackedGuidance = files.filter((file) => {
   return (
     path === 'AGENTS.md' ||
     /(^|\/)AGENTS\.md$/.test(path) ||
+    path === 'REVIEW.md' ||
     path === 'CONTRIBUTING.md' ||
     path.startsWith('.agents/') ||
     path.startsWith('standards/') ||

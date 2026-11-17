@@ -121,6 +121,9 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build website
         env:
+          # A cold prerender peaks above the runner's roughly 2 GB default
+          # old-space limit, while the 8 GB runner has room for a 4 GB ceiling.
+          NODE_OPTIONS: --max-old-space-size=4096
           # Looks up the launcher's latest stable release for its web demo package.
           GITHUB_TOKEN: ${{ github.token }}
         run: pnpm build

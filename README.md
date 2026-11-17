@@ -75,6 +75,33 @@ Studio saves unpublished edits as browser-local drafts, checks them against Git,
 
 Support tiers never link to Afdian plan pages directly. The page requests a checkout URL from `/api/support/checkout/<plan>.json`, and the endpoint returns the official Afdian `order/create` URL. The three static JSON responses are prerendered and served directly by OpenResty; the Nitro route remains available for plans that need runtime validation with `NUXT_AFDIAN_USER_ID`/`NUXT_AFDIAN_TOKEN`.
 
+## Launcher demo
+
+`/demo` frames the launcher frontend's web demo build, which each launcher release attaches as `Axolotl_Launcher_<version>_web_demo.zip`. `pnpm dev` and `pnpm build` first run `scripts/fetch-launcher-demo.ts`: it downloads the package of the latest stable release (or, when that has none, of the newest earlier stable release that has one), checks it against the asset's SHA-256 digest and unpacks it into the ignored `public/launcher-demo/<version>/`, downloading again only when a newer release ships one. When no stable release has a package, `/demo` shows a download link instead.
+
+- `GITHUB_TOKEN` authenticates the release lookup. Without it, GitHub allows 60 lookups an hour per IP address.
+- `AXOLOTL_WEB_DEMO=<path>` uses a local build instead: the launcher repository's `apps/app-frontend/demo/dist` (built there with `node node_modules/vite/bin/vite.js build --config demo/vite.config.ts`) or a package `.zip`. `AXOLOTL_WEB_DEMO=off` uses none.
+- A failed lookup or download fails the build in CI. Elsewhere it only warns, and `/demo` keeps the package it already has, if any.
+
+## Contributors card
+
+`pnpm dev` and `pnpm build` also run `scripts/generate-contributors.ts`, a build-time rewrite of [Axolotl-Launcher/contributors-img](https://github.com/Axolotl-Launcher/contributors-img). It fetches the contributors of `Axolotl-Launcher/Axolotl` from the GitHub API, strips the former contributors listed in `scripts/former-contributors.json` (vendored from that service), inlines every avatar as a data URL and writes the SVG card to the ignored `public/contributors.svg`, served at `/contributors.svg`.
+
+- `GITHUB_TOKEN` authenticates the contributor lookup. Without it, GitHub allows 60 requests an hour per IP address.
+- Contributor data and avatars are cached in `.cache/contributors-img/` for three days, so repeated builds do not refetch them.
+- `AXOLOTL_CONTRIBUTORS_REPO=owner/name` renders another repository. `AXOLOTL_CONTRIBUTORS_MAX`, `AXOLOTL_CONTRIBUTORS_COLUMNS` and `AXOLOTL_CONTRIBUTORS_ANON=true` mirror the service's `max`, `columns` and `anon` parameters (defaults 100, 12 and false). `FORMER_CONTRIBUTORS_FILE` overrides the vendored exclusion list. `AXOLOTL_CONTRIBUTORS=off` skips generation.
+- A failed lookup or download fails the build in CI. Elsewhere it only warns, and the site keeps the card it already has, if any.
+
+## Release data
+
+`releases/catalog.json` (changelog announcements) and `releases/latest.json` (latest stable tag and asset checksums) are generated files owned by the launcher repository. Do not edit them here.
+
+After every published `v*` release, the launcher repository's `sync-website-release-data.yml` workflow:
+
+1. Generates `releases/catalog.json` from the launcher's `apps/app-frontend/src/announcements/catalog.ts` at the released tag, so announcements written ahead of a release stay off the site. Stable releases also update `releases/latest.json`; beta releases preserve it.
+2. Commits the files to `main` here as **Axolotl Release Bot** when they changed. Unchanged data creates no commit.
+3. That push triggers the production deployment below. When a release is resumed with unchanged data, the workflow dispatches the deployment instead.
+
 ## Deployment
 
 The production host runs OpenResty in front of the `axlmc-website` systemd service.
