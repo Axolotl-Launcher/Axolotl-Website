@@ -13,6 +13,9 @@ export function useStudioEdit() {
 
   function prepareStudio(event: MouseEvent) {
     if (!import.meta.client) return
+    // One-shot: only this explicit edit action may open Studio; a later F5
+    // must leave the editor collapsed.
+    sessionStorage.setItem('axolotl:open-studio', '1')
     localStorage.setItem('studio-active', JSON.stringify({ active: true, feature: 'content', fsPath: '/' }))
 
     const hasSession = document.cookie.split('; ').includes('studio-session-check=true')
