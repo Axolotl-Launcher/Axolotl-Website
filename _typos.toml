@@ -6,6 +6,8 @@ extend-exclude = [
   "packages/ui/",
   # Migrated documentation keeps its original Chinese/HTML formatting.
   "content/docs/**",
+  # Vendored contributor list contains usernames that look like typos.
+  "scripts/former-contributors.json",
 ]
 
 [default.extend-words]

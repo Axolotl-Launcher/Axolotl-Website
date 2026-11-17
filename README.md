@@ -52,6 +52,76 @@ Set `NUXT_AFDIAN_USER_ID` and `NUXT_AFDIAN_TOKEN` in `.env` (or the deployment e
 Docs are local MDX files under `content/docs/<locale>/` and are rendered by `@nuxt/content`. Each file keeps its navigation metadata in frontmatter (`title`, `description`, `locale`, `slug`, `group`, `order`, `updatedAt`). Add or edit the file, then run `pnpm build`; `scripts/build-search-index.mjs` indexes it automatically. No external knowledge base or credentials are involved.
 
 Articles are normal Markdown under `content/articles`. Legal pages are maintained as Vue pages in `app/pages` so their wording is reviewed in code.
+Review the new PNGs before committing them: `--update-snapshots` rewrites a
+baseline from whatever the current build renders, including a regression.
+
+No workflow runs the end-to-end suite yet. If you add one on `ubuntu-latest`,
+record the Linux baselines on Linux first, using the Playwright version pinned in
+`package.json` so the recording machine and the runner agree
+(`mcr.microsoft.com/playwright:v<version>-noble` is the matching image). Never
+share one `node_modules` between a Linux and a Windows checkout.
+
+## Launcher demo
+
+`/demo` frames the launcher frontend's web demo build, which each launcher
+release attaches as `Axolotl_Launcher_<version>_web_demo.zip`. `pnpm dev` and
+`pnpm build` first run `scripts/fetch-launcher-demo.mjs`: it downloads the
+package of the latest stable release (or, when that has none, of the newest
+earlier stable release that has one), checks it against the asset's SHA-256
+digest and unpacks it into the ignored `src/public/launcher-demo/<version>/`,
+downloading again only when a newer release ships one. When no stable release
+has a package, `/demo` shows a download link instead.
+
+- `GITHUB_TOKEN` authenticates the release lookup. Without it, GitHub allows 60
+  lookups an hour per IP address.
+- `AXOLOTL_WEB_DEMO=<path>` uses a local build instead: the launcher
+  repository's `apps/app-frontend/demo/dist` (built there with
+  `node node_modules/vite/bin/vite.js build --config demo/vite.config.ts`) or a
+  package `.zip`. `AXOLOTL_WEB_DEMO=off` uses none.
+- A failed lookup or download fails the build in CI. Elsewhere it only warns,
+  and `/demo` keeps the package it already has, if any.
+
+## Contributors card
+
+`pnpm dev` and `pnpm build` also run `scripts/generate-contributors.mjs`, a
+build-time rewrite of
+[Axolotl-Launcher/contributors-img](https://github.com/Axolotl-Launcher/contributors-img).
+It fetches the contributors of `Axolotl-Launcher/Axolotl` from the GitHub API,
+strips the former contributors listed in `scripts/former-contributors.json`
+(vendored from that service), inlines every avatar as a data URL and writes the
+SVG card to the ignored `src/public/contributors.svg`, served at
+`/contributors.svg`.
+
+- `GITHUB_TOKEN` authenticates the contributor lookup. Without it, GitHub allows
+  60 requests an hour per IP address.
+- Contributor data and avatars are cached in `.cache/contributors-img/` for three
+  days, so repeated builds do not refetch them.
+- `AXOLOTL_CONTRIBUTORS_REPO=owner/name` renders another repository.
+  `AXOLOTL_CONTRIBUTORS_MAX`, `AXOLOTL_CONTRIBUTORS_COLUMNS` and
+  `AXOLOTL_CONTRIBUTORS_ANON=true` mirror the service's `max`, `columns` and
+  `anon` parameters (defaults 100, 12 and false).
+  `FORMER_CONTRIBUTORS_FILE` overrides the vendored exclusion list.
+  `AXOLOTL_CONTRIBUTORS=off` skips generation.
+- A failed lookup or download fails the build in CI. Elsewhere it only warns,
+  and the site keeps the card it already has, if any.
+
+## Release data
+
+`releases/catalog.json` (changelog announcements) and `releases/latest.json`
+(latest stable tag and asset checksums) are generated files owned by the launcher
+repository. Do not edit them here.
+
+After every published `v*` release, the launcher repository's
+`sync-website-release-data.yml` workflow:
+
+1. Generates `releases/catalog.json` from the launcher's
+   `apps/app-frontend/src/announcements/catalog.ts` at the released tag, so
+   announcements written ahead of a release stay off the site. Stable releases
+   also update `releases/latest.json`; beta releases preserve it.
+2. Commits the files to `main` here as **Axolotl Release Bot** when they changed.
+   Unchanged data creates no commit.
+3. That push triggers the production deployment below. When a release is
+   resumed with unchanged data, the workflow dispatches the deployment instead.
 
 ## Deployment
 

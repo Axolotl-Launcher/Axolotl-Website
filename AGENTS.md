@@ -8,10 +8,14 @@ The launcher itself (desktop app, release pipeline and announcement catalog) liv
 
 Read the applicable instruction files before editing, even when your session starts at the repository root.
 
-| Changed area                    | Read                                                 |
-| ------------------------------- | ---------------------------------------------------- |
-| Agent instructions and Skills   | [.agents/AGENTS.md](.agents/AGENTS.md)               |
-| Deployment and server operation | [deploy/](deploy/) and `scripts/activate-website.sh` |
+| Changed area                                             | Read                                                           |
+| -------------------------------------------------------- | -------------------------------------------------------------- |
+| Shared UI, layouts and DI contracts                      | [packages/ui/AGENTS.md](packages/ui/AGENTS.md)                 |
+| API client                                               | [packages/api-client/AGENTS.md](packages/api-client/AGENTS.md) |
+| Any frontend implementation                              | [Frontend development](standards/frontend/DEVELOPMENT.md)      |
+| Agent instructions, Skills or their validation           | [.agents/AGENTS.md](.agents/AGENTS.md)                         |
+| Agent delivery: commits, pushes, PRs, reviews, archiving | [REVIEW.md](REVIEW.md)                                         |
+| Deployment and server operation                          | [deploy/](deploy/) and `scripts/activate-website.sh`           |
 
 ## Development
 
@@ -49,6 +53,14 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 - `deploy/` — OpenResty configuration for the production host.
 
 ## Knowledge Base
+- **Read [REVIEW.md](REVIEW.md) before committing, pushing, opening a pull request or reviewing a change.** It is the single home for the delivery workflow: commit and trailer conventions, push preconditions, pull request content, review expectations and archiving. The rules in this section remain in force and refine it.
+- Every commit created by an Agent must use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `<type>[optional scope][!]: <description>`. This applies to ordinary commits, amended messages, merge commits, squash commits and reverts; replace Git's default message when necessary. Do not rewrite existing history just to normalize messages.
+- Use a lowercase type matching the change: `feat`, `fix`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `style` or `revert`. Use a concise scope when useful (for example `website`, `ui` or `agents`), and describe the actual change. Mark breaking changes with `!` or a `BREAKING CHANGE:` footer; explain their impact in the body.
+- Never add `[skip ci]` to a commit that changes `releases/`, the site, its dependencies or its build: it also suppresses the deployment that a release-data push triggers. These message rules do not authorize a commit or history rewrite by themselves.
+- Use existing package scripts and relevant tests during development; see [frontend validation and formatting](standards/frontend/DEVELOPMENT.md).
+- Before a frontend commit, run the affected package's `fix` script (`pnpm fix` for the site, `pnpm --filter @modrinth/ui fix` for shared UI) as described in the frontend standard. Inspect the diff, preserve user changes, and stage corrected files without unrelated formatting changes.
+- Run full pre-PR workflows only when explicitly requested. If the user indicates they are about to create a PR without requesting checks, ask whether to run them. Do not repeat them after each prompt.
+- Pre-PR command: `pnpm prepr`. It runs the site lint and production build; run `pnpm test` and the affected vendored package's `lint` separately.
 
 Documentation is repository-authored MDX under `content/docs/<locale>/`:
 
@@ -57,6 +69,10 @@ Documentation is repository-authored MDX under `content/docs/<locale>/`:
 - `scripts/build-search-index.mjs` indexes the local docs at build time.
 - No documentation content is fetched from an external service; deployments only need the repository.
 - Articles and legal documents remain repository-authored.
+- Do not create unrelated scripts or documentation. Remove files created only for temporary verification after checks complete.
+- Agent intermediate and archived artifacts — plans, specs, worklogs and captured evidence — belong in the ignored `.agents/plans/` and nowhere else, with descriptive filenames so a later session can find the plan it needs and restore that work's context. Never stage them with `git add -f` or otherwise bypass `.gitignore`; repository content is for code, configuration and maintained documentation.
+- Avoid heading comments such as `=== Helper methods ===`. Use doc comments where helpful; add inline comments only when necessary to explain non-obvious behavior.
+- Preserve exact source whitespace when editing; do not copy tool line numbers or display markers into source.
 
 ## Design and UI
 
