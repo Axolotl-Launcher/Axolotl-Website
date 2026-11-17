@@ -1,6 +1,6 @@
 # Axolotl Website
 
-This repository is the official Axolotl Launcher website. It is a Nuxt 4 static site using Vue 3, Tailwind CSS v3, and the shared UI and asset packages vendored under `packages/`. pnpm workspaces (`pnpm-workspace.yaml`) link the site at the repository root to those packages. Use spaces, never tabs.
+This repository is the official Axolotl Launcher website. It is a Nuxt 4 static site using Vue 3, Tailwind CSS v3, and the shared UI and asset packages vendored under `packages/`. pnpm workspaces (`pnpm-workspace.yaml`) link the site at the repository root to those packages. Indent with spaces only: four for source, two for JSON, YAML and Markdown.
 
 The launcher itself (desktop app, release pipeline and the announcement catalog) lives in [Axolotl-Launcher/Axolotl](https://github.com/Axolotl-Launcher/Axolotl). This site was extracted from its `apps/website` directory.
 
@@ -8,12 +8,13 @@ The launcher itself (desktop app, release pipeline and the announcement catalog)
 
 Read the applicable instruction files before editing, even when your session starts at the repository root. Root rules apply everywhere; more specific files refine rules for their subtree. Links are relative to the file containing them.
 
-| Changed area                                   | Read                                                           |
-| ---------------------------------------------- | -------------------------------------------------------------- |
-| Shared UI, layouts and DI contracts            | [packages/ui/AGENTS.md](packages/ui/AGENTS.md)                 |
-| API client                                     | [packages/api-client/AGENTS.md](packages/api-client/AGENTS.md) |
-| Any frontend implementation                    | [Frontend development](standards/frontend/DEVELOPMENT.md)      |
-| Agent instructions, Skills or their validation | [.agents/AGENTS.md](.agents/AGENTS.md)                         |
+| Changed area                                             | Read                                                           |
+| -------------------------------------------------------- | -------------------------------------------------------------- |
+| Shared UI, layouts and DI contracts                      | [packages/ui/AGENTS.md](packages/ui/AGENTS.md)                 |
+| API client                                               | [packages/api-client/AGENTS.md](packages/api-client/AGENTS.md) |
+| Any frontend implementation                              | [Frontend development](standards/frontend/DEVELOPMENT.md)      |
+| Agent instructions, Skills or their validation           | [.agents/AGENTS.md](.agents/AGENTS.md)                         |
+| Agent delivery: commits, pushes, PRs, reviews, archiving | [REVIEW.md](REVIEW.md)                                         |
 
 ## Development
 
@@ -47,6 +48,7 @@ The website has its own locale integration. Inspect `src/locales/` and the consu
 
 ## Verification and Commits
 
+- **Read [REVIEW.md](REVIEW.md) before committing, pushing, opening a pull request or reviewing a change.** It is the single home for the delivery workflow: commit and trailer conventions, push preconditions, pull request content, review expectations and archiving. The rules in this section remain in force and refine it.
 - Every commit created by an Agent must use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `<type>[optional scope][!]: <description>`. This applies to ordinary commits, amended messages, merge commits, squash commits and reverts; replace Git's default message when necessary. Do not rewrite existing history just to normalize messages.
 - Use a lowercase type matching the change: `feat`, `fix`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `style` or `revert`. Use a concise scope when useful (for example `website`, `ui` or `agents`), and describe the actual change. Mark breaking changes with `!` or a `BREAKING CHANGE:` footer; explain their impact in the body.
 - Never add `[skip ci]` to a commit that changes `releases/`, the site, its dependencies or its build: it also suppresses the deployment that a release-data push triggers. These message rules do not authorize a commit or history rewrite by themselves.
@@ -58,6 +60,7 @@ The website has its own locale integration. Inspect `src/locales/` and the consu
 ## Global Safeguards
 
 - Do not create unrelated scripts or documentation. Remove files created only for temporary verification after checks complete.
+- Agent intermediate and archived artifacts — plans, specs, worklogs and captured evidence — belong in the ignored `.agents/plans/` and nowhere else, with descriptive filenames so a later session can find the plan it needs and restore that work's context. Never stage them with `git add -f` or otherwise bypass `.gitignore`; repository content is for code, configuration and maintained documentation.
 - Avoid heading comments such as `=== Helper methods ===`. Use doc comments where helpful; add inline comments only when necessary to explain non-obvious behavior.
 - Preserve exact source whitespace when editing; do not copy tool line numbers or display markers into source.
 

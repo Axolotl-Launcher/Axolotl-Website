@@ -38,6 +38,9 @@ packages/tooling-config/script-utils/import-sort.js
 **/test-results/
 **/playwright-report/
 
+# Agent intermediate and archived artifacts (plans, specs, worklogs, evidence); see REVIEW.md.
+/.agents/plans/
+
 # Local agent/scratch caches; keep maintained instructions and Skills tracked.
 /.agents/tmp/
 /.agents/cache/
