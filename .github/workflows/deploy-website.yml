@@ -15,6 +15,10 @@ on:
 permissions:
   contents: read
 
+env:
+  NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID }}
+  NUXT_STUDIO_AUTH_GITHUB_MODERATORS: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_MODERATORS }}
+
 concurrency:
   group: website-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -96,7 +100,7 @@ jobs:
         uses: crate-ci/typos@6ac2ebd1b93eade61faf7e12688ad87a073fea59 # v1.46.0
 
   build:
-    name: Build static website
+    name: Build website
     needs: prepare
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -115,18 +119,18 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Generate static website on GitHub
+      - name: Build website
         env:
-          NITRO_PRESET: static
           # Looks up the launcher's latest stable release for its web demo package.
           GITHUB_TOKEN: ${{ github.token }}
         run: pnpm build
-      - name: Verify prerendered website
+      - name: Verify website output
         run: |
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
-          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'search-index.json', 'blog-index.json', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'blog/terms/index.html', 'blog/privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
+          assert(fs.existsSync('.output/server/index.mjs'), 'Missing Nitro server entry: .output/server/index.mjs')
+          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'search-index.json', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'blog/terms/index.html', 'blog/privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
             assert(fs.existsSync(`.output/public/${page}`), `Missing prerendered page: ${page}`)
           }
           const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))
@@ -144,11 +148,11 @@ jobs:
           path: .output/link-checker-report.*
           if-no-files-found: ignore
           retention-days: 7
-      - name: Save static website artifact
+      - name: Save website artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: website-static-${{ github.run_id }}
-          path: .output/public/
+          name: website-build-${{ github.run_id }}
+          path: .output/
           include-hidden-files: true
           retention-days: 7
           if-no-files-found: error
@@ -182,13 +186,13 @@ jobs:
               deploy=true
             elif [[ "$EVENT_NAME" == 'push' ]]; then
               if [[ "$BEFORE" == '0000000000000000000000000000000000000000' ]]; then
-                changed=$(git ls-tree -r --name-only "$AFTER" -- releases/ app/ content/ i18n/ public/ server/ shared/ scripts/ content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
+                changed=$(git ls-tree -r --name-only "$AFTER" -- releases/ app/ content/ deploy/ i18n/ public/ server/ shared/ scripts/ content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
               else
                 if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
                   git fetch --no-tags --depth=1 origin "$BEFORE" || true
                 fi
                 if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-                  changed=$(git diff --name-only "$BEFORE" "$AFTER" -- releases/ app/ content/ i18n/ public/ server/ shared/ scripts/ content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
+                  changed=$(git diff --name-only "$BEFORE" "$AFTER" -- releases/ app/ content/ deploy/ i18n/ public/ server/ shared/ scripts/ content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
                 else
                   echo '::warning::The pre-push commit is unavailable after a history rewrite. Automatic deployment is skipped; run this workflow with force-deploy to publish.'
                   changed=''
@@ -206,7 +210,7 @@ jobs:
     needs: [prepare, build, decide-deployment]
     if: needs.decide-deployment.outputs.deploy == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Configure SSH private-key authentication
         env:
@@ -257,11 +261,40 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.sha }}
           persist-credentials: false
-      - name: Download static website artifact
+      - name: Download website artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: website-static-${{ github.run_id }}
-          path: .output/public/
+          name: website-build-${{ github.run_id }}
+          path: .output/
+      - name: Sync Studio environment from repository variables
+        env:
+          STUDIO_CLIENT_ID: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID }}
+          STUDIO_CLIENT_SECRET: ${{ secrets.NUXT_STUDIO_AUTH_GITHUB_CLIENT_SECRET }}
+          STUDIO_MODERATORS: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_MODERATORS }}
+          STUDIO_SESSION_SECRET: ${{ secrets.NUXT_STUDIO_AUTH_SESSION_SECRET }}
+        run: |
+          set -euo pipefail
+          for value in \
+            "$STUDIO_CLIENT_ID" \
+            "$STUDIO_CLIENT_SECRET" \
+            "$STUDIO_MODERATORS" \
+            "$STUDIO_SESSION_SECRET"; do
+            if [[ -z "$value" ]]; then
+              echo '::error::Missing Studio repository variable or secret.'
+              exit 1
+            fi
+            if [[ "$value" == *$'\n'* ]]; then
+              echo '::error::Studio values must be single-line.'
+              exit 1
+            fi
+          done
+          umask 077
+          env_file="$RUNNER_TEMP/studio.env"
+          printf 'NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID=%s\nNUXT_STUDIO_AUTH_GITHUB_CLIENT_SECRET=%s\nNUXT_STUDIO_AUTH_GITHUB_MODERATORS=%s\nNUXT_STUDIO_AUTH_SESSION_SECRET=%s\n' \
+            "$STUDIO_CLIENT_ID" "$STUDIO_CLIENT_SECRET" "$STUDIO_MODERATORS" "$STUDIO_SESSION_SECRET" > "$env_file"
+          ssh_config="$RUNNER_TEMP/website-ssh/config"
+          scp -F "$ssh_config" "$env_file" "website:/www/wwwroot/axlmc.org/studio.env"
+          ssh -F "$ssh_config" website "chmod 600 /www/wwwroot/axlmc.org/studio.env"
       - name: Upload and activate prebuilt website
         env:
           SOURCE_SHA: ${{ needs.prepare.outputs.sha }}
@@ -273,7 +306,7 @@ jobs:
           ssh -F "$ssh_config" website "umask 022; mkdir -p '$release_directory'"
           rsync -rptz --chmod=D755,F644 \
             -e "ssh -F $ssh_config" \
-            .output/public/ "website:$release_directory/"
+            .output/ "website:$release_directory/"
           ssh -F "$ssh_config" website "bash -s -- '$release_id'" < scripts/activate-website.sh
       - name: Remove SSH credentials
         if: always()

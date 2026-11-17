@@ -56,8 +56,8 @@ function dismiss() {
 
 <template>
   <div
-    v-if="!dismissed && current"
-    class="relative rounded-card border border-border bg-surface-1 p-3 select-none"
+    v-if="!dismissed && sponsors.length"
+    class="relative rounded-card border border-border bg-surface-1 px-3 pt-3 pb-10 select-none"
     @mouseenter="paused = true"
     @mouseleave="paused = false"
     @focusin="paused = true"
@@ -75,60 +75,57 @@ function dismiss() {
     <p class="pr-7 font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
       {{ t('sponsors.docs') }}
     </p>
-    <Transition name="sponsor-fade" mode="out-in">
-      <a :key="current.id" :href="current.url" target="_blank" rel="sponsored noopener noreferrer" class="mt-2 block">
+    <!--
+      Every sponsor occupies the same grid cell. The grid sizes that cell to
+      the tallest copy, so rotating the carousel changes opacity only and never
+      changes the card's height.
+    -->
+    <div class="mt-2 grid">
+      <a
+        v-for="(sponsor, sponsorIndex) in sponsors"
+        :key="sponsor.id"
+        :href="sponsor.url"
+        target="_blank"
+        rel="sponsored noopener noreferrer"
+        class="col-start-1 row-start-1 block transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
+        :class="sponsorIndex === index ? 'translate-x-0 opacity-100' : 'pointer-events-none -translate-x-2 opacity-0'"
+        :aria-hidden="sponsorIndex !== index ? 'true' : undefined"
+        :tabindex="sponsorIndex !== index ? -1 : undefined"
+      >
         <img
-          :src="current.logo"
-          :alt="current.name"
+          :src="sponsor.logo"
+          :alt="sponsor.name"
           width="120"
           height="30"
           loading="lazy"
           decoding="async"
           class="h-7 w-auto max-w-[7.5rem] opacity-80 dark:brightness-0 dark:invert"
         />
-        <span class="mt-2 line-clamp-3 block text-micro leading-relaxed text-fg-muted">{{ current.description }}</span>
-        <span class="mt-2 inline-flex items-center gap-1 text-micro font-semibold text-accent-strong">
-          {{ t('sponsors.visit') }} →
-        </span>
+        <span class="mt-2 line-clamp-3 block text-micro leading-relaxed text-fg-muted">{{ sponsor.description }}</span>
       </a>
-    </Transition>
-    <div v-if="sponsors.length > 1" class="mt-2 flex items-center gap-1">
-      <button
-        v-for="(sponsor, dotIndex) in sponsors"
-        :key="sponsor.id"
-        type="button"
-        class="size-1.5 rounded-full transition-colors"
-        :class="dotIndex === index ? 'bg-accent' : 'bg-border hover:bg-border-strong'"
-        :aria-label="t('sponsors.showSponsor', { n: dotIndex + 1 })"
-        :aria-current="dotIndex === index ? 'true' : undefined"
-        @click="select(dotIndex)"
-      />
+    </div>
+    <div class="pointer-events-none absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
+      <a
+        v-if="current"
+        :href="current.url"
+        target="_blank"
+        rel="sponsored noopener noreferrer"
+        class="pointer-events-auto inline-flex items-center gap-1 text-micro font-semibold text-accent-strong"
+      >
+        {{ t('sponsors.visit') }} →
+      </a>
+      <div v-if="sponsors.length > 1" class="pointer-events-auto flex items-center gap-1">
+        <button
+          v-for="(sponsor, dotIndex) in sponsors"
+          :key="sponsor.id"
+          type="button"
+          class="size-1.5 rounded-full transition-colors"
+          :class="dotIndex === index ? 'bg-accent' : 'bg-border hover:bg-border-strong'"
+          :aria-label="t('sponsors.showSponsor', { n: dotIndex + 1 })"
+          :aria-current="dotIndex === index ? 'true' : undefined"
+          @click="select(dotIndex)"
+        />
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.sponsor-fade-enter-active,
-.sponsor-fade-leave-active {
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
-}
-
-.sponsor-fade-enter-from {
-  opacity: 0;
-  transform: translateX(8px);
-}
-
-.sponsor-fade-leave-to {
-  opacity: 0;
-  transform: translateX(-8px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sponsor-fade-enter-active,
-  .sponsor-fade-leave-active {
-    transition: none;
-  }
-}
-</style>

@@ -1,6 +1,6 @@
 ---
 title: "浏览与搜索"
-description: "<table <tbody <tr <td"
+description: "按内容类型、加载器和关键词，快速找到需要的模组、整合包与资源。"
 locale: "zh-CN"
 slug: "browse-search"
 group: "使用指南"
@@ -102,11 +102,11 @@ updatedAt: "2026-08-13T05:47:38.000Z"
 
 顶部搜索框输入关键词就能搜，比如：
 
-- 想加小地图 → 搜 \&\#34;小地图\&\#34; 或 \&\#34;minimap\&\#34;
+- 想加小地图 → 搜 “小地图” 或 “minimap”
 
-- 想玩科技模组 → 搜 \&\#34;机械动力\&\#34; 或 \&\#34;create\&\#34;
+- 想玩科技模组 → 搜 “机械动力” 或 “create”
 
-- 想玩空岛 → 搜 \&\#34;空岛\&\#34; 或 \&\#34;skyblock\&\#34;
+- 想玩空岛 → 搜 “空岛” 或 “skyblock”
 
 搜索会同时显示 Modrinth 和 CurseForge 两个平台的结果。
 

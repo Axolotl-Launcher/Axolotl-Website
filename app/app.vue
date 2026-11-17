@@ -2,11 +2,11 @@
 const config = useRuntimeConfig()
 const umami = config.public.umami
 
-// Cookie-less page-view analytics. The snippet is only emitted when a
-// website id is configured, so previews and local builds can opt out.
+// Cookie-less page-view analytics. The snippet is only emitted when a website
+// id is configured and never in development, so local consoles stay clean.
 useHead({
   script:
-    umami?.enabled && umami.websiteId
+    !import.meta.dev && umami?.enabled && umami.websiteId
       ? [
           {
             src: umami.scriptUrl,

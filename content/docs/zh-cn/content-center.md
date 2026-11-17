@@ -1,6 +1,6 @@
 ---
 title: "内容中心"
-description: "想装模组、装整合包？都在 浏览 \\(Browse\\) 页面，这里聚合了全球两大模组平台的内容："
+description: "想装模组、装整合包？都在浏览（Browse）页面，这里聚合了全球两大模组平台的内容："
 locale: "zh-CN"
 slug: "content-center"
 group: "使用指南"

@@ -4,13 +4,13 @@ import { extname, join, normalize, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 /**
- * A dependency-free static server for the generated site.
+ * A dependency-free static server for the prerendered public pages.
  *
  * Page-level tests must observe the artifact that ships, not a dev server: a dev
  * server renders unminified styles, injects its own client, and serves whatever
  * is in memory, so a passing run there says nothing about the built output. The
- * static preset produces `.output/public` with no server entry point, which is
- * why `nuxi preview` cannot serve it.
+ * public pages are written to `.output/public`; Studio and the admin routes need
+ * the Nitro server and are covered separately.
  */
 
 const WEBSITE_DIR = fileURLToPath(new URL('..', import.meta.url))
@@ -22,7 +22,7 @@ const PORT = 4173
 
 if (!existsSync(join(ROOT, 'index.html'))) {
   console.error(
-    `The static site is missing at ${ROOT}.\n` +
+    `The prerendered site is missing at ${ROOT}.\n` +
       'Page-level tests run against the build output, so build it first:\n' +
       '  pnpm build',
   )

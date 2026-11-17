@@ -15,14 +15,24 @@ function launcherDemoEntry() {
   return version ? `/launcher-demo/${version}/demo/index.html` : ''
 }
 
-/** Latest blog versions, read from the index generated before Nuxt starts. */
+/** Public blog routes, one per canonical Markdown file. */
 function blogPostRoutes() {
-  const file = fileURLToPath(new URL('./public/blog-index.json', import.meta.url))
-  if (!existsSync(file)) return []
-  const { posts } = JSON.parse(readFileSync(file, 'utf8')) as {
-    posts: { slug: string; locale: string }[]
-  }
-  return posts.flatMap((post) => (post.locale === 'zh-CN' ? [`/blog/${post.slug}`] : [`/en/blog/${post.slug}`]))
+  const base = fileURLToPath(new URL('./content/blog', import.meta.url))
+  if (!existsSync(base)) return []
+
+  return (
+    [
+      ['zh-cn', '/blog'],
+      ['en-us', '/en/blog'],
+    ] as const
+  ).flatMap(([directory, prefix]) => {
+    const path = join(base, directory)
+    if (!existsSync(path)) return []
+    return readdirSync(path)
+      .filter((name) => name.endsWith('.md'))
+      .filter((name) => !/^draft:\s*true\s*$/m.test(readFileSync(join(path, name), 'utf8')))
+      .map((name) => `${prefix}/${name.slice(0, -3)}`)
+  })
 }
 
 export default defineNuxtConfig({
@@ -52,6 +62,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/devtools',
     '@nuxtjs/device',
+    '@nuxt/content',
+    'nuxt-studio',
     '@nuxtjs/i18n',
     '@nuxtjs/seo',
     '@nuxt/image',
@@ -78,6 +90,31 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      // Vite discovers these on first use in development. Listing them keeps
+      // the optimizer from re-bundling and reloading the page mid-session.
+      include: [
+        '@comark/vue',
+        '@comark/vue/parse',
+        '@comark/vue/plugins/shiki',
+        '@comark/vue/plugins/toc',
+        'dayjs',
+        'dayjs/locale/zh-cn',
+        'dayjs/plugin/localizedFormat',
+        'dayjs/plugin/relativeTime',
+        'dayjs/plugin/timezone',
+        'dayjs/plugin/utc',
+        'minisearch',
+        'nuxt > @nuxt/devtools > @vitejs/devtools-kit/client',
+        'nuxt > @nuxt/devtools > error-stack-parser-es',
+        'nuxt > @nuxt/devtools > vite-plugin-vue-devtools/client',
+        'nuxt > @nuxt/devtools > vite-plugin-vue-tracer/client/overlay',
+        'swiper/vue',
+        'tailwind-merge',
+        'tippy.js',
+        'verkit',
+      ],
+    },
   },
 
   app: {
@@ -92,9 +129,52 @@ export default defineNuxtConfig({
     },
   },
 
+  hooks: {
+    // Nuxt Content derives page paths from the file location, which includes
+    // the locale directory. Studio previews documents at their `path`, so map
+    // those internal paths to the actual public routes.
+    'content:file:afterParse'(ctx) {
+      const content = ctx.content as Record<string, unknown>
+      const stem = typeof content.stem === 'string' ? content.stem : ''
+      const locale = typeof content.locale === 'string' ? content.locale : ''
+      const [collection, directory, ...rest] = stem.split('/')
+      const slug = rest.join('/')
+      if (!slug || (directory !== 'zh-cn' && directory !== 'en-us')) return
+      const prefix = locale === 'en-US' || directory === 'en-us' ? '/en' : ''
+      if (collection === 'docs') content.path = `${prefix}/docs/${slug}`
+      else if (collection === 'blog') content.path = `${prefix}/blog/${slug}`
+    },
+  },
+
   linkChecker: {
     failOnError: true,
+    // Studio is served by Node and requires a session, so it is neither
+    // prerendered nor inspectable during the static scan.
+    excludeLinks: ['/_studio', '/_studio/**', '/__nuxt_studio/**'],
+    excludePages: ['/_studio/**', '/__nuxt_studio/**'],
     report: { json: true, markdown: true },
+  },
+
+  studio: {
+    route: '/_studio',
+    repository: {
+      provider: 'github',
+      owner: 'Axolotl-Launcher',
+      repo: 'Axolotl-Website',
+      branch: 'main',
+      private: true,
+    },
+    // Studio's own UI locale codes are its bundled editor locales, not the
+    // site's content locales. It ships `zh`, not `zh-CN`; passing `zh-CN` makes
+    // its lazy loader request a missing `../locales/zh-CN.json`.
+    i18n: { defaultLocale: 'zh' },
+    git: { commit: { messagePrefix: 'content:' } },
+  },
+
+  routeRules: {
+    '/_studio': { ssr: true, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+    '/_studio/**': { ssr: true, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+    '/__nuxt_studio/**': { ssr: true, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
   },
 
   i18n: {
@@ -182,12 +262,12 @@ export default defineNuxtConfig({
 
   robots: {
     allow: '/',
-    disallow: ['/api/'],
+    disallow: ['/api/', '/_studio', '/_studio/', '/__nuxt_studio/'],
   },
 
   sitemap: {
     autoLastmod: true,
-    exclude: ['/api/**'],
+    exclude: ['/api/**', '/_studio/**', '/__nuxt_studio/**'],
   },
 
   schemaOrg: {
@@ -217,10 +297,12 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'static',
     prerender: {
       crawlLinks: true,
       failOnError: true,
+      // Studio needs a live Nitro server and an authenticated request; it must
+      // never be rendered into the static output.
+      ignore: ['/_studio', '/_studio/**', '/__nuxt_studio/**'],
       routes: [
         '/',
         '/en',
@@ -246,6 +328,8 @@ export default defineNuxtConfig({
         '/en/blog/privacy',
         ...blogPostRoutes(),
         '/llms.txt',
+        '/robots.txt',
+        '/sitemap_index.xml',
         '/api/support/checkout/coffee.json',
         '/api/support/checkout/token.json',
         '/api/support/checkout/custom.json',

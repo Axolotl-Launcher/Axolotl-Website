@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
  *
  * nuxt-link-checker only inspects `<a href>` links, so it cannot catch a missing
  * `img.src`, `srcset` candidate, CSS `url()`, or an `og:image` in a meta tag.
- * This guard closes that gap after `nuxt generate` has written `.output/public`.
+ * This guard closes that gap after `nuxt build` has written `.output/public`.
  */
 
 const root = fileURLToPath(new URL('..', import.meta.url))

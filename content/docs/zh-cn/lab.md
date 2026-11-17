@@ -1,6 +1,6 @@
 ---
 title: "实验室"
-description: "实验室 \\(Lab\\) 是 Axolotl 内置的实用工具箱。"
+description: "实验室（Lab）是 Axolotl 内置的实用工具箱。"
 locale: "zh-CN"
 slug: "lab"
 group: "使用指南"

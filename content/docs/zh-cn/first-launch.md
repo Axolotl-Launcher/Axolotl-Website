@@ -1,6 +1,6 @@
 ---
 title: "快速上手"
-description: "装好 Axolotl 之后，跟着这三篇就能开玩啦！\\(・ω・\\)ノ"
+description: "装好 Axolotl 之后，跟着这三篇就能开玩啦！（・ω・）ノ"
 locale: "zh-CN"
 slug: "first-launch"
 group: "开始使用"

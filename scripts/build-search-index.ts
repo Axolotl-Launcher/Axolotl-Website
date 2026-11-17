@@ -63,31 +63,6 @@ for (const [directory, fallbackLocale] of [
   }
 }
 
-for (const [directory, fallbackLocale] of [
-  ['zh-cn', 'zh-CN'],
-  ['en-us', 'en-US'],
-]) {
-  const articleDirectory = path.join(root, 'content/articles', directory)
-  if (!fs.existsSync(articleDirectory)) continue
-
-  for (const entry of fs.readdirSync(articleDirectory)) {
-    if (!entry.endsWith('.md')) continue
-    const raw = fs.readFileSync(path.join(articleDirectory, entry), 'utf8')
-    const { data, body } = parseFrontmatter(raw)
-    if (data.draft === 'true') continue
-    const slug = entry.replace(/\.md$/, '')
-    documents.push({
-      id: `article:${data.locale ?? fallbackLocale}:${slug}`,
-      type: 'article',
-      locale: data.locale ?? fallbackLocale,
-      title: data.title ?? slug,
-      description: data.description ?? '',
-      body: stripMarkdown(body).slice(0, 6000),
-      url: `/articles/${slug}`,
-    })
-  }
-}
-
 const index = new MiniSearch({
   fields: ['title', 'description', 'body'],
   storeFields: ['title', 'description', 'url', 'locale', 'type'],

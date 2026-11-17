@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 /**
- * Frontmatter shared by documentation pages and articles. Blog versions are
- * indexed separately by `scripts/build-blog-index.ts`.
+ * Frontmatter shared by documentation pages and articles. Blog posts use the
+ * Nuxt Content `blog` collection and are rendered directly from the collection.
  */
 export const contentFrontmatterSchema = z
   .object({

@@ -1,24 +1,27 @@
-export interface BlogVersion {
-  timestamp: number
+export const BLOG_CONTENT_DIRECTORIES = {
+  'zh-CN': 'zh-cn',
+  'en-US': 'en-us',
+} as const
+
+export type BlogContentLocale = keyof typeof BLOG_CONTENT_DIRECTORIES
+
+/** A canonical blog post. Previous revisions live in Git, not extra files. */
+export interface BlogPost {
+  id: string
+  path: string
+  stem: string
+  slug: string
+  locale: BlogContentLocale
   title: string
   description: string
+  publishedAt: string
+  updatedAt: string
   authors: string[]
   tags: string[]
   cover?: string | null
-  body: string
-  isUpdate: boolean
+  draft: boolean
   sponsored: boolean
-}
-
-export interface BlogPost {
-  slug: string
-  locale: string
-  versions: BlogVersion[]
-}
-
-export interface BlogVersionEntry extends BlogVersion {
-  slug: string
-  latest: boolean
+  rawbody?: string
 }
 
 export const BLOG_MAIN_AUTHOR = {
@@ -33,7 +36,7 @@ export const BLOG_MAIN_AUTHOR = {
 export const BLOG_LICENSE = {
   name: 'CC BY-SA 4.0',
   url: 'https://creativecommons.org/licenses/by-sa/4.0/',
-  image: 'https://licensebuttons.net/l/by-sa/4.0/88x31.png',
+  image: '/licenses/by-sa-4.0.png',
 } as const
 
 export function blogCoauthor(name: string) {
@@ -42,4 +45,9 @@ export function blogCoauthor(name: string) {
     avatar: '/axolotl.png',
     roleKey: 'blog.coAuthorRole',
   }
+}
+
+/** `blog/zh-cn/first-launch` -> `first-launch` */
+export function blogSlug(stem: string) {
+  return stem.split('/').filter(Boolean).at(-1) ?? ''
 }

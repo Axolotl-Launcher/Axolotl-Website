@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 /**
- * Page-level tests for the static site.
+ * Page-level tests for the prerendered public pages.
  *
  * These exercise the built site as a visitor sees it: server output, the inline
  * theme script and hydration. Only a real document load can observe a mismatch

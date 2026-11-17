@@ -294,6 +294,7 @@
     "emptyHint": "维护者：在 content/docs 中添加 Markdown 文档。",
     "onThisPage": "本页目录",
     "updatedAt": "更新于 {date}",
+    "edit": "编辑",
     "translationFallback": "此页尚无对应语言版本，当前显示中文原文。",
     "notFound": "未找到该文档",
     "backToDocs": "返回文档",
@@ -311,9 +312,7 @@
     "lead": "开发日志、排错记录与长期维护笔记。",
     "timeline": "更新与发布",
     "updated": "更新",
-    "history": "历史快照",
-    "historyNotice": "你正在查看这篇文章的历史快照。",
-    "viewLatest": "查看最新版本",
+    "edit": "编辑",
     "mainAuthor": "主要作者",
     "byline": "作者",
     "tags": "标签",
@@ -333,13 +332,7 @@
     "notFound": "文章不存在",
     "empty": "暂无博客文章。",
     "indexTitle": "博客",
-    "articleIndex": "文章索引",
-    "latestUpdate": "最新更新",
     "readMore": "阅读全文",
-    "allArticles": "所有文章",
-    "versions": "全部版本",
-    "versionsTitle": "版本历史",
-    "versionsLead": "这篇文章的所有历史快照。",
-    "backToArticle": "返回文章"
+    "allArticles": "所有文章"
   }
 }

@@ -294,6 +294,7 @@
     "emptyHint": "Maintainers: add Markdown documents under content/docs.",
     "onThisPage": "On this page",
     "updatedAt": "Updated {date}",
+    "edit": "Edit",
     "translationFallback": "This page has no translation yet; the Chinese original is shown.",
     "notFound": "Document not found",
     "backToDocs": "Back to docs",
@@ -311,9 +312,7 @@
     "lead": "Development notes, troubleshooting write-ups and long-term maintenance logs.",
     "timeline": "Updates and releases",
     "updated": "Updated",
-    "history": "History snapshot",
-    "historyNotice": "You are viewing a historical snapshot of this article.",
-    "viewLatest": "View the latest version",
+    "edit": "Edit",
     "mainAuthor": "Main author",
     "byline": "By",
     "tags": "Tags",
@@ -333,13 +332,7 @@
     "notFound": "Article not found",
     "empty": "No blog posts yet.",
     "indexTitle": "Blog",
-    "articleIndex": "Article index",
-    "latestUpdate": "Latest update",
     "readMore": "Read the article",
-    "allArticles": "All articles",
-    "versions": "All versions",
-    "versionsTitle": "Version history",
-    "versionsLead": "Every historical snapshot of this article.",
-    "backToArticle": "Back to article"
+    "allArticles": "All articles"
   }
 }

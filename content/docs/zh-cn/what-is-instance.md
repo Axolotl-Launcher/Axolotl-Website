@@ -1,6 +1,6 @@
 ---
 title: "什么是实例"
-description: "实例 \\(Instance\\) 是 Axolotl 的核心概念，用大白话讲："
+description: "实例（Instance）是 Axolotl 的核心概念，用大白话讲："
 locale: "zh-CN"
 slug: "what-is-instance"
 group: "使用指南"
@@ -119,7 +119,7 @@ updatedAt: "2026-08-13T05:47:31.000Z"
 
 ## 游戏库页面
 
-**游戏库 \(Library\)** 就是所有实例的\&\#34;总览大厅\&\#34;，在这里：
+**游戏库 \(Library\)** 就是所有实例的“总览大厅”，在这里：
 
 - **概览**：看到所有实例，点一下就能启动
 

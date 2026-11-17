@@ -1,6 +1,6 @@
 ---
 title: "创建与导入导出"
-description: "在首页点 创建 \\(Create\\) ："
+description: "在首页点创建（Create）："
 locale: "zh-CN"
 slug: "instance-transfer"
 group: "使用指南"

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { MarkdownDocument } from '@comark/vue'
-import { LOCALE_DIRECTORIES } from '#shared/types/docs'
-import { content } from '~/utils/content'
+import { parseMarkdown as parseComark } from '@comark/vue/parse'
+import shiki from '@comark/vue/plugins/shiki'
+import toc from '@comark/vue/plugins/toc'
 
 const route = useRoute()
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const site = useSiteConfig()
+const { studioPath, prepareStudio } = useStudioEdit()
 
 const contentLocale = computed(() => toContentLocale(locale.value))
 const slug = computed(() => {
@@ -17,18 +19,35 @@ const slug = computed(() => {
 const { data } = await useAsyncData(
   () => `doc-${contentLocale.value}-${slug.value}`,
   async () => {
-    if (!slug.value) return { page: null, fallback: false }
+    if (!slug.value) return { page: null, fallback: false, document: null }
 
-    const directory = LOCALE_DIRECTORIES[contentLocale.value]
-    const primary = await content.get(`/docs/${directory}/${slug.value}`)
-    if (primary) return { page: primary, fallback: false }
-
-    if (contentLocale.value !== 'zh-CN') {
-      const original = await content.get(`/docs/zh-cn/${slug.value}`)
-      if (original) return { page: original, fallback: true }
+    const primary = await queryCollection('docs')
+      .where('locale', '=', contentLocale.value)
+      .where('slug', '=', slug.value)
+      .first()
+    if (primary) {
+      return {
+        page: primary,
+        fallback: false,
+        document: await parseComark(primary.rawbody ?? '', { plugins: [toc(), shiki()] }),
+      }
     }
 
-    return { page: null, fallback: false }
+    if (contentLocale.value !== 'zh-CN') {
+      const original = await queryCollection('docs')
+        .where('locale', '=', 'zh-CN')
+        .where('slug', '=', slug.value)
+        .first()
+      if (original) {
+        return {
+          page: original,
+          fallback: true,
+          document: await parseComark(original.rawbody ?? '', { plugins: [toc(), shiki()] }),
+        }
+      }
+    }
+
+    return { page: null, fallback: false, document: null }
   },
   { watch: [contentLocale, slug] },
 )
@@ -41,8 +60,9 @@ interface TocLink {
 }
 
 const page = computed(() => data.value?.page ?? null)
+const document = computed(() => data.value?.document ?? null)
+const tocLinks = computed(() => (document.value?.meta?.toc as { links?: TocLink[] } | undefined)?.links ?? [])
 const fallback = computed(() => data.value?.fallback ?? false)
-const tocLinks = computed(() => (page.value?.meta?.toc as { links?: TocLink[] } | undefined)?.links ?? [])
 
 if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: t('docs.notFound') })
@@ -51,10 +71,10 @@ if (!page.value) {
 const canonical = computed(() => `${site.url}${localePath({ path: docsPath(locale.value, slug.value) })}`)
 
 useSeoMeta({
-  title: () => (page.value ? `${page.value.data.title}` : t('docs.notFound')),
-  description: () => page.value?.data.description ?? '',
+  title: () => (page.value ? `${page.value.title}` : t('docs.notFound')),
+  description: () => page.value?.description ?? '',
   ogType: 'article',
-  articleModifiedTime: () => page.value?.data.updatedAt,
+  articleModifiedTime: () => page.value?.updatedAt,
 })
 
 useHead(() => ({
@@ -65,10 +85,10 @@ useHead(() => ({
       innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'TechArticle',
-        headline: page.value?.data.title,
-        description: page.value?.data.description,
+        headline: page.value?.title,
+        description: page.value?.description,
         inLanguage: contentLocale.value,
-        dateModified: page.value?.data.updatedAt,
+        dateModified: page.value?.updatedAt,
         mainEntityOfPage: canonical.value,
         publisher: { '@type': 'Organization', name: 'Axolotl Launcher', url: site.url },
       }),
@@ -77,22 +97,29 @@ useHead(() => ({
 }))
 
 const updatedLabel = computed(() => {
-  if (!page.value?.data.updatedAt) return ''
-  const date = new Date(page.value.data.updatedAt)
+  if (!page.value?.updatedAt) return ''
+  const date = new Date(page.value.updatedAt)
   if (Number.isNaN(date.getTime())) return ''
   return new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(date)
 })
 </script>
 
 <template>
-  <DocsShell v-if="page" :toc="tocLinks">
-    <article class="max-w-4xl">
-      <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">{{ page.data.group }}</p>
-      <h1 class="mt-4 text-section">{{ page.data.title }}</h1>
-      <p v-if="page.data.description" class="mt-4 text-lead text-fg-muted">{{ page.data.description }}</p>
+  <DocsShell v-if="page && document" :toc="tocLinks">
+    <article :data-content-id="page.id" class="max-w-4xl">
+      <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">{{ page.group }}</p>
+      <h1 class="mt-4 text-section">{{ page.title }}</h1>
+      <p v-if="page.description" class="mt-4 text-lead text-fg-muted">{{ page.description }}</p>
 
       <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-caption text-fg-subtle">
         <span v-if="updatedLabel">{{ t('docs.updatedAt', { date: updatedLabel }) }}</span>
+        <a
+          :href="studioPath"
+          class="ml-auto inline-flex items-center gap-1 font-semibold text-accent-strong"
+          @click="prepareStudio"
+        >
+          {{ t('docs.edit') }} →
+        </a>
       </div>
 
       <div
@@ -104,7 +131,7 @@ const updatedLabel = computed(() => {
       </div>
 
       <div class="docs-prose prose mt-9 max-w-none">
-        <MarkdownDocument :value="page" />
+        <MarkdownDocument :value="document" />
       </div>
     </article>
   </DocsShell>

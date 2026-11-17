@@ -55,17 +55,30 @@ watch(y, syncHeader)
 // The header CTA is a GitHub shortcut while the bar is expanded. Once the bar
 // collapses into its pill, the icon flips to a download arrow and the label
 // expands after the flip, so the wider pill does not pop in all at once.
+// Expanding reverses the sequence: the label collapses first, then the star
+// count mounts, so neither width change can hide the other's transition.
 const showLabel = ref(false)
+const labelMounted = ref(false)
+const showStars = ref(true)
 let labelTimer: ReturnType<typeof setTimeout> | undefined
+let starTimer: ReturnType<typeof setTimeout> | undefined
 
 watch(collapsed, (value) => {
   if (labelTimer) clearTimeout(labelTimer)
+  if (starTimer) clearTimeout(starTimer)
+
   if (value) {
+    showStars.value = false
+    labelMounted.value = true
     labelTimer = setTimeout(() => {
       showLabel.value = true
     }, 300)
   } else {
     showLabel.value = false
+    starTimer = setTimeout(() => {
+      labelMounted.value = false
+      showStars.value = true
+    }, 300)
   }
 })
 
@@ -74,6 +87,7 @@ useEventListener('resize', syncHeader)
 
 onBeforeUnmount(() => {
   if (labelTimer) clearTimeout(labelTimer)
+  if (starTimer) clearTimeout(starTimer)
 })
 
 const nav = computed(() => [
@@ -175,15 +189,17 @@ watch(
               />
             </span>
             <span
-              v-if="!collapsed && starText"
+              v-if="showStars && starText"
               class="ml-1.5 inline-flex items-center gap-1 text-micro font-medium text-fg-muted"
             >
               <Icon name="lucide:star" class="size-3.5 text-accent" aria-hidden="true" />
               <span class="tabular-nums">{{ starText }}</span>
             </span>
             <span
+              v-if="labelMounted"
               class="overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin-left] duration-300 ease-out"
               :class="showLabel ? 'ml-2 max-w-40 opacity-100' : 'max-w-0 opacity-0'"
+              :aria-hidden="showLabel ? undefined : 'true'"
             >
               {{ t('actions.download') }}
             </span>

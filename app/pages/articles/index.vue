@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { LOCALE_DIRECTORIES } from '#shared/types/docs'
-import { content } from '~/utils/content'
+import { blogSlug } from '~~/shared/blog'
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
@@ -8,27 +7,14 @@ const localePath = useLocalePath()
 const contentLocale = computed(() => toContentLocale(locale.value))
 const { data: articles } = await useAsyncData(
   () => `articles-index-${contentLocale.value}`,
-  async () => {
-    const directory = LOCALE_DIRECTORIES[contentLocale.value]
-    const entries = await content.list()
-    return entries
-      .filter((entry) => entry.path.startsWith(`/articles/${directory}/`) && entry.data.draft !== true)
-      .map((entry) => ({
-        path: entry.path,
-        title: entry.data.title ?? '',
-        description: entry.data.description ?? '',
-        cover: entry.data.cover ?? '',
-        publishedAt: entry.data.publishedAt ?? '',
-        tags: entry.data.tags ?? [],
-      }))
-      .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt))
-  },
+  () =>
+    queryCollection('blog')
+      .where('locale', '=', contentLocale.value)
+      .where('draft', '=', false)
+      .order('publishedAt', 'DESC')
+      .all(),
   { watch: [contentLocale] },
 )
-
-function articleSlug(path: string) {
-  return path.split('/').filter(Boolean).pop() ?? ''
-}
 
 function formatDate(value: string) {
   const date = new Date(value)
@@ -80,7 +66,7 @@ useSeoMeta({
           </div>
           <h2 class="mt-3 text-card font-semibold">
             <NuxtLink
-              :to="localePath({ path: `/blog/${articleSlug(article.path)}` })"
+              :to="localePath({ path: `/blog/${blogSlug(article.stem)}` })"
               class="after:absolute after:inset-0"
             >
               {{ article.title }}

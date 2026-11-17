@@ -14,7 +14,7 @@ const { t } = useI18n()
       :href="sponsor.url"
       target="_blank"
       rel="sponsored noopener noreferrer"
-      class="group relative isolate overflow-hidden rounded-panel border border-border bg-surface-1 p-6 transition-colors select-none hover:border-border-strong"
+      class="group relative isolate flex flex-col overflow-hidden rounded-panel border border-border bg-surface-1 p-6 transition-colors select-none hover:border-border-strong"
     >
       <span
         class="pointer-events-none absolute -top-12 -right-12 size-32 rounded-full bg-accent/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100"
@@ -31,7 +31,7 @@ const { t } = useI18n()
       />
       <h3 class="mt-5 text-card font-semibold">{{ sponsor.name }}</h3>
       <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ sponsor.description }}</p>
-      <span class="mt-4 inline-flex items-center gap-1 text-caption font-semibold text-accent-strong">
+      <span class="mt-auto inline-flex items-center gap-1 pt-4 text-caption font-semibold text-accent-strong">
         {{ t('sponsors.visit') }}
         <Icon
           name="lucide:arrow-up-right"
