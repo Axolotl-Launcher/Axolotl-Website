@@ -4,6 +4,8 @@ extend-exclude = [
   "patches/",
   "packages/utils/",
   "packages/ui/",
+  # Vendored contributor list contains usernames that look like typos.
+  "scripts/former-contributors.json",
 ]
 
 [default.extend-words]
