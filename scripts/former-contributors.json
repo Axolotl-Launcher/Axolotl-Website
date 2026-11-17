@@ -1,0 +1,1686 @@
+{
+  "cutoff": "7c4df7442b409c726714464c4e0c62365f56ad0a",
+  "until": "0bf3e9c0c370eda4b1a514bbefcfe08500b3d097",
+  "boundaryIncluded": false,
+  "includeCoauthors": true,
+  "contributorsBefore": 284,
+  "contributorsAfter": 65,
+  "total": 279,
+  "formerContributors": [
+    {
+      "name": "Geometrically",
+      "email": "18202329+Geometrically@users.noreply.github.com",
+      "commitsBefore": 755,
+      "login": "Geometrically"
+    },
+    {
+      "name": "Prospector",
+      "email": "6166773+Prospector@users.noreply.github.com",
+      "commitsBefore": 726,
+      "login": "Prospector"
+    },
+    {
+      "name": "Jai A",
+      "email": "jaiagr+gpg@pm.me",
+      "commitsBefore": 359,
+      "login": "Geometrically"
+    },
+    {
+      "name": "Jai A",
+      "email": "jai.a@tuta.io",
+      "commitsBefore": 197,
+      "login": "Geometrically"
+    },
+    {
+      "name": "Prospector",
+      "email": "prospectordev@gmail.com",
+      "commitsBefore": 185,
+      "login": "Prospector"
+    },
+    {
+      "name": "aecsocket",
+      "email": "aecsocket@tutanota.com",
+      "commitsBefore": 165,
+      "login": "aecsocket"
+    },
+    {
+      "name": "Calum H.",
+      "email": "contact@cal.engineer",
+      "commitsBefore": 150,
+      "login": "IMB11"
+    },
+    {
+      "name": "venashial",
+      "email": "venashial.levo@aleeas.com",
+      "commitsBefore": 145,
+      "login": "venashial"
+    },
+    {
+      "name": "Truman Gao",
+      "email": "106889354+tdgao@users.noreply.github.com",
+      "commitsBefore": 133,
+      "login": "tdgao"
+    },
+    {
+      "name": "Emma Alexia",
+      "email": "emma@modrinth.com",
+      "commitsBefore": 129,
+      "login": "triphora"
+    },
+    {
+      "name": "Wyatt Verchere",
+      "email": "wverchere@gmail.com",
+      "commitsBefore": 120,
+      "login": "thesuzerain"
+    },
+    {
+      "name": "Alejandro González",
+      "email": "7822554+AlexTMjugador@users.noreply.github.com",
+      "commitsBefore": 94,
+      "login": "AlexTMjugador"
+    },
+    {
+      "name": "triphora",
+      "email": "emmaffle@modrinth.com",
+      "commitsBefore": 87,
+      "login": "triphora"
+    },
+    {
+      "name": "IMB11",
+      "email": "hendersoncal117@gmail.com",
+      "commitsBefore": 79,
+      "login": "IMB11"
+    },
+    {
+      "name": "Sasha Sorokin",
+      "email": "10401817+brawaru@users.noreply.github.com",
+      "commitsBefore": 67,
+      "login": "brawaru"
+    },
+    {
+      "name": "Mysterious_Dev",
+      "email": "40738104+Mysterious-Dev@users.noreply.github.com",
+      "commitsBefore": 59,
+      "login": "Mysterious-Dev"
+    },
+    {
+      "name": "Adrian O.V",
+      "email": "83074853+CodexAdrian@users.noreply.github.com",
+      "commitsBefore": 56,
+      "login": "CodexAdrian"
+    },
+    {
+      "name": "Josiah Glosson",
+      "email": "soujournme@gmail.com",
+      "commitsBefore": 55,
+      "login": "Gaming32"
+    },
+    {
+      "name": "Michael H.",
+      "email": "michael@iptables.sh",
+      "commitsBefore": 45,
+      "login": "clrxbl"
+    },
+    {
+      "name": "Modrinth Bot",
+      "email": "106493074+modrinth-bot@users.noreply.github.com",
+      "commitsBefore": 40,
+      "login": "modrinth-bot"
+    },
+    {
+      "name": "Erb3",
+      "email": "49862976+Erb3@users.noreply.github.com",
+      "commitsBefore": 40,
+      "login": "piprett"
+    },
+    {
+      "name": "aecsocket",
+      "email": "43144841+aecsocket@users.noreply.github.com",
+      "commitsBefore": 30,
+      "login": "aecsocket"
+    },
+    {
+      "name": "Carter",
+      "email": "safe@fea.st",
+      "commitsBefore": 29,
+      "login": "darling"
+    },
+    {
+      "name": "coolbot",
+      "email": "76798835+coolbot100s@users.noreply.github.com",
+      "commitsBefore": 28,
+      "login": "coolbot100s"
+    },
+    {
+      "name": "Evan Song",
+      "email": "52982404+ferothefox@users.noreply.github.com",
+      "commitsBefore": 26,
+      "login": "ferothefox"
+    },
+    {
+      "name": "Redblueflame",
+      "email": "contact@redblueflame.com",
+      "commitsBefore": 26,
+      "login": "Redblueflame"
+    },
+    {
+      "name": "Aeledfyr",
+      "email": "45501007+Aeledfyr@users.noreply.github.com",
+      "commitsBefore": 25,
+      "login": "Aeledfyr"
+    },
+    {
+      "name": "Jerozgen",
+      "email": "jerozgen@gmail.com",
+      "commitsBefore": 24,
+      "login": "Jerozgen"
+    },
+    {
+      "name": "Norbiros",
+      "email": "norbiros@protonmail.com",
+      "commitsBefore": 20,
+      "login": "Norbiros"
+    },
+    {
+      "name": "Danielle Hutzley",
+      "email": "endergeryt@gmail.com",
+      "commitsBefore": 19,
+      "login": "enderger"
+    },
+    {
+      "name": "Zach Baird",
+      "email": "30800863+ZachBaird@users.noreply.github.com",
+      "commitsBefore": 18,
+      "login": "ZachBaird"
+    },
+    {
+      "name": "ThatGravyBoat",
+      "email": "gravy@thatgravyboat.tech",
+      "commitsBefore": 18,
+      "login": "ThatGravyBoat"
+    },
+    {
+      "name": "chaos",
+      "email": "72168435+qtchaos@users.noreply.github.com",
+      "commitsBefore": 17,
+      "login": "qtchaos"
+    },
+    {
+      "name": "ToBinio",
+      "email": "81473300+ToBinio@users.noreply.github.com",
+      "commitsBefore": 16,
+      "login": "ToBinio"
+    },
+    {
+      "name": "Sychic",
+      "email": "47618543+Sychic@users.noreply.github.com",
+      "commitsBefore": 14,
+      "login": "Sychic"
+    },
+    {
+      "name": "Creeperkatze",
+      "email": "178587183+Creeperkatze@users.noreply.github.com",
+      "commitsBefore": 13,
+      "login": ""
+    },
+    {
+      "name": "stairman06",
+      "email": "36215135+stairman06@users.noreply.github.com",
+      "commitsBefore": 13,
+      "login": "stairman06"
+    },
+    {
+      "name": "Nitrrine",
+      "email": "43351072+Nitrrine@users.noreply.github.com",
+      "commitsBefore": 13,
+      "login": "Nitrrine"
+    },
+    {
+      "name": "Arthur",
+      "email": "creeperkatze.dev@gmail.com",
+      "commitsBefore": 12,
+      "login": "creeperkatze"
+    },
+    {
+      "name": "tdgao",
+      "email": "mr.trumgao@gmail.com",
+      "commitsBefore": 12,
+      "login": ""
+    },
+    {
+      "name": "Zachary Baird",
+      "email": "zdb1994@yahoo.com",
+      "commitsBefore": 12,
+      "login": "ZachBaird"
+    },
+    {
+      "name": "BasiqueEvangelist",
+      "email": "basiqueevangelist@yandex.ru",
+      "commitsBefore": 11,
+      "login": "BasiqueEvangelist"
+    },
+    {
+      "name": "Jackson Kruger",
+      "email": "jak.kruger@gmail.com",
+      "commitsBefore": 11,
+      "login": "OmegaJak"
+    },
+    {
+      "name": "Magnus Jensen",
+      "email": "magnushjensen.mail@gmail.com",
+      "commitsBefore": 11,
+      "login": "MagnusHJensen"
+    },
+    {
+      "name": "Alejandro González",
+      "email": "me@alegon.dev",
+      "commitsBefore": 11,
+      "login": ""
+    },
+    {
+      "name": "Aeledfyr",
+      "email": "aeledfyr@gmail.com",
+      "commitsBefore": 10,
+      "login": "Aeledfyr"
+    },
+    {
+      "name": "Redblueflame",
+      "email": "redblueflame1@gmail.Com",
+      "commitsBefore": 10,
+      "login": "Redblueflame"
+    },
+    {
+      "name": "Arthur",
+      "email": "contact@creeperkatze.dev",
+      "commitsBefore": 9,
+      "login": "creeperkatze"
+    },
+    {
+      "name": "Mikhail Oleynikov",
+      "email": "falseresync@gmail.com",
+      "commitsBefore": 9,
+      "login": "falseresync"
+    },
+    {
+      "name": "Calum",
+      "email": "contact@mineblock11.dev",
+      "commitsBefore": 7,
+      "login": "IMB11"
+    },
+    {
+      "name": "AppleTheGolden",
+      "email": "scotsbox@protonmail.com",
+      "commitsBefore": 7,
+      "login": "Scotsguy"
+    },
+    {
+      "name": "Wyatt",
+      "email": "wyatt@modrinth.com",
+      "commitsBefore": 7,
+      "login": "thesuzerain"
+    },
+    {
+      "name": "he3als",
+      "email": "65787561+he3als@users.noreply.github.com",
+      "commitsBefore": 6,
+      "login": "he3als"
+    },
+    {
+      "name": "lumiscosity",
+      "email": "averyrudelphe@gmail.com",
+      "commitsBefore": 6,
+      "login": "lumiscosity"
+    },
+    {
+      "name": "jade",
+      "email": "jade@lilydev.com",
+      "commitsBefore": 6,
+      "login": "jadelily18"
+    },
+    {
+      "name": "nullptr",
+      "email": "62841684+not-nullptr@users.noreply.github.com",
+      "commitsBefore": 5,
+      "login": "not-nullptr"
+    },
+    {
+      "name": "Banzobotic",
+      "email": "78510207+Banzobotic@users.noreply.github.com",
+      "commitsBefore": 5,
+      "login": "Banzobotic"
+    },
+    {
+      "name": "Charalampos Fanoulis",
+      "email": "charalampos.fanoulis@gmail.com",
+      "commitsBefore": 5,
+      "login": "cfanoulis"
+    },
+    {
+      "name": "Emma",
+      "email": "emma@waffle.coffee",
+      "commitsBefore": 5,
+      "login": "triphora"
+    },
+    {
+      "name": "June",
+      "email": "khazoda@gmail.com",
+      "commitsBefore": 5,
+      "login": "khazoda"
+    },
+    {
+      "name": "leocth",
+      "email": "leocth31@gmail.com",
+      "commitsBefore": 5,
+      "login": ""
+    },
+    {
+      "name": "Mingxuan Ding",
+      "email": "lum27149@gmail.com",
+      "commitsBefore": 5,
+      "login": "IsQuyet"
+    },
+    {
+      "name": "MagnusHJensen",
+      "email": "magnus.holm.jensen@lego.dk",
+      "commitsBefore": 5,
+      "login": ""
+    },
+    {
+      "name": "Jakob",
+      "email": "minenash@protonmail.com",
+      "commitsBefore": 5,
+      "login": "Minenash"
+    },
+    {
+      "name": "modrinth-bot",
+      "email": "null",
+      "commitsBefore": 5,
+      "login": ""
+    },
+    {
+      "name": "Brady",
+      "email": "thatgravyboat@gmail.com",
+      "commitsBefore": 5,
+      "login": "ThatGravyBoat"
+    },
+    {
+      "name": "Evan Song",
+      "email": "theevansong@gmail.com",
+      "commitsBefore": 5,
+      "login": "ferothefox"
+    },
+    {
+      "name": "tobinio",
+      "email": "Tobias.frischmann1@gmail.com",
+      "commitsBefore": 5,
+      "login": "ToBinio"
+    },
+    {
+      "name": "Xander",
+      "email": "xander@isxander.dev",
+      "commitsBefore": 5,
+      "login": "isXander"
+    },
+    {
+      "name": "Younes",
+      "email": "younesbarraddev@gmail.com",
+      "commitsBefore": 5,
+      "login": "Flowko"
+    },
+    {
+      "name": "worldwidepixel",
+      "email": "58098422+worldwidepixel@users.noreply.github.com",
+      "commitsBefore": 4,
+      "login": "worldwidepixel"
+    },
+    {
+      "name": "Felix",
+      "email": "60808107+ItsFelix5@users.noreply.github.com",
+      "commitsBefore": 4,
+      "login": "ItsFelix5"
+    },
+    {
+      "name": "UbiOne",
+      "email": "70473378+ubionexd@users.noreply.github.com",
+      "commitsBefore": 4,
+      "login": "ubionexd"
+    },
+    {
+      "name": "jade",
+      "email": "74706690+jadelily18@users.noreply.github.com",
+      "commitsBefore": 4,
+      "login": "jadelily18"
+    },
+    {
+      "name": "frikinjay",
+      "email": "88995340+frikinjay@users.noreply.github.com",
+      "commitsBefore": 4,
+      "login": "frikinjay"
+    },
+    {
+      "name": "calum6541",
+      "email": "calumproh28@gmail.com",
+      "commitsBefore": 4,
+      "login": ""
+    },
+    {
+      "name": "Carter",
+      "email": "carter@unworthy.net",
+      "commitsBefore": 4,
+      "login": "darling"
+    },
+    {
+      "name": "Wuzado",
+      "email": "git@wuzado.com",
+      "commitsBefore": 4,
+      "login": "Wuzado"
+    },
+    {
+      "name": "Andre_601",
+      "email": "github@andre601.ch",
+      "commitsBefore": 4,
+      "login": "Andre601"
+    },
+    {
+      "name": "John Paul",
+      "email": "johnpaul122jpr@gmail.com",
+      "commitsBefore": 4,
+      "login": "John-Paul-R"
+    },
+    {
+      "name": "--global",
+      "email": "--global",
+      "commitsBefore": 3,
+      "login": ""
+    },
+    {
+      "name": "xinyihl",
+      "email": "1012737146@qq.com",
+      "commitsBefore": 3,
+      "login": "xinyihl"
+    },
+    {
+      "name": "checkrd",
+      "email": "194232000+raife-wh@users.noreply.github.com",
+      "commitsBefore": 3,
+      "login": "raife-wh"
+    },
+    {
+      "name": "dependabot-preview[bot]",
+      "email": "27856297+dependabot-preview[bot]@users.noreply.github.com",
+      "commitsBefore": 3,
+      "login": "dependabot-preview[bot]"
+    },
+    {
+      "name": "Awakened Redstone",
+      "email": "40528665+Awakened-Redstone@users.noreply.github.com",
+      "commitsBefore": 3,
+      "login": "Awakened-Redstone"
+    },
+    {
+      "name": "TheWander02",
+      "email": "48934424+thewander02@users.noreply.github.com",
+      "commitsBefore": 3,
+      "login": "thewander02"
+    },
+    {
+      "name": "Emma F.",
+      "email": "60205699+triphora@users.noreply.github.com",
+      "commitsBefore": 3,
+      "login": "triphora"
+    },
+    {
+      "name": "Adrian",
+      "email": "68704415+4drian3d@users.noreply.github.com",
+      "commitsBefore": 3,
+      "login": "4drian3d"
+    },
+    {
+      "name": "Tiziano",
+      "email": "69322987+T1xx1@users.noreply.github.com",
+      "commitsBefore": 3,
+      "login": "T1xx1"
+    },
+    {
+      "name": "Lio",
+      "email": "git@lio.cat",
+      "commitsBefore": 3,
+      "login": "fangmarks"
+    },
+    {
+      "name": "Evan Song",
+      "email": "hi@evan.graphics",
+      "commitsBefore": 3,
+      "login": "ferothefox"
+    },
+    {
+      "name": "Jai A",
+      "email": "jai@modrinth.com",
+      "commitsBefore": 3,
+      "login": "Geometrically"
+    },
+    {
+      "name": "Julian Vennen",
+      "email": "julian@aternos.org",
+      "commitsBefore": 3,
+      "login": "JulianVennen"
+    },
+    {
+      "name": "kevoh1516",
+      "email": "kevoh1516@gmail.com",
+      "commitsBefore": 3,
+      "login": "kohsine"
+    },
+    {
+      "name": "MulverineX",
+      "email": "mulverin3@gmail.com",
+      "commitsBefore": 3,
+      "login": "MulverineX"
+    },
+    {
+      "name": "Ken",
+      "email": "131881470+Keniis0712@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "Keniis0712"
+    },
+    {
+      "name": "Aaron Müller",
+      "email": "160637865+amueller0@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "amueller0"
+    },
+    {
+      "name": "MMK21Hub",
+      "email": "50421330+MMK21Hub@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "MMK21Hub"
+    },
+    {
+      "name": "DeDiamondPro",
+      "email": "67508414+DeDiamondPro@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "DeDiamondPro"
+    },
+    {
+      "name": "Ryan Cao",
+      "email": "70191398+ryanccn@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "ryanccn"
+    },
+    {
+      "name": "GreenTriangle",
+      "email": "71787934+m44ster@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "triangular2357"
+    },
+    {
+      "name": "ItsNiceCraft",
+      "email": "74358857+ItsNiceCraft@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "ItsNiceCraft"
+    },
+    {
+      "name": "TheBossMagnus",
+      "email": "92474350+TheBossMagnus@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "TheBossMagnus"
+    },
+    {
+      "name": "z0",
+      "email": "aervxa@gmail.com",
+      "commitsBefore": 2,
+      "login": "aervxa"
+    },
+    {
+      "name": "Colby Newman",
+      "email": "colby.newman2000@gmail.com",
+      "commitsBefore": 2,
+      "login": "parzivail"
+    },
+    {
+      "name": "Mikhail Oleynikov",
+      "email": "contact@falseresync.ru",
+      "commitsBefore": 2,
+      "login": ""
+    },
+    {
+      "name": "Zefir",
+      "email": "contact@zefir.pro",
+      "commitsBefore": 2,
+      "login": "zefir-git"
+    },
+    {
+      "name": "Corey Shupe",
+      "email": "coreyshupe101@gmail.com",
+      "commitsBefore": 2,
+      "login": "CoreyShupe"
+    },
+    {
+      "name": "François-X. T",
+      "email": "fetch@ferrous.ch",
+      "commitsBefore": 2,
+      "login": ""
+    },
+    {
+      "name": "Geometrically",
+      "email": "geometrically@Jais-MacBook-Pro.local",
+      "commitsBefore": 2,
+      "login": ""
+    },
+    {
+      "name": "Geometrically",
+      "email": "geometrically@pop-os.localdomain",
+      "commitsBefore": 2,
+      "login": ""
+    },
+    {
+      "name": "joaoh1",
+      "email": "joaoh1@users.noreply.github.com",
+      "commitsBefore": 2,
+      "login": "joaoh1"
+    },
+    {
+      "name": "Johan Novak",
+      "email": "johannovak7@gmail.com",
+      "commitsBefore": 2,
+      "login": "ImpossibleReality"
+    },
+    {
+      "name": "Julian Vennen",
+      "email": "julian@vennen.me",
+      "commitsBefore": 2,
+      "login": "JulianVennen"
+    },
+    {
+      "name": "Justsnoopy30",
+      "email": "justsnoopy30@gmail.com",
+      "commitsBefore": 2,
+      "login": "Justsnoopy30"
+    },
+    {
+      "name": "Matthew Reid",
+      "email": "merknicks11@gmail.com",
+      "commitsBefore": 2,
+      "login": "MattReid99"
+    },
+    {
+      "name": "Milan",
+      "email": "milan@petabyte.dev",
+      "commitsBefore": 2,
+      "login": ""
+    },
+    {
+      "name": "moehreag",
+      "email": "moehreag@gmail.com",
+      "commitsBefore": 2,
+      "login": "moehreag"
+    },
+    {
+      "name": "Essem",
+      "email": "smswessem@gmail.com",
+      "commitsBefore": 2,
+      "login": "TheEssem"
+    },
+    {
+      "name": "Sticks",
+      "email": "sticks@teamhydra.dev",
+      "commitsBefore": 2,
+      "login": "SticksDev"
+    },
+    {
+      "name": "Tiger",
+      "email": "tigercrl@icloud.com",
+      "commitsBefore": 2,
+      "login": "Tigercrl"
+    },
+    {
+      "name": "Emma",
+      "email": "wafflecoffee7@gmail.com",
+      "commitsBefore": 2,
+      "login": "triphora"
+    },
+    {
+      "name": "Johan Novak",
+      "email": "wickedtree@wickedtree.codes",
+      "commitsBefore": 2,
+      "login": ""
+    },
+    {
+      "name": "Ruby",
+      "email": "10256477+rubybb@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "ariesclark"
+    },
+    {
+      "name": "Antikyth",
+      "email": "104020300+Antikyth@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Antikyth"
+    },
+    {
+      "name": "maxomatic458",
+      "email": "104733404+maxomatic458@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "maxomatic458"
+    },
+    {
+      "name": "nekk",
+      "email": "108535017+iam-nekk@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "iam-nekk"
+    },
+    {
+      "name": "kolioaris",
+      "email": "111509679+kolioaris@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "kolioaris"
+    },
+    {
+      "name": "PixelBedrock",
+      "email": "113065795+PixelBedrock@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "PixelBedrock"
+    },
+    {
+      "name": "DJCheesusReal",
+      "email": "134006619+DJCheesusReal@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "kk",
+      "email": "138403498+kirushkinx@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "kirushkinx"
+    },
+    {
+      "name": "Kavi/o",
+      "email": "140896938+El-Kavio@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "El-Kavio"
+    },
+    {
+      "name": "NotchArrow",
+      "email": "149845992+NotchArrow@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "NotchArrow"
+    },
+    {
+      "name": "Silcean",
+      "email": "157026423+Silcean@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Silcean"
+    },
+    {
+      "name": "Sean O'Connor",
+      "email": "15949898+seaneoo@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "seaneoo"
+    },
+    {
+      "name": "Ryan Lauderbach",
+      "email": "16494880+Rayn322@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Rayn322"
+    },
+    {
+      "name": "Mr_chank",
+      "email": "180248271+chank-op@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Pendonym",
+      "email": "265675176+Pendonym@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Pendonym"
+    },
+    {
+      "name": "macbrayne",
+      "email": "27809595+macbrayne@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "macbrayne"
+    },
+    {
+      "name": "Ricky12Awesome",
+      "email": "29931568+Ricky12Awesome@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Ricky12Awesome"
+    },
+    {
+      "name": "thedarkcolour",
+      "email": "30441001+thedarkcolour@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "thedarkcolour"
+    },
+    {
+      "name": "Christian Popov",
+      "email": "30723811+Xrey274@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "George Tsotsos",
+      "email": "34042825+Geoxor@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Geoxor"
+    },
+    {
+      "name": "baka-gourd",
+      "email": "36119339+baka-gourd@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "baka-gourd"
+    },
+    {
+      "name": "Airyzz",
+      "email": "36567925+Airyzz@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Airyzz"
+    },
+    {
+      "name": "Ellemes",
+      "email": "3llemes@gmail.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Kir_Antipov",
+      "email": "40232067+Kir-Antipov@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Kira-NT"
+    },
+    {
+      "name": "Accieo",
+      "email": "42718776+Accieo@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Accieo"
+    },
+    {
+      "name": "Kevin Zheng",
+      "email": "4399kevin11@gmail.com",
+      "commitsBefore": 1,
+      "login": "SnowFireWolf"
+    },
+    {
+      "name": "Arbee",
+      "email": "45911516+Arbee4ever@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Arbee4ever"
+    },
+    {
+      "name": "maksimetny",
+      "email": "46288028+maksimetny@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "maksimetny"
+    },
+    {
+      "name": "un_pogaz",
+      "email": "46523284+un-pogaz@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "un-pogaz"
+    },
+    {
+      "name": "Owehttamy",
+      "email": "47429979+Owehttamy@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Owehttamy"
+    },
+    {
+      "name": "Panyu",
+      "email": "48863527+PanyuDev@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Corsican Frog",
+      "email": "49497194+acorsicanfrog@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "acorsicanfrog"
+    },
+    {
+      "name": "Erb3",
+      "email": "49862976+piprett@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "piprett"
+    },
+    {
+      "name": "circular",
+      "email": "50017673+circularsprojects@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Sisby",
+      "email": "55819817+sisby-folk@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "sleepingdragoninn"
+    },
+    {
+      "name": "pseudonym-2669",
+      "email": "55923733+pseudonym-2669@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "pseudonym-2669"
+    },
+    {
+      "name": "Ksawier Wilczynski",
+      "email": "57848442+KsawierWilczynski@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "KsawierWilczynski"
+    },
+    {
+      "name": "BD103",
+      "email": "59022059+BD103@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "BD103"
+    },
+    {
+      "name": "Lime",
+      "email": "59763878+code-lime@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "code-lime"
+    },
+    {
+      "name": "apersomany",
+      "email": "59863085+apersomany@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "apersomany"
+    },
+    {
+      "name": "HERO",
+      "email": "60427702+HEROshineMC@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "HEROshineMC"
+    },
+    {
+      "name": "Artyom Ezri",
+      "email": "61311568+Artezon@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Alistair Jenkins",
+      "email": "61797116+Bad-At-Usernames@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Bad-At-Usernames"
+    },
+    {
+      "name": "TheEpicBlock",
+      "email": "61842090+TheEpicBlock@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "TheEpicBlock"
+    },
+    {
+      "name": "Trash Panda",
+      "email": "63393079+trash-pandy@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "trash-pandy"
+    },
+    {
+      "name": "mooz",
+      "email": "63669478+mooziii@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "mooziii"
+    },
+    {
+      "name": "IlGrandeAnonimo",
+      "email": "65458792+ilgrandeanonimo@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "ilgrandeanonimo"
+    },
+    {
+      "name": "Kevin",
+      "email": "66999025+DAQEM@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "DAQEM"
+    },
+    {
+      "name": "Ben",
+      "email": "67504107+bjsho@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "shozed"
+    },
+    {
+      "name": "KTrain",
+      "email": "69028025+KTrain5169@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "KTrain5169"
+    },
+    {
+      "name": "shellawa",
+      "email": "69383963+shellawa@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "shellawa"
+    },
+    {
+      "name": "Bronchiopator",
+      "email": "70262842+Bronchiopator@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Konicai",
+      "email": "71294714+Konicai@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Konicai"
+    },
+    {
+      "name": "simonLeary42",
+      "email": "71396965+simonLeary42@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "simonLeary42"
+    },
+    {
+      "name": "ooffyy",
+      "email": "72337907+realooffyy@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "realooffyy"
+    },
+    {
+      "name": "boredomh1",
+      "email": "7559492+joaoh1@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "L4stIdi0t",
+      "email": "75753024+L4stIdi0t@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "L4stIdi0t"
+    },
+    {
+      "name": "Kxffie",
+      "email": "78885838+Kxffie@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "MrLiam2614",
+      "email": "79377342+MrLiam2614@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "MrLiam2614"
+    },
+    {
+      "name": "4JX",
+      "email": "79868816+4JX@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "4JX"
+    },
+    {
+      "name": "Miraculixx",
+      "email": "82050017+MiraculixxT@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "MiraculixxT"
+    },
+    {
+      "name": "DioEgizio",
+      "email": "83089242+DioEgizio@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "DioEgizio"
+    },
+    {
+      "name": "Martins Olumide",
+      "email": "83098692+Martins100-Tmd@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Martins100-Tmd"
+    },
+    {
+      "name": "bendy1234",
+      "email": "83143663+bendy1234@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "bendy1234"
+    },
+    {
+      "name": "AnotherPillow",
+      "email": "85362273+AnotherPillow@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "AnotherPillow"
+    },
+    {
+      "name": "Ennui Langeweile",
+      "email": "85590273+EnnuiL@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "EnnuiL"
+    },
+    {
+      "name": "HyperSoop",
+      "email": "85982640+HyperSoop@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Hythera",
+      "email": "87016780+Hythera@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Hythera"
+    },
+    {
+      "name": "AdamRaichu",
+      "email": "91494019+AdamRaichu@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "AdamRaichu"
+    },
+    {
+      "name": "mineblock11",
+      "email": "93472213+mineblock11@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "MIfoodie",
+      "email": "94649676+MIfoodie@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "MIfoodie"
+    },
+    {
+      "name": "Aaron Correa",
+      "email": "aaroncorrea7761@gmail.com",
+      "commitsBefore": 1,
+      "login": "aarcorrea"
+    },
+    {
+      "name": "Glare",
+      "email": "admin@glaremasters.me",
+      "commitsBefore": 1,
+      "login": "darbyjack"
+    },
+    {
+      "name": "PandaNinjas",
+      "email": "admin@malwarefight.gq",
+      "commitsBefore": 1,
+      "login": "pandaninjas"
+    },
+    {
+      "name": "PandaNinjas",
+      "email": "admin@malwarefight.wip.la",
+      "commitsBefore": 1,
+      "login": "pandaninjas"
+    },
+    {
+      "name": "KnifesmithCode",
+      "email": "alex.knifesmith@gmail.com",
+      "commitsBefore": 1,
+      "login": "KnifesmithCode"
+    },
+    {
+      "name": "Antti Ellilä",
+      "email": "antti@antti.codes",
+      "commitsBefore": 1,
+      "login": "Chicken"
+    },
+    {
+      "name": "Basil",
+      "email": "basil@basil.cafe",
+      "commitsBefore": 1,
+      "login": "gBasil"
+    },
+    {
+      "name": "Brayden Zee",
+      "email": "brayden@blueish.dev",
+      "commitsBefore": 1,
+      "login": "BlueZeeKing"
+    },
+    {
+      "name": "Liam Elliott",
+      "email": "business@liamelliott.co.uk",
+      "commitsBefore": 1,
+      "login": "Liam-Elliott"
+    },
+    {
+      "name": "Cassian Godsted",
+      "email": "cassian@godsted.com",
+      "commitsBefore": 1,
+      "login": "cassiancc"
+    },
+    {
+      "name": "Elizabeth",
+      "email": "checksum@pyro.host",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Robert",
+      "email": "contact.e3nk6@aleeas.com",
+      "commitsBefore": 1,
+      "login": "RobertRR11"
+    },
+    {
+      "name": "Bennett",
+      "email": "contact@bennettsh.de",
+      "commitsBefore": 1,
+      "login": "bennett-sh"
+    },
+    {
+      "name": "Patrick",
+      "email": "cryne@gmx.de",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Green",
+      "email": "dandelions@disroot.org",
+      "commitsBefore": 1,
+      "login": "greenwastaken"
+    },
+    {
+      "name": "Daniel Roe",
+      "email": "daniel@roe.dev",
+      "commitsBefore": 1,
+      "login": "danielroe"
+    },
+    {
+      "name": "devasMartins-Tmd",
+      "email": "dev.as.martins3@gmail.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Mr_chank",
+      "email": "dima.yt.chank@gmail.com",
+      "commitsBefore": 1,
+      "login": "chank-op"
+    },
+    {
+      "name": "Drew Chase",
+      "email": "drew.chase24@proton.me",
+      "commitsBefore": 1,
+      "login": "Drew-Chase"
+    },
+    {
+      "name": "Mysticdrew",
+      "email": "drewhaas@gmail.com",
+      "commitsBefore": 1,
+      "login": "mysticdrew"
+    },
+    {
+      "name": "Rayzeq",
+      "email": "dubrullezacharie@gmail.com",
+      "commitsBefore": 1,
+      "login": "Rayzeq"
+    },
+    {
+      "name": "Octelly",
+      "email": "eli@stefek.cz",
+      "commitsBefore": 1,
+      "login": "Octelly"
+    },
+    {
+      "name": "emilyploszaj",
+      "email": "emilyploszaj@gmail.com",
+      "commitsBefore": 1,
+      "login": "emilyploszaj"
+    },
+    {
+      "name": "evan",
+      "email": "evanmccarthy@outlook.com",
+      "commitsBefore": 1,
+      "login": "e-im"
+    },
+    {
+      "name": "FelixBrakel",
+      "email": "felixbrakel@quicknet.nl",
+      "commitsBefore": 1,
+      "login": "FelixBrakel"
+    },
+    {
+      "name": "fishstiz",
+      "email": "fishstickz7777@gmail.com",
+      "commitsBefore": 1,
+      "login": "fishstiz"
+    },
+    {
+      "name": "fxd",
+      "email": "fox@fxd.su",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Gamebuster",
+      "email": "Gamebuster19901@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Gamebuster19901"
+    },
+    {
+      "name": "0SoggyMustache0",
+      "email": "george@georgekazan.dev",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Florentin Schleuß",
+      "email": "git@macbrayne.de",
+      "commitsBefore": 1,
+      "login": "macbrayne"
+    },
+    {
+      "name": "Apricot",
+      "email": "hey@apricot.wtf",
+      "commitsBefore": 1,
+      "login": "Weredime"
+    },
+    {
+      "name": "aw",
+      "email": "i@alexander.systems",
+      "commitsBefore": 1,
+      "login": "a0ax"
+    },
+    {
+      "name": "Igor Bedesqui",
+      "email": "igorbedesqui@gmail.com",
+      "commitsBefore": 1,
+      "login": "bdsqqq"
+    },
+    {
+      "name": "MelanX",
+      "email": "info@melanx.de",
+      "commitsBefore": 1,
+      "login": "MelanX"
+    },
+    {
+      "name": "Siphalor",
+      "email": "info@siphalor.de",
+      "commitsBefore": 1,
+      "login": "Siphalor"
+    },
+    {
+      "name": "intergrav",
+      "email": "intergrav@proton.me",
+      "commitsBefore": 1,
+      "login": "intergrav"
+    },
+    {
+      "name": "Jai A",
+      "email": "jaiagr@pm.me",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "JakobDev",
+      "email": "jakobdev@gmx.de",
+      "commitsBefore": 1,
+      "login": "JakobDev"
+    },
+    {
+      "name": "Jamalam",
+      "email": "james@jamalam.tech",
+      "commitsBefore": 1,
+      "login": "Jamalam360"
+    },
+    {
+      "name": "Jamie Mansfield",
+      "email": "jamie.mansfield.jm@gmail.com",
+      "commitsBefore": 1,
+      "login": "jamierocks"
+    },
+    {
+      "name": "Jan Straßburger",
+      "email": "jan@strassburger.org",
+      "commitsBefore": 1,
+      "login": "KartoffelChipss"
+    },
+    {
+      "name": "Jeffrey Daniel",
+      "email": "jeffreydaniel2005@outlook.com",
+      "commitsBefore": 1,
+      "login": "jefdan"
+    },
+    {
+      "name": "Jonathan Romano",
+      "email": "jonathan@luxaritas.com",
+      "commitsBefore": 1,
+      "login": "luxaritas"
+    },
+    {
+      "name": "Joshua Samenfink",
+      "email": "joshua@razuuu.de",
+      "commitsBefore": 1,
+      "login": "Razuuu"
+    },
+    {
+      "name": "Juhan Oskar Hennoste",
+      "email": "juhanoskar@gmail.com",
+      "commitsBefore": 1,
+      "login": "FeldrinH"
+    },
+    {
+      "name": "Kaeden Murphy",
+      "email": "kmurphy@kaedenmurphy.dev",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "NZ-Linix",
+      "email": "linus.ordowski@outlook.com",
+      "commitsBefore": 1,
+      "login": "NZ-Linix"
+    },
+    {
+      "name": "Lynx",
+      "email": "lynx@ilynxcat.me",
+      "commitsBefore": 1,
+      "login": "iLynxcat"
+    },
+    {
+      "name": "Magnus Jensen",
+      "email": "magnus.holm.jensen@lego.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Mars",
+      "email": "mars@pupbrained.xyz",
+      "commitsBefore": 1,
+      "login": "xorwyrm"
+    },
+    {
+      "name": "Matias Koivikko",
+      "email": "matias.koivikko@gmail.com",
+      "commitsBefore": 1,
+      "login": "MattiDragon"
+    },
+    {
+      "name": "Max Henkel",
+      "email": "max@maxhenkel.de",
+      "commitsBefore": 1,
+      "login": "henkelmax"
+    },
+    {
+      "name": "Elizabeth",
+      "email": "me@checksum.space",
+      "commitsBefore": 1,
+      "login": "ChecksumDev"
+    },
+    {
+      "name": "IThundxr",
+      "email": "me@ithundxr.dev",
+      "commitsBefore": 1,
+      "login": "IThundxr"
+    },
+    {
+      "name": "Skye",
+      "email": "me@skye.vg",
+      "commitsBefore": 1,
+      "login": "vgskye"
+    },
+    {
+      "name": "venashial",
+      "email": "me@venashial.com",
+      "commitsBefore": 1,
+      "login": "venashial"
+    },
+    {
+      "name": "MikeyPants",
+      "email": "michael.a.hazan@gmail.com",
+      "commitsBefore": 1,
+      "login": "MikeyPantsOn"
+    },
+    {
+      "name": "Misode",
+      "email": "Misoloo64@gmail.com",
+      "commitsBefore": 1,
+      "login": "misode"
+    },
+    {
+      "name": "Gwenaël DENIEL",
+      "email": "monsieur.potatoes93@gmail.com",
+      "commitsBefore": 1,
+      "login": "Gouenaaa"
+    },
+    {
+      "name": "naqaden",
+      "email": "naqaden@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "naqaden"
+    },
+    {
+      "name": "Nicholas Christopher",
+      "email": "nchristopher@tuta.io",
+      "commitsBefore": 1,
+      "login": "n1ckoates"
+    },
+    {
+      "name": "not-nullptr",
+      "email": "needhelpwithrift@gmail.com",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Nicholis",
+      "email": "nicholis@truewinter.dev",
+      "commitsBefore": 1,
+      "login": "TrueWinter"
+    },
+    {
+      "name": "Nerjal Nosk",
+      "email": "nosk.nerjal@gmx.com",
+      "commitsBefore": 1,
+      "login": "NerjalNosk"
+    },
+    {
+      "name": "[object Object]",
+      "email": "objekt-Objekt@proton.me",
+      "commitsBefore": 1,
+      "login": "obj-obj"
+    },
+    {
+      "name": "Conrad Ludgate",
+      "email": "oon@conradludgate.com",
+      "commitsBefore": 1,
+      "login": "conradludgate"
+    },
+    {
+      "name": "Pulsar Programmer",
+      "email": "programingcoder101@gmail.com",
+      "commitsBefore": 1,
+      "login": "Pulsar-Programmer"
+    },
+    {
+      "name": "ramidzkh",
+      "email": "ramidzkh@gmail.com",
+      "commitsBefore": 1,
+      "login": "ramidzkh"
+    },
+    {
+      "name": "Rick South",
+      "email": "rick@natamus.com",
+      "commitsBefore": 1,
+      "login": "ricksouth"
+    },
+    {
+      "name": "Arbee",
+      "email": "robin.baenecke@mail.de",
+      "commitsBefore": 1,
+      "login": "Arbee4ever"
+    },
+    {
+      "name": "Daniel (rotgruengelb)",
+      "email": "rotgrungelblab@gmail.com",
+      "commitsBefore": 1,
+      "login": "rotgruengelb"
+    },
+    {
+      "name": "teaSummer",
+      "email": "see_tea@outlook.com",
+      "commitsBefore": 1,
+      "login": "teaSummer"
+    },
+    {
+      "name": "Siphalor",
+      "email": "Siphalor@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "Siphalor"
+    },
+    {
+      "name": "beansquared",
+      "email": "starskillz13@gmail.com",
+      "commitsBefore": 1,
+      "login": "beans-squared"
+    },
+    {
+      "name": "masecla22",
+      "email": "supermasecla22@gmail.com",
+      "commitsBefore": 1,
+      "login": "masecla22"
+    },
+    {
+      "name": "Sven",
+      "email": "sven@neddo.dev",
+      "commitsBefore": 1,
+      "login": "neddoo"
+    },
+    {
+      "name": "sticks",
+      "email": "tanner@teamhydra.dev",
+      "commitsBefore": 1,
+      "login": ""
+    },
+    {
+      "name": "Blodhgarm",
+      "email": "timekeeperguild@gmail.com",
+      "commitsBefore": 1,
+      "login": "Dragon-Seeker"
+    },
+    {
+      "name": "tippfehlr",
+      "email": "tippfehlr@tippfehlr.dev",
+      "commitsBefore": 1,
+      "login": "tippfehlr"
+    },
+    {
+      "name": "jebibot",
+      "email": "tjebibot@gmail.com",
+      "commitsBefore": 1,
+      "login": "jebibot"
+    },
+    {
+      "name": "Tom Martin",
+      "email": "tom.martin1239@gmail.com",
+      "commitsBefore": 1,
+      "login": "NotStirred"
+    },
+    {
+      "name": "venashial",
+      "email": "venashial@users.noreply.github.com",
+      "commitsBefore": 1,
+      "login": "venashial"
+    },
+    {
+      "name": "Zefir",
+      "email": "will.duncan.nn+github@gmail.com",
+      "commitsBefore": 1,
+      "login": "zefir-git"
+    },
+    {
+      "name": "Xander",
+      "email": "xandersmith2008@gmail.com",
+      "commitsBefore": 1,
+      "login": "isXander"
+    },
+    {
+      "name": "Younes",
+      "email": "younes.barrad@77diamonds.com",
+      "commitsBefore": 1,
+      "login": "Flowko"
+    }
+  ],
+  "repository": "Axolotl-Launcher/Axolotl"
+}

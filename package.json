@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "test": "node --test \"src/**/*.test.ts\"",
-    "build": "node scripts/fetch-launcher-demo.mjs && nuxi generate",
-    "dev": "node scripts/fetch-launcher-demo.mjs && nuxi dev",
-    "generate": "node scripts/fetch-launcher-demo.mjs && nuxi generate",
+    "build": "node scripts/fetch-launcher-demo.mjs && node scripts/generate-contributors.mjs && nuxi generate",
+    "dev": "node scripts/fetch-launcher-demo.mjs && node scripts/generate-contributors.mjs && nuxi dev",
+    "generate": "node scripts/fetch-launcher-demo.mjs && node scripts/generate-contributors.mjs && nuxi generate",
     "preview": "nuxi preview",
     "postinstall": "nuxi prepare",
     "lint": "eslint . && prettier --check .",
