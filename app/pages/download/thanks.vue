@@ -359,18 +359,23 @@ useSeoMeta({
       <section class="mx-auto mt-14 max-w-[58rem]">
         <h2 class="text-center text-card font-semibold">{{ t('download.thanksNext') }}</h2>
         <div class="mt-5 grid gap-3 sm:grid-cols-3">
+          <!--
+            Cards stretch to the tallest sibling and push their own link to the
+            bottom, so "Read the docs" sits in the same corner on every card
+            instead of tracking the length of the description above it.
+          -->
           <NuxtLink
             v-for="stepItem in steps"
             :key="stepItem.title"
             :to="stepItem.to"
-            class="group rounded-card border border-border bg-surface-1 p-5 text-left transition-colors hover:border-border-strong"
+            class="group flex flex-col rounded-card border border-border bg-surface-1 p-5 text-left transition-colors hover:border-border-strong"
           >
             <span class="grid size-9 place-items-center rounded-btn bg-accent/10 text-accent">
               <Icon :name="stepItem.icon" class="size-4" aria-hidden="true" />
             </span>
             <h3 class="mt-4 text-caption font-semibold">{{ stepItem.title }}</h3>
             <p class="mt-1 text-caption leading-relaxed text-fg-muted">{{ stepItem.body }}</p>
-            <span class="mt-3 inline-flex items-center gap-1 text-caption font-semibold text-accent-strong">
+            <span class="mt-auto inline-flex items-center gap-1 pt-3 text-caption font-semibold text-accent-strong">
               {{ t('download.thanksDocs') }}
               <Icon
                 name="lucide:arrow-right"
