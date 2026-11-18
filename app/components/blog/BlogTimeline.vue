@@ -43,13 +43,15 @@ function formatDate(value: string) {
         <NuxtLink
           :to="link(post)"
           class="block rounded-btn px-2 py-1.5 transition-colors"
-          :class="isActive(post) ? 'bg-accent-soft text-accent' : 'text-fg-muted hover:bg-surface-2 hover:text-fg'"
+          :class="
+            isActive(post) ? 'bg-accent-soft text-accent-strong' : 'text-fg-muted hover:bg-surface-2 hover:text-fg'
+          "
         >
           <span class="flex items-center justify-between gap-2 text-micro text-fg-subtle">
             <time :datetime="post.publishedAt">{{ formatDate(post.publishedAt) }}</time>
             <span
               v-if="isUpdated(post)"
-              class="rounded-pill bg-accent/10 px-1.5 py-0.5 text-[0.625rem] font-semibold text-accent"
+              class="rounded-pill bg-accent/10 px-1.5 py-0.5 text-micro font-semibold text-accent-strong"
             >
               {{ t('blog.updated') }}
             </span>

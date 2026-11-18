@@ -51,7 +51,7 @@ useHead({
     </ul>
     <p>
       这些偏好保存在浏览器 Cookie 或 localStorage 中，你可通过浏览器设置清除。语言选择通过 URL 前缀（例如
-      /en）表达，不写入 Cookie。网站不使用广告 Cookie；页面访问统计由 Umami Cloud 提供，该服务不使用
+      /en）表达，不写入 Cookie。网站不使用广告 Cookie；如部署方启用页面访问统计，使用 Umami（可自托管），该服务不使用
       Cookie，仅记录汇总的访问信息（例如页面路径、来源、浏览器与操作系统、国家或地区），用于了解网站使用情况。页头的
       GitHub 星标数通过 GitHub 公共 API
       获取。站内搜索使用构建时生成的本地索引（MiniSearch），查询不会发送给第三方搜索服务；文档以本地
@@ -88,7 +88,7 @@ useHead({
       地址、设备和网络请求信息。可能涉及的服务包括：
     </p>
     <ul>
-      <li>Umami Cloud（页面访问统计）；</li>
+      <li>Umami（可选的页面访问统计，仅在部署方启用时加载）；</li>
       <li>Microsoft 和 Minecraft 的登录、资料及游戏服务；</li>
       <li>你选择的第三方 Yggdrasil 认证服务；</li>
       <li>Modrinth、CurseForge 及内容作者提供的 API 和下载地址；</li>
@@ -163,15 +163,15 @@ useHead({
     <p>
       These preferences are stored in browser cookies or localStorage and can be cleared through your browser settings.
       Language is expressed through the URL prefix (for example, /en) and is not stored in a cookie. The website uses no
-      advertising cookies. Page-view analytics are provided by Umami Cloud, which uses no cookies and records only
-      aggregated visit information such as page paths, referrers, browser and operating system, and country or region to
-      understand site usage. The GitHub star count in the header is fetched from GitHub's public API. Site search uses a
-      locally built MiniSearch index, so queries are not sent to a third-party search service. Documentation is stored
-      as local MDC files in the repository and rendered at build time; visiting the website does not connect to an
-      external knowledge base. The download page reads the User-Agent in the browser to detect the operating system and
-      recommend a build; the website does not upload that information separately. When you choose a support tier, the
-      site API obtains an Afdian checkout link and redirects you; Afdian processes the payment, and this site does not
-      store payment information.
+      advertising cookies. Where the operator enables page-view analytics, they are provided by Umami (self-hostable),
+      which uses no cookies and records only aggregated visit information such as page paths, referrers, browser and
+      operating system, and country or region to understand site usage. The GitHub star count in the header is fetched
+      from GitHub's public API. Site search uses a locally built MiniSearch index, so queries are not sent to a
+      third-party search service. Documentation is stored as local MDC files in the repository and rendered at build
+      time; visiting the website does not connect to an external knowledge base. The download page reads the User-Agent
+      in the browser to detect the operating system and recommend a build; the website does not upload that information
+      separately. When you choose a support tier, the site API obtains an Afdian checkout link and redirects you; Afdian
+      processes the payment, and this site does not store payment information.
     </p>
     <p>
       Website hosting and network infrastructure providers may process routine request information such as IP addresses,
@@ -212,7 +212,7 @@ useHead({
       operation. Services that may be involved include:
     </p>
     <ul>
-      <li>Umami Cloud for page-view analytics;</li>
+      <li>Umami for optional page-view analytics, loaded only when the operator enables it;</li>
       <li>Microsoft and Minecraft sign-in, profile, and game services;</li>
       <li>Third-party Yggdrasil authentication services you choose;</li>
       <li>APIs and download addresses provided by Modrinth, CurseForge, and content authors;</li>

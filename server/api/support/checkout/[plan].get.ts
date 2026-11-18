@@ -1,4 +1,8 @@
 import { createHash } from 'node:crypto'
+
+import { createError, defineEventHandler, getRouterParam, setHeader } from 'h3'
+import { useRuntimeConfig } from 'nitropack/runtime'
+
 import { getSupportPlan } from '#shared/support'
 
 type Validation = 'skipped' | 'valid' | 'invalid' | 'unavailable'

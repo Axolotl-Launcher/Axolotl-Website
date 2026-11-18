@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLocalStorage, useMediaQuery } from '@vueuse/core'
+import { useIntersectionObserver, useLocalStorage, useMediaQuery } from '@vueuse/core'
 import type { Sponsor } from '~/types/sponsors'
 
 const props = withDefaults(
@@ -13,13 +13,25 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+const root = ref<HTMLElement>()
 const paused = ref(false)
+const visible = ref(true)
 const index = ref(props.sponsors.length ? props.startIndex % props.sponsors.length : 0)
 const current = computed(() => props.sponsors[index.value] ?? null)
 const storageId = computed(() => `axolotl:sponsor-dismissed:${props.storageKey}`)
+// Both documentation sponsor cards use the same key, so dismissing one hides
+// both; VueUse syncs same-tab instances through its custom storage event.
 const dismissed = useLocalStorage(storageId, false)
 const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
 let timer: ReturnType<typeof setInterval> | undefined
+
+useIntersectionObserver(
+  root,
+  ([entry]) => {
+    visible.value = entry?.isIntersecting ?? true
+  },
+  { threshold: 0 },
+)
 
 function stopTimer() {
   if (timer) {
@@ -33,7 +45,8 @@ function startTimer() {
   if (dismissed.value || props.sponsors.length < 2) return
   if (reducedMotion.value) return
   timer = setInterval(() => {
-    if (!paused.value && !dismissed.value) {
+    // Offscreen cards do not rotate.
+    if (!paused.value && !dismissed.value && visible.value) {
       index.value = (index.value + 1) % props.sponsors.length
     }
   }, 6000)
@@ -57,6 +70,7 @@ function dismiss() {
 <template>
   <div
     v-if="!dismissed && sponsors.length"
+    ref="root"
     class="relative rounded-card border border-border bg-surface-1 px-3 pt-3 pb-10 select-none"
     @mouseenter="paused = true"
     @mouseleave="paused = false"
@@ -72,7 +86,7 @@ function dismiss() {
     >
       <Icon name="lucide:x" class="size-3.5" aria-hidden="true" />
     </button>
-    <p class="pr-7 font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+    <p class="eyebrow pr-7 text-fg-subtle">
       {{ t('sponsors.docs') }}
     </p>
     <!--
@@ -104,7 +118,7 @@ function dismiss() {
         <span class="mt-2 line-clamp-3 block text-micro leading-relaxed text-fg-muted">{{ sponsor.description }}</span>
       </a>
     </div>
-    <div class="pointer-events-none absolute inset-x-3 bottom-3 flex items-center justify-between gap-3">
+    <div class="pointer-events-none absolute inset-x-3 bottom-2.5 flex items-center justify-between gap-3">
       <a
         v-if="current"
         :href="current.url"
@@ -114,17 +128,22 @@ function dismiss() {
       >
         {{ t('sponsors.visit') }} →
       </a>
-      <div v-if="sponsors.length > 1" class="pointer-events-auto flex items-center gap-1">
+      <div v-if="sponsors.length > 1" class="pointer-events-auto -mr-1.5 flex items-center">
         <button
           v-for="(sponsor, dotIndex) in sponsors"
           :key="sponsor.id"
           type="button"
-          class="size-1.5 rounded-full transition-colors"
-          :class="dotIndex === index ? 'bg-accent' : 'bg-border hover:bg-border-strong'"
+          class="grid size-6 place-items-center rounded-full"
           :aria-label="t('sponsors.showSponsor', { n: dotIndex + 1 })"
           :aria-current="dotIndex === index ? 'true' : undefined"
           @click="select(dotIndex)"
-        />
+        >
+          <span
+            class="size-1.5 rounded-full transition-colors"
+            :class="dotIndex === index ? 'bg-accent' : 'bg-border'"
+            aria-hidden="true"
+          />
+        </button>
       </div>
     </div>
   </div>

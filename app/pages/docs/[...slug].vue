@@ -8,7 +8,7 @@ const route = useRoute()
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const site = useSiteConfig()
-const { studioPath, prepareStudio } = useStudioEdit()
+const { studioPath, prepareStudio, canEdit } = useStudioEdit()
 
 const contentLocale = computed(() => toContentLocale(locale.value))
 const slug = computed(() => {
@@ -107,13 +107,14 @@ const updatedLabel = computed(() => {
 <template>
   <DocsShell v-if="page && document" :toc="tocLinks">
     <article :data-content-id="page.id" class="max-w-4xl">
-      <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">{{ page.group }}</p>
+      <p class="eyebrow text-accent-strong">{{ page.group }}</p>
       <h1 class="mt-4 text-section">{{ page.title }}</h1>
       <p v-if="page.description" class="mt-4 text-lead text-fg-muted">{{ page.description }}</p>
 
       <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-caption text-fg-subtle">
         <span v-if="updatedLabel">{{ t('docs.updatedAt', { date: updatedLabel }) }}</span>
         <a
+          v-if="canEdit"
           :href="studioPath"
           class="ml-auto inline-flex items-center gap-1 font-semibold text-accent-strong"
           @click="prepareStudio"

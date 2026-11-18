@@ -9,7 +9,7 @@ const localePath = useLocalePath()
 const route = useRoute()
 const site = useSiteConfig()
 const { sponsors } = useSponsors()
-const { studioPath, prepareStudio } = useStudioEdit()
+const { studioPath, prepareStudio, canEdit } = useStudioEdit()
 
 const contentLocale = computed(() => toContentLocale(locale.value))
 const slug = computed(() => {
@@ -136,8 +136,8 @@ useHead(() => ({
   <div class="site-container site-container--wide py-10 sm:py-14">
     <div class="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)] xl:grid-cols-[15rem_minmax(0,1fr)_16rem] xl:gap-12">
       <aside class="hidden lg:block">
-        <div class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
-          <p class="font-mono text-micro font-semibold tracking-[0.18em] text-fg-subtle uppercase">
+        <div class="scroll-area sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
+          <p class="eyebrow text-fg-subtle">
             {{ t('blog.timeline') }}
           </p>
           <BlogTimeline class="mt-4" :posts="posts" />
@@ -145,7 +145,7 @@ useHead(() => ({
       </aside>
 
       <div class="min-w-0">
-        <details class="mb-6 rounded-panel border border-border bg-surface-1 p-4 lg:hidden">
+        <details class="group mb-6 rounded-panel border border-border bg-surface-1 p-4 lg:hidden">
           <summary class="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold">
             {{ t('blog.timeline') }}
             <Icon name="lucide:chevron-down" class="size-4 transition-transform group-open:rotate-180" />
@@ -156,11 +156,11 @@ useHead(() => ({
         <article v-if="post && document" :data-content-id="post.id" class="mx-auto max-w-3xl">
           <header>
             <div class="flex flex-wrap items-center justify-between gap-3">
-              <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+              <p class="eyebrow text-accent-strong">
                 {{ t('blog.eyebrow') }}
               </p>
               <NuxtLink
-                :to="localePath({ path: '/articles' })"
+                :to="localePath({ path: '/blog' })"
                 class="inline-flex items-center gap-1 text-caption font-semibold text-accent-strong"
               >
                 {{ t('blog.allArticles') }} →
@@ -174,10 +174,11 @@ useHead(() => ({
               </span>
               <span aria-hidden="true">·</span>
               <time :datetime="post.publishedAt">{{ publishedText }}</time>
-              <span v-if="isUpdated" class="rounded-pill bg-accent/10 px-2 py-0.5 font-semibold text-accent">
+              <span v-if="isUpdated" class="rounded-pill bg-accent/10 px-2 py-0.5 font-semibold text-accent-strong">
                 {{ t('blog.updated') }} {{ updatedText }}
               </span>
               <a
+                v-if="canEdit"
                 :href="studioPath"
                 class="ml-auto inline-flex items-center gap-1 font-semibold text-accent-strong"
                 @click="prepareStudio"
@@ -191,7 +192,7 @@ useHead(() => ({
             <Markdown :value="post.rawbody ?? ''" :plugins="[shiki()]" />
           </div>
           <footer v-if="post.tags.length" class="mt-12 border-t border-divider pt-6">
-            <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+            <p class="eyebrow text-fg-subtle">
               {{ t('blog.tags') }}
             </p>
             <ul class="mt-3 flex flex-wrap gap-2">

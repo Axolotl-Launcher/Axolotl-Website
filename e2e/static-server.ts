@@ -9,8 +9,8 @@ import { fileURLToPath } from 'node:url'
  * Page-level tests must observe the artifact that ships, not a dev server: a dev
  * server renders unminified styles, injects its own client, and serves whatever
  * is in memory, so a passing run there says nothing about the built output. The
- * public pages are written to `.output/public`; Studio and the admin routes need
- * the Nitro server and are covered separately.
+ * public pages are written to `.output/public`; Studio needs the Nitro server
+ * and is covered separately.
  */
 
 const WEBSITE_DIR = fileURLToPath(new URL('..', import.meta.url))

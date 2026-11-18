@@ -24,7 +24,7 @@ const activeIndex = computed(() => {
   <div
     class="relative grid rounded-pill border border-border bg-surface-1 p-1"
     :style="{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }"
-    role="group"
+    role="radiogroup"
     :aria-label="label"
   >
     <span
@@ -39,11 +39,12 @@ const activeIndex = computed(() => {
       v-for="option in options"
       :key="option.value"
       type="button"
-      class="relative z-10 rounded-pill px-3.5 py-1.5 text-caption font-semibold transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:outline-none"
+      class="relative z-10 rounded-pill px-3.5 py-1.5 text-caption font-semibold transition-colors duration-300"
       :class="
         model === option.value ? 'text-[color:var(--on-accent)]' : 'text-fg-muted hover:bg-surface-2 hover:text-fg'
       "
-      :aria-pressed="model === option.value"
+      role="radio"
+      :aria-checked="model === option.value"
       @click="model = option.value"
     >
       {{ option.label }}

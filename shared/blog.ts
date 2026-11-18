@@ -1,9 +1,4 @@
-export const BLOG_CONTENT_DIRECTORIES = {
-  'zh-CN': 'zh-cn',
-  'en-US': 'en-us',
-} as const
-
-export type BlogContentLocale = keyof typeof BLOG_CONTENT_DIRECTORIES
+export type BlogContentLocale = 'zh-CN' | 'en-US'
 
 /** A canonical blog post. Previous revisions live in Git, not extra files. */
 export interface BlogPost {

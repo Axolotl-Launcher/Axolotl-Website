@@ -19,7 +19,9 @@ export default defineConfig({
   // A stale dev server serving a previous build is indistinguishable from a real
   // regression at this level, so never reuse one across runs.
   workers: 1,
-  reporter: [['list']],
+  // `list` keeps local runs readable; CI also writes an HTML report that the
+  // workflow uploads when a test fails.
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : [['list']],
   // Capturing and comparing a full-length page takes longer than a DOM assertion.
   timeout: 60_000,
   expect: { timeout: 20_000 },

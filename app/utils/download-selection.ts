@@ -1,8 +1,8 @@
 export type DownloadPlatform = 'windows' | 'mac' | 'linux'
 export type DownloadFormat = 'installer' | 'portable' | 'dmg' | 'appimage' | 'deb' | 'rpm'
 
-export const DOWNLOAD_PLATFORMS: readonly DownloadPlatform[] = ['windows', 'mac', 'linux']
-export const DOWNLOAD_FORMATS: readonly DownloadFormat[] = ['installer', 'portable', 'dmg', 'appimage', 'deb', 'rpm']
+const DOWNLOAD_PLATFORMS: readonly DownloadPlatform[] = ['windows', 'mac', 'linux']
+const DOWNLOAD_FORMATS: readonly DownloadFormat[] = ['installer', 'portable', 'dmg', 'appimage', 'deb', 'rpm']
 
 export const DOWNLOAD_LINK_KEY_BY_FORMAT = {
   installer: 'windows',

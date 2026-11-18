@@ -46,6 +46,7 @@ function closeMenu(refocus = false) {
 }
 
 function select(option: DownloadSourceOption) {
+  if (option.unavailable) return
   emit('update:modelValue', option.value)
   closeMenu(true)
 }
@@ -151,12 +152,13 @@ useEventListener('pointerdown', onDocumentPointerDown)
             role="option"
             :aria-selected="option.value === props.modelValue"
             :aria-disabled="option.unavailable || undefined"
-            class="relative cursor-pointer rounded-[0.65rem] px-3 py-2.5 transition-colors"
-            :class="
+            class="relative rounded-[0.65rem] px-3 py-2.5 transition-colors"
+            :class="[
+              option.unavailable ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
               index === activeIndex
                 ? 'bg-accent/10 before:absolute before:inset-y-1.5 before:left-0 before:w-0.5 before:rounded-full before:bg-accent before:content-[\'\']'
-                : ''
-            "
+                : '',
+            ]"
             @click="select(option)"
             @mouseenter="activeIndex = index"
           >
@@ -183,10 +185,3 @@ useEventListener('pointerdown', onDocumentPointerDown)
     </AnimatePresence>
   </div>
 </template>
-
-<style scoped>
-button[aria-haspopup='listbox']:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-</style>

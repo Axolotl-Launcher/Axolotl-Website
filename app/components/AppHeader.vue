@@ -30,11 +30,6 @@ const starText = computed(() => {
   return count < 1000 ? String(count) : `${(count / 1000).toFixed(1).replace(/\.0$/, '')}k`
 })
 
-const ctaLabel = computed(() => {
-  if (collapsed.value) return t('actions.download')
-  return starText.value ? `GitHub · ${starText.value}` : 'GitHub'
-})
-
 const menuDialog = ref<HTMLDialogElement | null>(null)
 
 // The header changes shape when the reader crosses 12% of the page, but never
@@ -52,47 +47,14 @@ function syncHeader() {
 
 watch(y, syncHeader)
 
-// The header CTA is a GitHub shortcut while the bar is expanded. Once the bar
-// collapses into its pill, the icon flips to a download arrow and the label
-// expands after the flip, so the wider pill does not pop in all at once.
-// Expanding reverses the sequence: the label collapses first, then the star
-// count mounts, so neither width change can hide the other's transition.
-const showLabel = ref(false)
-const labelMounted = ref(false)
-const showStars = ref(true)
-let labelTimer: ReturnType<typeof setTimeout> | undefined
-let starTimer: ReturnType<typeof setTimeout> | undefined
-
-watch(collapsed, (value) => {
-  if (labelTimer) clearTimeout(labelTimer)
-  if (starTimer) clearTimeout(starTimer)
-
-  if (value) {
-    showStars.value = false
-    labelMounted.value = true
-    labelTimer = setTimeout(() => {
-      showLabel.value = true
-    }, 300)
-  } else {
-    showLabel.value = false
-    starTimer = setTimeout(() => {
-      labelMounted.value = false
-      showStars.value = true
-    }, 300)
-  }
-})
-
 onMounted(syncHeader)
 useEventListener('resize', syncHeader)
 
-onBeforeUnmount(() => {
-  if (labelTimer) clearTimeout(labelTimer)
-  if (starTimer) clearTimeout(starTimer)
-})
-
+// Download is deliberately absent: the header already carries a dedicated
+// download button, and repeating it in the nav gave the same destination two
+// adjacent entry points on every page.
 const nav = computed(() => [
   { key: 'nav.home', to: localePath({ path: '/' }) },
-  { key: 'nav.download', to: localePath({ path: '/download' }) },
   { key: 'nav.docs', to: localePath({ path: '/docs' }) },
   { key: 'nav.blog', to: localePath({ path: '/blog' }) },
   { key: 'nav.changelog', to: localePath({ path: '/changelog' }) },
@@ -142,7 +104,7 @@ watch(
       >
         <AppLogo />
 
-        <nav class="ml-3 hidden items-center gap-0.5 lg:flex" aria-label="Primary">
+        <nav class="ml-3 hidden items-center gap-0.5 lg:flex" :aria-label="t('nav.primary')">
           <NuxtLink
             v-for="item in nav"
             :key="item.key"
@@ -165,44 +127,32 @@ watch(
 
           <ThemeToggle />
 
+          <!--
+            Two fixed controls: the GitHub chip always opens GitHub and the
+            download button always opens /download, in the same place whether
+            the bar is expanded or collapsed.
+          -->
           <NuxtLink
-            :to="collapsed ? localePath({ path: '/download' }) : githubUrl"
-            :target="collapsed ? undefined : '_blank'"
-            :rel="collapsed ? undefined : 'noreferrer'"
-            :aria-label="ctaLabel"
-            class="relative ml-1 inline-flex h-9 items-center justify-center overflow-hidden rounded-btn border text-caption font-semibold transition-[background-color,color,border-color,padding,box-shadow] duration-300 ease-out max-sm:hidden"
-            :class="
-              collapsed
-                ? 'border-transparent bg-accent px-2.5 text-[color:var(--on-accent)] shadow-[0_10px_30px_-12px_var(--accent-glow)]'
-                : 'star-chip border-border bg-surface-2/70 px-2.5 text-fg hover:border-border-strong hover:bg-surface-2'
-            "
+            :to="githubUrl"
+            target="_blank"
+            rel="noreferrer"
+            :aria-label="starText ? `${t('nav.github')} · ${starText}` : t('nav.github')"
+            class="ml-1 inline-flex h-9 items-center justify-center gap-1.5 rounded-btn border border-border bg-surface-2/70 px-2.5 text-caption font-semibold text-fg transition-colors hover:border-border-strong hover:bg-surface-2 max-sm:hidden"
           >
-            <span
-              class="relative grid size-4 shrink-0 place-items-center transition-transform duration-300 ease-out [transform-style:preserve-3d]"
-              :class="collapsed ? '[transform:rotateY(180deg)]' : ''"
-            >
-              <Icon name="lucide:github" class="size-4 [backface-visibility:hidden]" aria-hidden="true" />
-              <Icon
-                name="lucide:download"
-                class="absolute size-4 [transform:rotateY(180deg)] [backface-visibility:hidden]"
-                aria-hidden="true"
-              />
-            </span>
-            <span
-              v-if="showStars && starText"
-              class="ml-1.5 inline-flex items-center gap-1 text-micro font-medium text-fg-muted"
-            >
+            <Icon name="lucide:github" class="size-4" aria-hidden="true" />
+            <span v-if="starText" class="inline-flex items-center gap-1 text-micro font-medium text-fg-muted">
               <Icon name="lucide:star" class="size-3.5 text-accent" aria-hidden="true" />
               <span class="tabular-nums">{{ starText }}</span>
             </span>
-            <span
-              v-if="labelMounted"
-              class="overflow-hidden whitespace-nowrap transition-[max-width,opacity,margin-left] duration-300 ease-out"
-              :class="showLabel ? 'ml-2 max-w-40 opacity-100' : 'max-w-0 opacity-0'"
-              :aria-hidden="showLabel ? undefined : 'true'"
-            >
-              {{ t('actions.download') }}
-            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            :to="localePath({ path: '/download' })"
+            :aria-label="t('actions.download')"
+            class="ml-1 inline-flex h-9 items-center justify-center gap-1.5 rounded-btn bg-accent px-2.5 text-caption font-semibold [color:var(--on-accent)] shadow-[0_10px_30px_-12px_var(--accent-glow)] transition-colors hover:bg-accent-strong max-sm:hidden"
+          >
+            <Icon name="lucide:download" class="size-4" aria-hidden="true" />
+            <span>{{ t('actions.download') }}</span>
           </NuxtLink>
 
           <button
@@ -233,7 +183,7 @@ watch(
           <Icon name="lucide:x" class="size-5" />
         </button>
       </div>
-      <nav class="site-container mt-6 flex flex-col gap-1" aria-label="Mobile">
+      <nav class="site-container mt-6 flex flex-col gap-1" :aria-label="t('nav.mobile')">
         <NuxtLink
           v-for="item in nav"
           :key="item.key"
@@ -262,50 +212,3 @@ watch(
     </dialog>
   </header>
 </template>
-
-<style scoped>
-@property --star-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-/* A comet of accent light travels around the star chip's 1px border. */
-.star-chip::before {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  padding: 1px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from var(--star-angle),
-    transparent 0deg,
-    var(--accent) 40deg,
-    transparent 110deg,
-    transparent 360deg
-  );
-  content: '';
-  pointer-events: none;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: star-sweep 2.8s linear infinite;
-}
-
-@keyframes star-sweep {
-  to {
-    --star-angle: 360deg;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .star-chip::before {
-    animation: none;
-  }
-}
-</style>

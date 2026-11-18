@@ -63,6 +63,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Lint website
         run: pnpm lint
+      - name: Check unused code
+        run: pnpm check:knip
       - name: Test website
         run: pnpm test
       - name: Typecheck website
@@ -133,7 +135,7 @@ jobs:
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
           assert(fs.existsSync('.output/server/index.mjs'), 'Missing Nitro server entry: .output/server/index.mjs')
-          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'search-index.json', 'docs/index.html', 'articles/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'blog/terms/index.html', 'blog/privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
+          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'search-index.json', 'docs/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'blog/terms/index.html', 'blog/privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
             assert(fs.existsSync(`.output/public/${page}`), `Missing prerendered page: ${page}`)
           }
           const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))
@@ -149,6 +151,24 @@ jobs:
         with:
           name: link-checker-report-${{ github.run_id }}
           path: .output/link-checker-report.*
+          if-no-files-found: ignore
+          retention-days: 7
+
+      # The page tests run against the artifact that ships, so they belong in the
+      # job that produces it: no second build, no chance of testing a different
+      # output than the one uploaded below.
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run Playwright page tests
+        run: pnpm test:e2e:ci
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
           if-no-files-found: ignore
           retention-days: 7
       - name: Save website artifact

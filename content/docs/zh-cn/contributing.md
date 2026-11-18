@@ -36,7 +36,7 @@ Axolotl Launcher 的进步离不开社区的支持！
 
 ## 相关链接
 
-- 官方网站：https://www.axlmc.org
+- 官方网站：[axlmc.org](/)
 
 - 最新版本下载：[GitHub Releases](https://github.com/Mystic-Stars/Axolotl/releases/latest)
 

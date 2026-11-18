@@ -77,7 +77,7 @@ useSeoMeta({
 <template>
   <div class="site-container py-10 sm:py-14">
     <header class="max-w-2xl">
-      <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+      <p class="eyebrow text-accent-strong">
         {{ t('changelog.eyebrow') }}
       </p>
       <h1 class="mt-4 text-section">{{ t('changelog.title') }}</h1>
@@ -121,7 +121,7 @@ useSeoMeta({
           <div class="mt-5 space-y-4">
             <div v-for="kind in changeKinds" :key="kind.key">
               <template v-if="changesOf(entry.changes, kind.key).length">
-                <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+                <p class="eyebrow text-fg-subtle">
                   {{ t(kind.label) }}
                 </p>
                 <ul class="mt-2 space-y-1.5">
@@ -142,7 +142,7 @@ useSeoMeta({
             :href="`${config.public.githubUrl}/releases/tag/v${entry.version}`"
             target="_blank"
             rel="noopener noreferrer"
-            class="link-underline mt-5 inline-flex items-center gap-1.5 text-caption font-semibold text-accent"
+            class="link-underline mt-5 inline-flex items-center gap-1.5 text-caption font-semibold text-accent-strong"
           >
             {{ t('changelog.viewRelease') }}
             <Icon name="lucide:arrow-up-right" class="size-3.5" />
@@ -150,7 +150,16 @@ useSeoMeta({
         </li>
       </ol>
 
-      <p v-else :key="`${channel}-empty`" class="mt-12 text-body text-fg-muted">{{ t('changelog.empty') }}</p>
+      <div
+        v-else
+        :key="`${channel}-empty`"
+        class="mt-12 rounded-card border border-dashed border-border-strong bg-surface-1 p-8 text-center"
+      >
+        <p class="text-body text-fg-muted">{{ t('changelog.empty') }}</p>
+        <BaseButton v-if="channel !== 'all'" variant="secondary" class="mt-4" @click="channel = 'all'">
+          {{ t('changelog.emptyAction') }}
+        </BaseButton>
+      </div>
     </Transition>
 
     <div v-if="hasMore" class="mt-4 border-t border-divider pt-6">

@@ -22,12 +22,12 @@ test.describe('site shell', () => {
       '/en',
       '/download',
       '/docs',
-      '/articles',
+      '/blog',
       '/changelog',
       '/demo',
       '/support',
-      '/privacy',
-      '/terms',
+      '/blog/privacy',
+      '/blog/terms',
     ]
     for (const route of routes) {
       const response = await page.goto(route)
@@ -37,11 +37,23 @@ test.describe('site shell', () => {
     }
   })
 
+  test('serves no compat aliases', async ({ page }) => {
+    for (const route of [
+      '/articles',
+      '/en/articles',
+      '/blog/first-launch/versions',
+      '/en/blog/first-launch/versions',
+    ]) {
+      const response = await page.goto(route)
+      expect(response?.status(), route).toBe(404)
+    }
+  })
+
   test('applies the saved theme before hydration', async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem('axolotl-theme', 'dark'))
     await page.goto('/')
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(16, 18, 21)')
+    await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(16, 18, 21)')
 
     await page.locator('button[aria-label^="主题"], button[aria-label^="Theme"]').click()
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'oled')
@@ -67,15 +79,97 @@ test.describe('site shell', () => {
     await page.getByRole('button', { name: /关闭|close/i }).click()
     await expect(dialog).not.toBeVisible()
   })
+
+  test('offers download once in the header, not also as a nav item', async ({ page }) => {
+    // The header button and the nav would otherwise sit side by side pointing
+    // at the same route.
+    await page.goto('/')
+    const header = page.locator('header').first()
+    const nav = header.getByRole('navigation', { name: '主导航' })
+    await expect(nav.getByRole('link', { name: '下载' })).toHaveCount(0)
+    await expect(header.getByRole('link', { name: '下载启动器' })).toHaveCount(1)
+  })
+
+  test('links community channels from the footer instead of a dock', async ({ page }) => {
+    await page.goto('/')
+    const community = page.getByRole('navigation', { name: '社区' })
+    await expect(community).toBeVisible()
+    for (const name of ['QQ 群', 'QQ 频道', 'Discord', '爱发电']) {
+      await expect(community.getByRole('link', { name })).toHaveAttribute('href', /^https:\/\//)
+    }
+    // The floating dock is gone; nothing should stick to the viewport edge.
+    await expect(page.locator('.site-utility-dock')).toHaveCount(0)
+  })
+
+  test('renders a visible brand glyph and a hover QR for every community link', async ({ page }) => {
+    // Brand marks are inline SVG. A mark that renders as a solid block (a broken
+    // ring path) or disappears entirely leaves no distinguishable ink, and both
+    // regressions look identical to "the icon is missing". Rasterise each mark
+    // and measure how much of its box is actually painted.
+    await page.goto('/')
+    const links = page.getByRole('navigation', { name: '社区' }).getByRole('link')
+    await expect(links).toHaveCount(4)
+
+    const coverage = () =>
+      links.evaluateAll(async (elements) =>
+        Promise.all(
+          elements.map(async (element) => {
+            const svg = element.querySelector('.nuxt-icon svg')
+            if (!svg) return null
+            const clone = svg.cloneNode(true) as SVGElement
+            clone.setAttribute('width', '64')
+            clone.setAttribute('height', '64')
+            clone.setAttribute('fill', '#000')
+            for (const node of clone.querySelectorAll('[fill="currentColor"]')) node.setAttribute('fill', '#000')
+            const source = new XMLSerializer().serializeToString(clone)
+            const url = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(source)}`
+            const image = new Image()
+            await new Promise((resolve, reject) => {
+              image.onload = resolve
+              image.onerror = reject
+              image.src = url
+            })
+            const canvas = document.createElement('canvas')
+            canvas.width = 64
+            canvas.height = 64
+            const context = canvas.getContext('2d')
+            if (!context) return null
+            context.drawImage(image, 0, 0, 64, 64)
+            const { data } = context.getImageData(0, 0, 64, 64)
+            let painted = 0
+            for (let index = 3; index < data.length; index += 4) if (data[index]! > 0) painted += 1
+            return painted / (64 * 64)
+          }),
+        ),
+      )
+
+    for (const theme of ['light', 'dark', 'oled'] as const) {
+      await page.evaluate((value) => localStorage.setItem('axolotl-theme', value), theme)
+      await page.reload()
+      for (const [index, ratio] of (await coverage()).entries()) {
+        expect(ratio, `${theme} icon ${index} rendered`).not.toBeNull()
+        // Below 5% the glyph is effectively invisible; above 85% it has lost its
+        // interior and reads as a filled square.
+        expect(ratio!, `${theme} icon ${index} coverage`).toBeGreaterThan(0.05)
+        expect(ratio!, `${theme} icon ${index} coverage`).toBeLessThan(0.85)
+      }
+    }
+
+    const first = links.first()
+    await first.hover()
+    const qr = first.locator('svg').nth(1)
+    await expect(qr).toBeVisible()
+    await expect(qr.locator('path').first()).toBeVisible()
+  })
 })
 
 test.describe('content', () => {
-  test('lists localized articles and renders a detail page', async ({ page }) => {
-    await page.goto('/en/articles')
+  test('lists localized blog posts and renders a detail page', async ({ page }) => {
+    await page.goto('/en/blog')
     await expect(page.getByRole('heading', { name: 'First launch: accounts, Java and memory' })).toBeVisible()
 
     await page.getByRole('heading', { name: 'First launch: accounts, Java and memory' }).getByRole('link').click()
-    await expect(page).toHaveURL(/\/en\/articles\/first-launch$/)
+    await expect(page).toHaveURL(/\/en\/blog\/first-launch$/)
     await expect(page.locator('article h1')).toContainText('First launch')
     await expect(page.locator('.prose h2')).toHaveCount(4)
   })
@@ -87,6 +181,27 @@ test.describe('content', () => {
     await page.getByRole('link', { name: '欢迎使用 Axolotl Launcher' }).first().click()
     await expect(page).toHaveURL(/\/docs\/getting-started$/)
     await expect(page.locator('h1')).toContainText('欢迎使用 Axolotl Launcher')
+  })
+
+  test('lists the Chinese originals when English docs are missing', async ({ page }) => {
+    await page.goto('/en/docs')
+    await expect(page.getByRole('heading', { name: 'Documentation' })).toBeVisible()
+    await expect(page.getByText('This page has no translation yet; the Chinese original is shown.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: '欢迎使用 Axolotl Launcher' })).toBeVisible()
+
+    await page
+      .getByRole('link', { name: /欢迎使用 Axolotl Launcher/ })
+      .first()
+      .click()
+    await expect(page).toHaveURL(/\/en\/docs\/getting-started$/)
+    await expect(page.locator('article h1')).toContainText('欢迎使用 Axolotl Launcher')
+  })
+
+  test('keeps the Studio edit affordance away from anonymous readers', async ({ page }) => {
+    for (const route of ['/docs/getting-started', '/blog/first-launch']) {
+      await page.goto(route)
+      await expect(page.locator('a[href^="/_studio"]'), route).toHaveCount(0)
+    }
   })
 })
 
@@ -117,17 +232,45 @@ test.describe('downloads', () => {
       return route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' })
     })
     await page.goto('/download')
-    await expect(page.getByText('1.11.0')).toBeVisible()
-    await page.getByRole('button', { name: '继续' }).click()
-    await page.getByRole('button', { name: '继续' }).click()
-    await page.getByRole('button', { name: '下载', exact: true }).click()
+    await expect(page.getByText('最新版本 1.11.0')).toBeVisible()
+    await page.getByRole('button', { name: '下载 Windows 版' }).click()
     await expect(page).toHaveURL(/\/download\/thanks/)
     await expect(page.getByRole('heading', { name: '感谢下载 Axolotl' })).toBeVisible()
     await expect(page.getByRole('link', { name: '直接下载链接' })).toHaveAttribute(
       'href',
       'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_x64-setup.exe',
     )
+    // The thank-you page starts the download itself; no second confirmation.
     await expect.poll(() => artifactHits).toBeGreaterThan(0)
+  })
+
+  test('opens the step-by-step wizard from the quick card', async ({ page }) => {
+    await page.route('**/api/downloads/latest?channel=*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
+    )
+    await page.goto('/download')
+    await expect(page.getByRole('button', { name: '下载 Windows 版' })).toBeVisible()
+
+    await page.getByRole('button', { name: '更改下载选项' }).click()
+    await expect(page.getByRole('list', { name: '下载步骤' })).toBeVisible()
+    await expect(page.getByRole('radio', { name: /Windows/ })).toHaveAttribute('aria-checked', 'true')
+
+    await page.getByRole('button', { name: '继续' }).click()
+    await expect(page.getByRole('radio', { name: '安装包', exact: true })).toHaveAttribute('aria-checked', 'true')
+    await page.getByRole('button', { name: '继续' }).click()
+    await expect(page.getByRole('heading', { name: '确认下载内容' })).toBeVisible()
+
+    // Switching steps must not resize the panel, or the actions move under the
+    // pointer between the click and the next tap.
+    const panel = page.locator('main .rounded-panel').nth(1)
+    const confirmation = await panel.boundingBox()
+    await page.getByRole('button', { name: '返回' }).click()
+    const options = await panel.boundingBox()
+    expect(Math.round(options!.height)).toBe(Math.round(confirmation!.height))
+
+    await page.getByRole('button', { name: '继续' }).click()
+    await page.getByRole('button', { name: '开始下载' }).click()
+    await expect(page).toHaveURL(/\/download\/thanks/)
   })
 
   test.describe('unsupported device', () => {
@@ -144,11 +287,11 @@ test.describe('downloads', () => {
         route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' }),
       )
       await page.goto('/download')
-      await expect(page.getByText('1.11.0')).toBeVisible()
-      await expect(page.getByText(/未识别到受支持的桌面系统/)).toBeVisible()
-      await page.getByRole('button', { name: '继续' }).click()
-      await page.getByRole('button', { name: '继续' }).click()
-      await page.getByRole('button', { name: '下载', exact: true }).click()
+      await expect(page.getByText('最新版本 1.11.0')).toBeVisible()
+      // The wizard keeps its own copy of this note mounted but inert, so scope
+      // the assertion to the confirmation card.
+      await expect(page.locator('[data-download-mode="quick"]').getByText(/未识别到受支持的桌面系统/)).toBeVisible()
+      await page.getByRole('button', { name: '下载 Windows 版' }).click()
       await expect(page).toHaveURL(/\/download\/thanks/)
       await expect(page.getByRole('heading', { name: '感谢下载 Axolotl' })).toBeVisible()
     })

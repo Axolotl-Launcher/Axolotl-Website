@@ -7,11 +7,11 @@
   --surface-2: #eef1f5;
   --surface-3: #f8f8f8;
   --surface-4: #ffffff;
-  --surface-5: #dddddd;
 
   --fg: #2c2e31;
   --fg-muted: #484d54;
-  --fg-subtle: #6b6f76;
+  /* 4.77 on surface-0 and 5.02 on surface-2: honest AA for 11–13px copy. */
+  --fg-subtle: #63676e;
   --heading: #281b24;
   --subheading: #65515e;
 
@@ -19,11 +19,20 @@
   --border-strong: #c9c9c9;
   --divider: #e1e1e1;
 
+  /* `--accent` is a fill role (white on it is 4.60:1). Small brand text uses
+     `--accent-strong`, which stays above 4.5 on every surface and accent-soft. */
   --accent: #db2777;
-  --accent-strong: #be185d;
+  --accent-strong: #9d174d;
   --on-accent: #ffffff;
   --accent-soft: color-mix(in oklab, var(--accent) 10%, transparent);
   --accent-glow: color-mix(in oklab, var(--accent) 22%, transparent);
+
+  --danger: #b91c1c;
+  --danger-soft: color-mix(in oklab, var(--danger) 10%, transparent);
+  --success: #166534;
+  --success-soft: color-mix(in oklab, var(--success) 10%, transparent);
+  --info: #075985;
+  --info-soft: color-mix(in oklab, var(--info) 10%, transparent);
 
   --grid-line: rgb(40 27 36 / 0.06);
   --glass-bg: color-mix(in oklab, var(--surface-0) 82%, transparent);
@@ -42,11 +51,10 @@
   --surface-2: #20242b;
   --surface-3: #262b34;
   --surface-4: #333a46;
-  --surface-5: #424854;
 
   --fg: #f4f6f8;
   --fg-muted: #b0bac5;
-  --fg-subtle: #96a2b0;
+  --fg-subtle: #9ca8b6;
   --heading: #fff8fc;
   --subheading: #bdb0ba;
 
@@ -59,6 +67,13 @@
   --on-accent: #1a1018;
   --accent-soft: color-mix(in oklab, var(--accent) 14%, transparent);
   --accent-glow: color-mix(in oklab, var(--accent) 28%, transparent);
+
+  --danger: #fca5a5;
+  --danger-soft: color-mix(in oklab, var(--danger) 12%, transparent);
+  --success: #4ade80;
+  --success-soft: color-mix(in oklab, var(--success) 12%, transparent);
+  --info: #7dd3fc;
+  --info-soft: color-mix(in oklab, var(--info) 12%, transparent);
 
   --grid-line: rgb(255 255 255 / 0.045);
   --glass-bg: color-mix(in oklab, var(--surface-0) 72%, transparent);
@@ -77,11 +92,10 @@
   --surface-2: #111419;
   --surface-3: #171b21;
   --surface-4: #242a33;
-  --surface-5: #333a45;
 
   --fg: #f4f6f8;
   --fg-muted: #b0bac5;
-  --fg-subtle: #96a2b0;
+  --fg-subtle: #9ca8b6;
   --heading: #fff8fc;
   --subheading: #bdb0ba;
 
@@ -94,6 +108,13 @@
   --on-accent: #0a0710;
   --accent-soft: color-mix(in oklab, var(--accent) 16%, transparent);
   --accent-glow: color-mix(in oklab, var(--accent) 32%, transparent);
+
+  --danger: #fca5a5;
+  --danger-soft: color-mix(in oklab, var(--danger) 14%, transparent);
+  --success: #4ade80;
+  --success-soft: color-mix(in oklab, var(--success) 14%, transparent);
+  --info: #7dd3fc;
+  --info-soft: color-mix(in oklab, var(--info) 14%, transparent);
 
   --grid-line: rgb(255 255 255 / 0.035);
   --glass-bg: color-mix(in oklab, #000000 72%, transparent);

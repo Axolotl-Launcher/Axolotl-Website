@@ -177,10 +177,12 @@ export default defineNuxtPlugin(() => {
   scan()
   const timer = setInterval(scan, 1000)
 
-  onBeforeUnmount(() => {
-    clearInterval(timer)
-    shadowObserver?.disconnect()
-    detach?.()
-    if (frame) cancelAnimationFrame(frame)
-  })
+  if (import.meta.hot) {
+    import.meta.hot.dispose(() => {
+      clearInterval(timer)
+      shadowObserver?.disconnect()
+      detach?.()
+      if (frame) cancelAnimationFrame(frame)
+    })
+  }
 })

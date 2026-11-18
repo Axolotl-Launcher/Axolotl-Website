@@ -12,6 +12,7 @@ const props = withDefaults(
     href?: string
     type?: 'button' | 'submit' | 'reset'
     block?: boolean
+    disabled?: boolean
   }>(),
   {
     variant: 'primary',
@@ -20,6 +21,7 @@ const props = withDefaults(
     to: undefined,
     href: undefined,
     block: false,
+    disabled: false,
   },
 )
 
@@ -50,7 +52,10 @@ const classes = computed(() =>
 </script>
 
 <template>
-  <NuxtLink v-if="to" :to="to" :class="classes">
+  <button v-if="disabled" type="button" :class="classes" disabled>
+    <slot />
+  </button>
+  <NuxtLink v-else-if="to" :to="to" :class="classes">
     <slot />
   </NuxtLink>
   <a v-else-if="href" :href="href" :class="classes" rel="noreferrer" target="_blank">

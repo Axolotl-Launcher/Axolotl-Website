@@ -36,9 +36,20 @@ const gallery = computed(() => [
     src: '/showcase/launcher-home.webp',
     label: t('home.sections.galleryHome'),
     span: 'sm:col-span-2 lg:col-span-8 lg:row-span-2',
+    to: localePath({ path: '/demo' }),
   },
-  { src: '/showcase/theme-accent-1280.webp', label: t('home.sections.galleryThemes'), span: 'lg:col-span-4' },
-  { src: '/showcase/recent-lab-1600.webp', label: t('home.sections.galleryLab'), span: 'lg:col-span-4' },
+  {
+    src: '/showcase/theme-accent-1280.webp',
+    label: t('home.sections.galleryThemes'),
+    span: 'lg:col-span-4',
+    to: localePath({ path: '/demo' }),
+  },
+  {
+    src: '/showcase/recent-lab-1600.webp',
+    label: t('home.sections.galleryLab'),
+    span: 'lg:col-span-4',
+    to: localePath({ path: '/demo' }),
+  },
 ])
 
 const flow = computed(() => [
@@ -161,7 +172,7 @@ useHead({
               </span>
               <span>
                 <span class="block text-caption font-semibold">v{{ latestVersion }}</span>
-                <span class="block text-micro tracking-[0.12em] text-fg-subtle uppercase">
+                <span class="eyebrow block text-fg-subtle">
                   {{ t('nav.changelog') }}
                 </span>
               </span>
@@ -179,7 +190,7 @@ useHead({
     <section class="site-container py-section">
       <div class="grid gap-8 lg:grid-cols-12 lg:gap-10">
         <div class="lg:col-span-7">
-          <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+          <p class="eyebrow text-accent-strong">
             {{ t('home.sections.featuresEyebrow') }}
           </p>
           <h2 class="mt-4 max-w-2xl text-section-sm text-balance">{{ t('home.sections.featuresTitle') }}</h2>
@@ -188,7 +199,7 @@ useHead({
           <p class="text-body leading-relaxed text-fg-muted">{{ t('home.sections.featuresLead') }}</p>
           <NuxtLink
             :to="localePath({ path: '/docs' })"
-            class="group mt-5 inline-flex items-center gap-2 text-caption font-semibold text-accent transition-colors hover:text-accent-strong"
+            class="group mt-5 inline-flex items-center gap-2 text-caption font-semibold text-accent-strong transition-colors hover:text-accent"
           >
             {{ t('home.secondary') }}
             <Icon
@@ -215,7 +226,7 @@ useHead({
       <div class="site-container py-section">
         <div class="flex flex-wrap items-end justify-between gap-6">
           <div class="max-w-xl">
-            <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+            <p class="eyebrow text-accent-strong">
               {{ t('home.sections.galleryEyebrow') }}
             </p>
             <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.galleryTitle') }}</h2>
@@ -224,35 +235,35 @@ useHead({
         </div>
 
         <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:h-[30rem] lg:grid-cols-12 lg:grid-rows-2 lg:gap-5">
-          <Motion
+          <NuxtLink
             v-for="shot in gallery"
             :key="shot.src"
-            as="figure"
-            class="group relative aspect-[16/10] overflow-hidden rounded-panel border border-border bg-surface-2 lg:aspect-auto"
+            :to="shot.to"
+            :aria-label="`${shot.label} — ${t('home.sections.galleryOpen')}`"
+            class="group relative aspect-[16/10] overflow-hidden rounded-panel border border-border bg-surface-2 transition-colors hover:border-border-strong lg:aspect-auto"
             :class="shot.span"
-            :while-hover="{ y: -4 }"
-            :transition="{ type: 'spring', stiffness: 260, damping: 30 }"
           >
             <img
               :src="shot.src"
-              :alt="`${shot.label}`"
+              :alt="shot.label"
               loading="lazy"
               decoding="async"
               class="size-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none"
             />
             <figcaption
-              class="absolute top-3 left-3 rounded-pill border border-border bg-surface-0/85 px-3 py-1 text-caption font-medium text-fg backdrop-blur"
+              class="absolute top-3 left-3 flex items-center gap-1.5 rounded-pill border border-border bg-surface-0/85 px-3 py-1 text-caption font-medium text-fg backdrop-blur"
             >
               {{ shot.label }}
+              <span class="text-fg-subtle">· {{ t('home.sections.galleryOpen') }}</span>
             </figcaption>
-          </Motion>
+          </NuxtLink>
         </div>
       </div>
     </section>
 
     <section class="site-container py-section">
       <header class="max-w-2xl">
-        <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+        <p class="eyebrow text-accent-strong">
           {{ t('home.sections.flowEyebrow') }}
         </p>
         <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.flowTitle') }}</h2>
@@ -275,7 +286,7 @@ useHead({
     <section class="border-t border-border">
       <div class="site-container py-section">
         <header class="max-w-2xl">
-          <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+          <p class="eyebrow text-accent-strong">
             {{ t('home.sections.capabilitiesEyebrow') }}
           </p>
           <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.capabilitiesTitle') }}</h2>
@@ -301,7 +312,7 @@ useHead({
       <div class="site-container py-section">
         <div class="flex flex-wrap items-end justify-between gap-6">
           <div class="max-w-2xl">
-            <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+            <p class="eyebrow text-accent-strong">
               {{ t('home.sections.contributorsEyebrow') }}
             </p>
             <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.contributorsTitle') }}</h2>
@@ -312,7 +323,7 @@ useHead({
               :href="contributorsUrl"
               target="_blank"
               rel="noreferrer"
-              class="group mt-4 inline-flex items-center gap-2 text-caption font-semibold text-accent transition-colors hover:text-accent-strong"
+              class="group mt-4 inline-flex items-center gap-2 text-caption font-semibold text-accent-strong transition-colors hover:text-accent"
             >
               {{ t('home.sections.contributorsLink') }}
               <Icon
@@ -342,7 +353,7 @@ useHead({
       <div class="site-container py-section">
         <div class="flex flex-wrap items-end justify-between gap-6">
           <div class="max-w-2xl">
-            <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+            <p class="eyebrow text-accent-strong">
               {{ t('sponsors.eyebrow') }}
             </p>
             <h2 class="mt-4 text-section-sm text-balance">{{ t('sponsors.title') }}</h2>
@@ -368,7 +379,7 @@ useHead({
 
         <div class="relative flex flex-wrap items-end justify-between gap-8">
           <div class="max-w-xl">
-            <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+            <p class="eyebrow text-accent-strong">
               {{ t('support.eyebrow') }}
             </p>
             <h2 class="mt-4 text-section-sm text-balance">{{ t('support.title') }}</h2>
@@ -390,7 +401,7 @@ useHead({
 
     <section class="site-container pb-section">
       <div class="mx-auto max-w-3xl text-center">
-        <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+        <p class="eyebrow text-accent-strong">
           {{ t('home.sections.ctaEyebrow') }}
         </p>
         <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.ctaTitle') }}</h2>
@@ -407,7 +418,7 @@ useHead({
           </BaseButton>
         </div>
 
-        <p class="mt-5 font-mono text-micro tracking-[0.18em] text-fg-subtle uppercase">
+        <p class="eyebrow mt-5 text-fg-subtle">
           {{ t('home.note') }}
         </p>
       </div>

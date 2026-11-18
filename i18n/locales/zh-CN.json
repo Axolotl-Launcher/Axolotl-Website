@@ -7,17 +7,17 @@
     "home": "首页",
     "download": "下载",
     "docs": "文档",
-    "articles": "文章",
     "changelog": "更新日志",
     "demo": "在线演示",
     "support": "支持",
     "terms": "服务条款",
     "privacy": "隐私政策",
     "github": "GitHub",
-    "blog": "博客"
+    "blog": "博客",
+    "primary": "主导航",
+    "mobile": "移动导航"
   },
   "common": {
-    "building": "内容正在建设中。",
     "skipToContent": "跳到主要内容"
   },
   "sponsors": {
@@ -61,7 +61,8 @@
     "resources": "资源",
     "community": "社区",
     "legal": "法律",
-    "copyright": "© {year} Axolotl Launcher"
+    "copyright": "© {year} Axolotl Launcher",
+    "disclaimer": "Minecraft 与 Axolotl 无隶属关系。"
   },
   "home": {
     "eyebrow": "AXOLOTL LAUNCHER",
@@ -121,7 +122,8 @@
       "ctaTitle": "下一次启动，换一种体验。",
       "ctaBody": "下载 Axolotl，或者先读一遍文档再决定。",
       "ctaDocs": "阅读文档",
-      "openSource": "在 GitHub 上查看源码"
+      "openSource": "在 GitHub 上查看源码",
+      "galleryOpen": "查看演示"
     }
   },
   "download": {
@@ -166,19 +168,9 @@
     "manual": "在 GitHub 上查看全部发布",
     "checksum": "每个安装包的 SHA-256 校验值可在发布页查看。",
     "allReleases": "所有发布",
-    "stepsAria": "下载步骤",
     "stepPlatform": "平台",
-    "stepOptions": "版本",
-    "stepConfirm": "下载",
     "stepPlatformTitle": "选择你的系统",
-    "stepPlatformLead": "我们会为你挑选合适的安装包格式。",
     "detectedDevice": "当前设备：{platform}，已为你预选",
-    "stepOptionsTitle": "选择版本与格式",
-    "stepOptionsLead": "不同通道对应不同的更新节奏，按需选择。",
-    "stepConfirmTitle": "确认下载内容",
-    "stepConfirmLead": "确认后前往下载结果页。",
-    "next": "继续",
-    "back": "返回",
     "formatLabel": "安装格式",
     "formatInstaller": "安装包",
     "formatPortable": "便携版",
@@ -192,12 +184,8 @@
     "formatDebHint": "适用于 Debian/Ubuntu，使用包管理器安装。",
     "formatRpmHint": "适用于 Fedora/RHEL，使用包管理器安装。",
     "versionLabel": "版本",
-    "resultCta": "下载",
     "resultTitle": "下载已就绪",
     "resultLead": "来自官方发布目录的最新构建。",
-    "resultDownload": "开始下载",
-    "resultPreparing": "正在获取下载链接…",
-    "resultError": "无法获取下载链接。",
     "resultMissing": "没有找到这次下载的选择，请重新选择。",
     "resultStartOver": "重新选择",
     "resultChecksum": "SHA-256 校验值",
@@ -219,7 +207,21 @@
     "thanksHelpTitle": "遇到问题",
     "thanksHelpBody": "查看常见问题，或到 GitHub 反馈。",
     "thanksDocs": "查看文档",
-    "thanksAgain": "重新选择下载"
+    "thanksAgain": "重新选择下载",
+    "resultMissingTitle": "没有可下载的内容",
+    "changeOptions": "更改下载选项",
+    "hideOptions": "收起选项",
+    "stepsAria": "下载步骤",
+    "stepOptions": "版本",
+    "stepConfirm": "下载",
+    "stepPlatformLead": "我们会为你挑选合适的安装包格式。",
+    "stepOptionsTitle": "选择版本与格式",
+    "stepOptionsLead": "不同通道对应不同的更新节奏，按需选择。",
+    "stepConfirmTitle": "确认下载内容",
+    "stepConfirmLead": "确认后前往下载结果页。",
+    "next": "继续",
+    "back": "返回",
+    "startDownload": "开始下载"
   },
   "support": {
     "eyebrow": "SUPPORT",
@@ -239,19 +241,6 @@
     "checkoutError": "暂时无法获取赞助链接，请稍后重试。",
     "supportOnAfdian": "在爱发电支持"
   },
-  "articles": {
-    "eyebrow": "JOURNAL",
-    "title": "文章与教程",
-    "lead": "启动器的设计笔记、使用技巧与生态观察。",
-    "empty": "文章正在准备中。",
-    "readArticle": "阅读文章",
-    "published": "发布于 {date}",
-    "updated": "更新于 {date}",
-    "backToArticles": "返回文章列表",
-    "readingTime": "约 {minutes} 分钟",
-    "tags": "标签",
-    "allTitle": "所有文章"
-  },
   "legal": {
     "updated": "最后更新于 {date}",
     "backHome": "返回首页"
@@ -264,7 +253,8 @@
     "failed": "启动器加载失败。",
     "retry": "重试",
     "phone": "启动器演示需要桌面级浏览器，请在电脑上打开本页。",
-    "download": "下载 Axolotl Launcher"
+    "download": "下载 Axolotl Launcher",
+    "unavailable": "在线演示暂不可用。"
   },
   "changelog": {
     "eyebrow": "CHANGELOG",
@@ -280,7 +270,8 @@
     "loadMore": "加载更多",
     "viewRelease": "在 GitHub 查看发布",
     "published": "发布于 {date}",
-    "empty": "暂无更新。"
+    "empty": "暂无更新。",
+    "emptyAction": "查看全部版本"
   },
   "docs": {
     "title": "文档",
@@ -291,7 +282,6 @@
     "lead": "从安装到进阶配置，Axolotl 的使用手册都在这里。",
     "emptyTitle": "文档正在整理",
     "emptyBody": "文档尚未就绪。稍后这里会出现按主题整理的指南。",
-    "emptyHint": "维护者：在 content/docs 中添加 Markdown 文档。",
     "onThisPage": "本页目录",
     "updatedAt": "更新于 {date}",
     "edit": "编辑",
@@ -300,12 +290,20 @@
     "backToDocs": "返回文档",
     "searchResults": "找到 {count} 条结果",
     "searchHint": "输入关键词搜索文档。",
-    "closeSearch": "关闭搜索"
+    "closeSearch": "关闭搜索",
+    "eyebrow": "知识库",
+    "originalBadge": "中文原文"
   },
   "notFound": {
     "title": "页面不存在",
     "description": "你访问的页面可能已移动或删除。",
     "action": "返回首页"
+  },
+  "utility": {
+    "qqGroup": "QQ 群",
+    "qqChannel": "QQ 频道",
+    "discord": "Discord",
+    "afdian": "爱发电"
   },
   "blog": {
     "eyebrow": "BLOG",

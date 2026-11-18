@@ -80,13 +80,38 @@
     max-width: 96rem;
   }
 
-  /* Scroll containers (docs navigation) without the native scrollbar. */
-  .no-scrollbar {
-    scrollbar-width: none;
+  /* Scrollable sidebars keep a visible, themed scrollbar affordance. */
+  .scroll-area {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
   }
 
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  .scroll-area::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scroll-area::-webkit-scrollbar-thumb {
+    border-radius: var(--radius-pill);
+    background: var(--border-strong);
+  }
+
+  .scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Section eyebrow: sans-first so CJK labels never inherit a mono fallback. */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-micro);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: var(--text-micro--line-height);
+    text-transform: uppercase;
+  }
+
+  :where(html[lang^='zh']) .eyebrow {
+    letter-spacing: 0.02em;
   }
 
   .link-underline {
@@ -137,7 +162,7 @@
     --tw-prose-body: var(--fg-muted);
     --tw-prose-headings: var(--heading);
     --tw-prose-lead: var(--fg-muted);
-    --tw-prose-links: var(--accent);
+    --tw-prose-links: var(--accent-strong);
     --tw-prose-bold: var(--fg);
     --tw-prose-counters: var(--fg-subtle);
     --tw-prose-bullets: var(--border-strong);
@@ -237,7 +262,7 @@ html[data-theme='oled'] .hero-poster {
   --tw-prose-body: var(--fg-muted);
   --tw-prose-headings: var(--heading);
   --tw-prose-lead: var(--fg-muted);
-  --tw-prose-links: var(--accent);
+  --tw-prose-links: var(--accent-strong);
   --tw-prose-bold: var(--fg);
   --tw-prose-counters: var(--fg-subtle);
   --tw-prose-bullets: var(--border-strong);

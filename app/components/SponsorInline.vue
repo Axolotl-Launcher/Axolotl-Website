@@ -6,7 +6,7 @@ defineProps<{ sponsors: Sponsor[]; label?: string }>()
 
 <template>
   <div>
-    <p v-if="label" class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+    <p v-if="label" class="eyebrow text-fg-subtle">
       {{ label }}
     </p>
     <ul class="mt-3 flex flex-col gap-2 sm:flex-row">

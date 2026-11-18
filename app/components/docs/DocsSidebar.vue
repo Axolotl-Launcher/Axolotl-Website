@@ -25,7 +25,7 @@ function isActive(slug: string) {
     <DocsSearch class="mt-4" />
     <nav class="mt-4 space-y-5" :aria-label="t('docs.title')">
       <div v-for="group in groups" :key="group.name">
-        <p class="font-mono text-micro font-semibold tracking-[0.18em] text-fg-subtle uppercase">{{ group.name }}</p>
+        <p class="eyebrow text-fg-subtle">{{ group.name }}</p>
         <ul class="mt-2 space-y-1">
           <li v-for="doc in group.items" :key="doc.slug">
             <NuxtLink
@@ -33,7 +33,7 @@ function isActive(slug: string) {
               class="block rounded-btn px-3 py-2 text-sm transition-colors"
               :class="
                 isActive(doc.slug)
-                  ? 'bg-accent-soft font-semibold text-accent'
+                  ? 'bg-accent-soft font-semibold text-accent-strong'
                   : 'text-fg-muted hover:bg-surface-2 hover:text-fg'
               "
             >
@@ -46,15 +46,8 @@ function isActive(slug: string) {
   </details>
 
   <aside class="hidden lg:block">
-    <div class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
+    <div class="scroll-area sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
       <DocsSearch />
-      <SponsorSidebarCard
-        v-if="sponsors.length"
-        :sponsors="sponsors"
-        dismissible
-        storage-key="docs-sidebar"
-        class="mt-4"
-      />
       <nav class="mt-5 space-y-6" :aria-label="t('docs.title')">
         <div v-for="group in groups" :key="group.name">
           <p class="text-caption font-semibold text-fg-subtle">{{ group.name }}</p>
@@ -65,7 +58,7 @@ function isActive(slug: string) {
                 class="-ml-px block border-l px-3 py-1.5 text-sm transition-colors"
                 :class="
                   isActive(doc.slug)
-                    ? 'border-accent font-semibold text-accent'
+                    ? 'border-accent font-semibold text-accent-strong'
                     : 'border-transparent text-fg-muted hover:border-border-strong hover:text-fg'
                 "
               >
@@ -75,6 +68,7 @@ function isActive(slug: string) {
           </ul>
         </div>
       </nav>
+      <SponsorSidebarCard v-if="sponsors.length" :sponsors="sponsors" dismissible class="mt-6" />
     </div>
   </aside>
 </template>

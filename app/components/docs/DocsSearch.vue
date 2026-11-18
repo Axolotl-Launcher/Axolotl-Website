@@ -17,6 +17,9 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const contentLocale = computed(() => toContentLocale(locale.value))
+// When this locale has no translations, the index detail pages fall back to
+// the Chinese originals; search has to follow suit instead of returning zero.
+const { fallback } = useDocsNav()
 
 const index = shallowRef<MiniSearch<SearchDocument> | null>(null)
 const dialog = ref<HTMLDialogElement | null>(null)
@@ -39,7 +42,11 @@ function runSearch() {
     fuzzy: 0.2,
     prefix: true,
   }) as unknown as SearchHit[]
-  results.value = hits.filter((hit) => hit.type === 'doc' && hit.locale === contentLocale.value).slice(0, 8)
+  const documents = hits.filter((hit) => hit.type === 'doc')
+  const pool = fallback.value
+    ? documents.filter((hit) => hit.locale === 'zh-CN')
+    : documents.filter((hit) => hit.locale === contentLocale.value)
+  results.value = pool.slice(0, 8)
 }
 
 function ensureIndex() {
@@ -153,10 +160,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
           <p v-if="loading" class="px-3 py-3 text-caption text-fg-subtle">{{ t('docs.searchLoading') }}</p>
           <p v-else-if="failed" class="px-3 py-3 text-caption text-fg-subtle">{{ t('docs.searchError') }}</p>
           <template v-else>
-            <p
-              v-if="query.trim()"
-              class="px-3 py-1.5 text-micro font-semibold tracking-[0.12em] text-fg-subtle uppercase"
-            >
+            <p v-if="query.trim()" class="eyebrow px-3 py-1.5 text-fg-subtle">
               {{ t('docs.searchResults', { count: results.length }) }}
             </p>
             <ul v-if="results.length" class="space-y-1">
@@ -172,7 +176,15 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
                     <Icon name="lucide:file-text" class="size-3.5" aria-hidden="true" />
                   </span>
                   <span class="min-w-0">
-                    <span class="block text-caption font-semibold text-fg">{{ hit.title }}</span>
+                    <span class="block text-caption font-semibold text-fg">
+                      {{ hit.title }}
+                      <span
+                        v-if="hit.locale !== contentLocale"
+                        class="ml-1.5 rounded-pill bg-surface-2 px-1.5 py-0.5 text-micro font-semibold text-fg-subtle"
+                      >
+                        {{ t('docs.originalBadge') }}
+                      </span>
+                    </span>
                     <span v-if="hit.description" class="mt-0.5 line-clamp-2 block text-micro text-fg-subtle">
                       {{ hit.description }}
                     </span>
@@ -198,7 +210,7 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
         <div class="flex items-center justify-between border-t border-divider px-3 py-2 text-micro text-fg-subtle">
           <span>{{ t('docs.title') }}</span>
           <span class="flex items-center gap-1.5">
-            <kbd class="rounded border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[0.65rem]">Esc</kbd>
+            <kbd class="rounded border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-micro">Esc</kbd>
             {{ t('docs.closeSearch') }}
           </span>
         </div>
@@ -208,15 +220,6 @@ onBeforeUnmount(() => clearTimeout(searchTimer))
 </template>
 
 <style scoped>
-.docs-search-trigger:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
-}
-
-.docs-search-input:focus-visible {
-  outline: none;
-}
-
 .docs-search-input::-webkit-search-cancel-button,
 .docs-search-input::-ms-clear {
   display: none;

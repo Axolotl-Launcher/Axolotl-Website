@@ -9,6 +9,7 @@ minimumReleaseAgeExclude:
   - '@comark/vue'
   - comark
   - nuxt-studio
+  - knip
   - ultracite
   - '@iconify-json/lucide'
   - '@nuxtjs/mdc'

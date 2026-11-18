@@ -9,7 +9,7 @@ const groups = [
   {
     label: 'blog.licenseAllow',
     icon: 'lucide:unlock',
-    tone: 'text-emerald-700 dark:text-emerald-400',
+    tone: 'text-success',
     items: [
       { icon: 'lucide:copy', text: 'blog.licenseAllowShare' },
       { icon: 'lucide:shuffle', text: 'blog.licenseAllowAdapt' },
@@ -18,7 +18,7 @@ const groups = [
   {
     label: 'blog.licenseRequire',
     icon: 'lucide:scale',
-    tone: 'text-sky-700 dark:text-sky-400',
+    tone: 'text-info',
     items: [
       { icon: 'lucide:user-round-check', text: 'blog.licenseRequireAttribution' },
       { icon: 'lucide:refresh-cw', text: 'blog.licenseRequireShareAlike' },
@@ -27,7 +27,7 @@ const groups = [
   {
     label: 'blog.licenseDeny',
     icon: 'lucide:ban',
-    tone: 'text-rose-700 dark:text-rose-400',
+    tone: 'text-danger',
     items: [{ icon: 'lucide:shield-off', text: 'blog.licenseDenyExtraRestrictions' }],
   },
 ] as const
@@ -35,7 +35,7 @@ const groups = [
 
 <template>
   <section class="rounded-card border border-border bg-surface-1 p-4">
-    <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+    <p class="eyebrow text-fg-subtle">
       {{ t('blog.license') }}
     </p>
     <a :href="BLOG_LICENSE.url" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center gap-2">
@@ -44,7 +44,7 @@ const groups = [
     </a>
     <dl class="mt-4 space-y-3.5">
       <div v-for="group in groups" :key="group.label">
-        <dt class="flex items-center gap-1.5 text-micro font-semibold tracking-[0.1em] uppercase" :class="group.tone">
+        <dt class="eyebrow flex items-center gap-1.5" :class="group.tone">
           <Icon :name="group.icon" class="size-3.5 shrink-0" aria-hidden="true" />
           {{ t(group.label) }}
         </dt>
@@ -53,7 +53,7 @@ const groups = [
             <li
               v-for="item in group.items"
               :key="item.text"
-              class="flex items-start gap-1.5 text-[0.6875rem] leading-snug text-fg-muted"
+              class="flex items-start gap-1.5 text-micro leading-snug text-fg-muted"
             >
               <Icon :name="item.icon" class="mt-px size-3.5 shrink-0" :class="group.tone" aria-hidden="true" />
               <span>{{ t(item.text) }}</span>

@@ -68,6 +68,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxt/image',
     '@nuxt/icon',
+    'nuxt-qrcode',
     'nuxt-icons',
     'nuxt-lenis',
     'motion-v/nuxt',
@@ -75,14 +76,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
-  css: [
-    'lenis/dist/lenis.css',
-    'swiper/css',
-    'tippy.js/dist/tippy.css',
-    'tippy.js/animations/scale.css',
-    '~/assets/css/tippy.css',
-    '~/assets/css/main.css',
-  ],
+  css: ['lenis/dist/lenis.css', '~/assets/css/main.css'],
 
   alias: {
     '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
@@ -98,20 +92,12 @@ export default defineNuxtConfig({
         '@comark/vue/parse',
         '@comark/vue/plugins/shiki',
         '@comark/vue/plugins/toc',
-        'dayjs',
-        'dayjs/locale/zh-cn',
-        'dayjs/plugin/localizedFormat',
-        'dayjs/plugin/relativeTime',
-        'dayjs/plugin/timezone',
-        'dayjs/plugin/utc',
         'minisearch',
         'nuxt > @nuxt/devtools > @vitejs/devtools-kit/client',
         'nuxt > @nuxt/devtools > error-stack-parser-es',
         'nuxt > @nuxt/devtools > vite-plugin-vue-devtools/client',
         'nuxt > @nuxt/devtools > vite-plugin-vue-tracer/client/overlay',
-        'swiper/vue',
         'tailwind-merge',
-        'tippy.js',
         'verkit',
       ],
     },
@@ -198,6 +184,16 @@ export default defineNuxtConfig({
     format: ['avif', 'webp'],
   },
 
+  qrcode: {
+    options: {
+      variant: 'default',
+      radius: 0,
+      blackColor: '#101215',
+      whiteColor: '#ffffff',
+      disableNuxtUiIntegration: true,
+    },
+  },
+
   icon: {
     serverBundle: {
       collections: ['lucide'],
@@ -220,10 +216,6 @@ export default defineNuxtConfig({
     viewTransition: true,
     renderJsonPayloads: true,
     appManifest: true,
-    // @nuxtjs/i18n 10.6.0 imports `useRuntimeConfig` from Nitro's `#imports`.
-    // Nuxt 5 turns Nitro auto-imports off by default; keep them on until i18n
-    // stops relying on them.
-    nitroAutoImports: true,
   },
 
   typescript: {
@@ -244,10 +236,14 @@ export default defineNuxtConfig({
       updateArtifactUrl: 'https://dist.axlmc.org',
       gitlinkReleasesUrl: 'https://www.gitlink.org.cn/xinvxueyuan/Axolotl/releases/download',
       launcherDemo: launcherDemoEntry(),
+      // Page-view analytics are opt-in: cloud.umami.is is unreachable from some
+      // regions, so the default build ships without a third-party script. Point
+      // these at a self-hosted instance (and set NUXT_PUBLIC_UMAMI_ENABLED=true)
+      // to enable them.
       umami: {
-        enabled: true,
-        scriptUrl: 'https://cloud.umami.is/script.js',
-        websiteId: '26be554f-21dc-494e-bccd-025fd36d6fa1',
+        enabled: process.env.NUXT_PUBLIC_UMAMI_ENABLED === 'true',
+        scriptUrl: process.env.NUXT_PUBLIC_UMAMI_SCRIPT_URL ?? 'https://cloud.umami.is/script.js',
+        websiteId: process.env.NUXT_PUBLIC_UMAMI_WEBSITE_ID ?? '',
       },
     },
   },
@@ -297,6 +293,15 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    // nuxt-studio imports these three helpers from Nuxt's virtual #imports.
+    // Export only them explicitly; do not re-enable all Nitro auto-imports.
+    imports: {
+      imports: [
+        { name: 'createError', from: 'h3' },
+        { name: 'useRuntimeConfig', from: 'nitropack/runtime' },
+        { name: 'useStorage', from: 'nitropack/runtime' },
+      ],
+    },
     prerender: {
       crawlLinks: true,
       failOnError: true,
@@ -312,8 +317,6 @@ export default defineNuxtConfig({
         '/en/download/thanks',
         '/docs',
         '/en/docs',
-        '/articles',
-        '/en/articles',
         '/changelog',
         '/en/changelog',
         '/demo',

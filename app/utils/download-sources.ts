@@ -2,7 +2,7 @@ import { isValid } from 'verkit'
 
 export type ReleaseChannel = 'release' | 'beta'
 
-export interface ReleaseAsset {
+interface ReleaseAsset {
   name: string
   relative_path: string
   sha256?: string

@@ -13,9 +13,9 @@ const { sponsors } = useSponsors()
 </script>
 
 <template>
-  <div class="no-scrollbar sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pl-2" data-lenis-prevent>
+  <div class="scroll-area sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pl-2" data-lenis-prevent>
     <nav :aria-label="t('docs.onThisPage')">
-      <p class="font-mono text-micro font-semibold tracking-[0.18em] text-fg-subtle uppercase">
+      <p class="eyebrow text-fg-subtle">
         {{ t('docs.onThisPage') }}
       </p>
       <ul class="mt-4 space-y-2 border-l border-divider">
@@ -39,6 +39,6 @@ const { sponsors } = useSponsors()
         </li>
       </ul>
     </nav>
-    <SponsorSidebarCard v-if="sponsors.length" :sponsors="sponsors" :start-index="1" class="mt-6" />
+    <SponsorSidebarCard v-if="sponsors.length" :sponsors="sponsors" :start-index="1" dismissible class="mt-6" />
   </div>
 </template>

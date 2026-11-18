@@ -119,7 +119,7 @@ useHead(() => ({
         aria-hidden="true"
       />
       <div class="site-container relative py-16 sm:py-24">
-        <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+        <p class="eyebrow text-accent-strong">
           {{ t('support.eyebrow') }}
         </p>
         <h1 class="mt-4 max-w-3xl text-section leading-[1.2]">{{ t('support.title') }}</h1>
@@ -159,7 +159,7 @@ useHead(() => ({
           </span>
         </button>
       </div>
-      <p v-if="checkoutError" role="alert" class="mt-4 text-caption font-semibold text-accent">
+      <p v-if="checkoutError" role="alert" class="mt-4 text-caption font-semibold text-danger">
         {{ checkoutError }}
       </p>
     </section>
@@ -188,7 +188,7 @@ useHead(() => ({
     <section class="site-container py-14 sm:py-20">
       <div class="flex flex-wrap items-end justify-between gap-6">
         <div class="max-w-2xl">
-          <p class="font-mono text-micro font-semibold tracking-[0.22em] text-accent uppercase">
+          <p class="eyebrow text-accent-strong">
             {{ t('sponsors.eyebrow') }}
           </p>
           <h2 class="mt-4 text-section-sm">{{ t('sponsors.supportTitle') }}</h2>

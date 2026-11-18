@@ -7,19 +7,6 @@ import {
 } from './download-sources'
 
 export type DownloadStatus = 'idle' | 'pending' | 'success' | 'error'
-export type HeroDownloadState = 'loading' | 'ready' | 'error'
-
-export function shouldDegradeDownload(state: HeroDownloadState, elapsedMs: number, limitMs = 2500) {
-  return state === 'loading' && elapsedMs >= limitMs
-}
-
-export function hasLauncherDownloads(
-  release: LauncherRelease | null | undefined,
-  sources: readonly DownloadSourceDefinition[],
-) {
-  return Object.values(resolveLauncherDownloads(release, 'update-server', sources)).some(Boolean)
-}
-
 export function resolveLauncherDownloads(
   release: LauncherRelease | null | undefined,
   source: DownloadSourceId,

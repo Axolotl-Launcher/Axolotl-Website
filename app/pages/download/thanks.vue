@@ -21,12 +21,11 @@ const selectionValid = ref(false)
 const platform = ref<DownloadPlatform>('windows')
 const format = ref<DownloadFormat>('installer')
 const channel = ref<ReleaseChannel>('release')
-const autoStart = ref(false)
 const copied = ref(false)
 let copyTimer: ReturnType<typeof setTimeout> | undefined
 let downloadStarted = false
 
-const { release, links, status } = useLauncherDownloads(channel)
+const { release, links, status, refresh } = useLauncherDownloads(channel)
 const { selectedSource, setDownloadSource } = useDownloadSource()
 
 const link = computed(() =>
@@ -137,17 +136,27 @@ const steps = computed(() => [
   },
 ])
 
+const downloadFrames: HTMLIFrameElement[] = []
+
 function startDownloadFrame(url: string) {
   // A hidden frame keeps the attachment request alive while the SPA stays on
-  // the thank-you page.
+  // the thank-you page. Downloads only need the browser's download permission;
+  // the frame never runs site code.
   const frame = document.createElement('iframe')
   frame.hidden = true
+  frame.setAttribute('sandbox', 'allow-downloads')
+  frame.setAttribute('referrerpolicy', 'no-referrer')
+  frame.tabIndex = -1
   frame.src = url
   document.body.appendChild(frame)
+  downloadFrames.push(frame)
 }
 
 function maybeStartDownload() {
-  if (!autoStart.value || downloadStarted || !link.value) return
+  // Arriving here means the visitor confirmed a download, so start it without
+  // asking again. A reload or back/forward does not restart it because the
+  // guard lives for the life of the page; the direct link stays available.
+  if (!ready.value || !selectionValid.value || downloadStarted || !link.value) return
   downloadStarted = true
   startDownloadFrame(link.value)
 }
@@ -191,14 +200,17 @@ onMounted(() => {
     channel.value = route.query.channel
   }
   if (isDownloadSource(route.query.source)) setDownloadSource(route.query.source)
-  autoStart.value = route.query.start === '1'
 
   selectionValid.value = true
   ready.value = true
   maybeStartDownload()
 })
 
-onBeforeUnmount(() => clearTimeout(copyTimer))
+onBeforeUnmount(() => {
+  clearTimeout(copyTimer)
+  for (const frame of downloadFrames) frame.remove()
+  downloadFrames.length = 0
+})
 
 useSeoMeta({
   title: `${t('download.thanksTitle')}`,
@@ -220,14 +232,39 @@ useSeoMeta({
       </button>
 
       <header class="mt-6 text-center">
-        <span class="mx-auto grid size-14 place-items-center rounded-full bg-emerald-500/10 text-emerald-500">
-          <Icon name="lucide:check" class="size-6" aria-hidden="true" />
+        <span
+          class="mx-auto grid size-14 place-items-center rounded-full"
+          :class="
+            ready
+              ? selectionValid
+                ? 'bg-success-soft text-success'
+                : 'bg-danger-soft text-danger'
+              : 'bg-accent/10 text-accent'
+          "
+        >
+          <Icon
+            :name="!ready ? 'lucide:package' : selectionValid ? 'lucide:check' : 'lucide:alert-triangle'"
+            class="size-6"
+            aria-hidden="true"
+          />
         </span>
-        <h1 class="mt-5 text-section text-balance">{{ t('download.thanksTitle') }}</h1>
-        <p class="mt-4 text-lead text-fg-muted">{{ t('download.thanksLead') }}</p>
+        <h1 class="mt-5 text-section text-balance">
+          {{ ready && !selectionValid ? t('download.resultMissingTitle') : t('download.thanksTitle') }}
+        </h1>
+        <p v-if="!ready || selectionValid" class="mt-4 text-lead text-fg-muted">{{ t('download.thanksLead') }}</p>
       </header>
 
-      <template v-if="ready && selectionValid">
+      <div
+        v-if="ready && !selectionValid"
+        class="mx-auto mt-8 max-w-[43.5rem] rounded-panel border border-border bg-surface-1 p-6 text-center"
+      >
+        <p class="text-body text-fg-muted">{{ t('download.resultMissing') }}</p>
+        <BaseButton class="mt-5" :to="localePath({ path: '/download' })">
+          {{ t('download.resultStartOver') }}
+        </BaseButton>
+      </div>
+
+      <template v-else-if="ready && selectionValid">
         <div class="mx-auto mt-8 max-w-[43.5rem] rounded-panel border border-border bg-surface-1 p-5 text-left">
           <div class="flex items-center gap-3">
             <span class="grid size-10 shrink-0 place-items-center rounded-card bg-accent/10 text-accent">
@@ -249,14 +286,21 @@ useSeoMeta({
           <p v-else-if="status === 'pending' || status === 'idle'" class="mt-4 text-caption text-fg-subtle">
             {{ t('download.thanksPreparing') }}
           </p>
-          <p v-else-if="status === 'error'" class="mt-4 text-caption text-fg-subtle">
+          <p v-else-if="status === 'error'" class="mt-4 text-caption text-fg-muted">
             {{ t('download.error') }}
+            <button
+              type="button"
+              class="font-semibold text-accent-strong underline underline-offset-4"
+              @click="refresh()"
+            >
+              {{ t('download.retry') }}
+            </button>
           </p>
         </div>
 
         <dl class="mx-auto mt-4 grid max-w-[43.5rem] gap-3 text-left sm:grid-cols-2">
           <div class="rounded-card border border-border p-3">
-            <dt class="text-micro font-semibold tracking-[0.12em] text-fg-subtle uppercase">
+            <dt class="eyebrow text-fg-subtle">
               {{ t('download.resultChecksum') }}
             </dt>
             <dd class="mt-1.5 flex items-start gap-2">
@@ -278,7 +322,7 @@ useSeoMeta({
             </dd>
           </div>
           <div class="rounded-card border border-border p-3">
-            <dt class="text-micro font-semibold tracking-[0.12em] text-fg-subtle uppercase">
+            <dt class="eyebrow text-fg-subtle">
               {{ t('download.resultInstall') }}
             </dt>
             <dd class="mt-1.5 text-caption leading-relaxed text-fg-muted">{{ installHint }}</dd>
@@ -339,7 +383,7 @@ useSeoMeta({
       </section>
 
       <section class="mx-auto mt-14 max-w-[58rem]">
-        <p class="text-center font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+        <p class="eyebrow text-center text-fg-subtle">
           {{ t('sponsors.thanks') }}
         </p>
         <SponsorInline :sponsors="sponsors" class="mt-4" />

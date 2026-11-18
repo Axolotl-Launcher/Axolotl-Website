@@ -16,7 +16,7 @@ const genderIcon = genderIcons[main.gender] ?? 'lucide:users'
 
 <template>
   <section class="rounded-card border border-border bg-surface-1 p-4">
-    <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+    <p class="eyebrow text-fg-subtle">
       {{ t('blog.mainAuthor') }}
     </p>
     <div class="mt-3 flex items-start gap-3">
@@ -46,7 +46,7 @@ const genderIcon = genderIcons[main.gender] ?? 'lucide:users'
       </div>
     </div>
     <div v-if="coAuthors.length" class="mt-4 border-t border-divider pt-3">
-      <p class="font-mono text-micro font-semibold tracking-[0.16em] text-fg-subtle uppercase">
+      <p class="eyebrow text-fg-subtle">
         {{ t('blog.coAuthors') }}
       </p>
       <ul class="mt-2 flex flex-wrap gap-2">
@@ -57,7 +57,7 @@ const genderIcon = genderIcons[main.gender] ?? 'lucide:users'
         >
           <img :src="co.avatar" alt="" width="20" height="20" class="size-5 rounded-full object-cover" />
           <span class="text-micro font-semibold text-fg">{{ co.name }}</span>
-          <span class="rounded-pill bg-accent/10 px-1.5 py-0.5 text-[0.625rem] font-semibold text-accent">
+          <span class="rounded-pill bg-accent/10 px-1.5 py-0.5 text-micro font-semibold text-accent-strong">
             {{ t(co.roleKey) }}
           </span>
         </li>

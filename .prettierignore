@@ -4,8 +4,11 @@ node_modules
 pnpm-lock.yaml
 public
 content/docs
-content/articles
 packages
+
+# Playwright writes generated HTML reports and traces
+/playwright-report/
+/test-results/
 
 # Agent skill references are not part of the site build
 /.agents/

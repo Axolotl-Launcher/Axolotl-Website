@@ -18,9 +18,10 @@
   --color-brand-900: #831843;
   --color-brand-950: #500724;
 
-  --text-micro: 0.6875rem;
+  /* Micro labels must stay legible for CJK: 12px with modest tracking. */
+  --text-micro: 0.75rem;
   --text-micro--line-height: 1.4;
-  --text-micro--letter-spacing: 0.12em;
+  --text-micro--letter-spacing: 0.04em;
 
   --text-caption: 0.8125rem;
   --text-caption--line-height: 1.5;
@@ -47,10 +48,6 @@
   --text-display--line-height: 1.04;
   --text-display--letter-spacing: -0.045em;
 
-  --text-hero: clamp(3.25rem, 7vw, 5.4rem);
-  --text-hero--line-height: 0.98;
-  --text-hero--letter-spacing: -0.055em;
-
   --radius-btn: 0.75rem;
   --radius-card: 1.25rem;
   --radius-panel: 1.5rem;
@@ -75,7 +72,6 @@
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-surface-4: var(--surface-4);
-  --color-surface-5: var(--surface-5);
 
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
@@ -92,4 +88,11 @@
   --color-accent-soft: var(--accent-soft);
   --color-accent-glow: var(--accent-glow);
   --color-on-accent: var(--on-accent);
+
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
 }

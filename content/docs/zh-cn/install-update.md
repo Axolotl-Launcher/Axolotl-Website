@@ -91,7 +91,7 @@ AUR：`axolotl-launcher`（源码）/ `axolotl-launcher-bin`（预编译）
 </tr>
 </tbody></table>
 
-去 [GitHub Releases](https://github.com/Mystic-Stars/Axolotl/releases/latest) 或官网 [axlmc.org](https://www.axlmc.org) 下载。
+去 [GitHub Releases](https://github.com/Mystic-Stars/Axolotl/releases/latest) 或官网 [axlmc.org](/) 下载。
 
 > Arch 还可以用 Nix / Home-Manager 安装，详见仓库 README。
 > 

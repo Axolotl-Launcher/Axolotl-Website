@@ -4,7 +4,7 @@ export interface ChangelogChannel {
   matches: (entry: { version: string }) => boolean
 }
 
-export function isPrerelease(version: string): boolean {
+function isPrerelease(version: string): boolean {
   return version.includes('-')
 }
 

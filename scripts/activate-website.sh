@@ -32,7 +32,6 @@ for page in \
     public/download/index.html public/download/thanks/index.html \
     public/en/download/index.html public/en/download/thanks/index.html \
     public/docs/index.html public/en/docs/index.html \
-    public/articles/index.html public/en/articles/index.html \
     public/changelog/index.html public/en/changelog/index.html \
     public/demo/index.html public/en/demo/index.html \
     public/support/index.html public/en/support/index.html \
@@ -77,17 +76,6 @@ if [[ -d "$release_directory/public/_nuxt" ]]; then
     rsync -rpt --chmod=D755,F644 \
         "$release_directory/public/_nuxt/" "$site_directory/shared/_nuxt/"
 fi
-
-# Transitional compatibility: the pre-SSR OpenResty config used the release
-# root as its document root. Relative links keep that layout working until the
-# new config (root `current/public`) is reloaded, so the cutover has no outage.
-for entry in "$release_directory/public"/*; do
-    [[ -e "$entry" ]] || continue
-    name=${entry##*/}
-    if [[ ! -e "$release_directory/$name" && ! -L "$release_directory/$name" ]]; then
-        ln -s "public/$name" "$release_directory/$name"
-    fi
-done
 
 previous_target=$(readlink "$site_directory/current" 2>/dev/null || true)
 
