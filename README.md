@@ -9,8 +9,8 @@ The official website for [Axolotl Launcher](https://axlmc.org). It is a hybrid N
 - Tailwind CSS 4 with site-owned design tokens (light, dark and OLED themes)
 - `@nuxt/content` collections for documentation and blog posts
 - `nuxt-studio` at `/_studio`, publishing through GitHub OAuth
-- `@comark/vue` and `comark` for Markdown parsing and component rendering
-- `zod` for request and frontmatter validation, `@vueuse/core` for browser utilities
+- `@comark/vue` for Markdown parsing and component rendering
+- `@vueuse/core` for browser utilities
 - `ultracite` for the formatter base and the `pnpm check` wrapper
 - `@nuxt/icon` with the Lucide set for UI icons, plus `nuxt-icons` for local brand SVGs in `app/assets/icons`
 - `@nuxtjs/i18n` with `zh-CN` (default, no prefix) and `en` (`/en/*`)
@@ -24,10 +24,8 @@ The official website for [Axolotl Launcher](https://axlmc.org). It is a hybrid N
 - `@nuxt/content` owns the content database and collection schemas in `content.config.ts`. Nuxt Studio edits those collections; the public docs page keeps rendering raw Markdown with `@comark/vue`, including its TOC and Shiki plugins.
 - `nuxt-studio` must run on a live Nitro server for OAuth, sessions and Git writes. The public pages remain prerendered, but `/_studio` and `/__nuxt_studio/*` are server-rendered and excluded from search indexes and the sitemap.
 - `motion-v/nuxt`, `nuxt-lenis`, `nuxt-icons`, `@vueuse/nuxt`, `@nuxt/image`, `@nuxt/icon`, `@nuxtjs/device`, `@nuxtjs/i18n` and `@nuxtjs/seo` are consumed as Nuxt modules.
-- `swiper`, `tippy.js` and `dayjs` stay as direct libraries. `nuxt-swiper` pins Swiper 12 while this site uses Swiper 14; there is no maintained Nuxt module for Tippy; and `@nuxtjs/dayjs` mutates a global locale, which is unsafe during prerender. They are wired through small local plugins instead.
+- Carousels and dates use native elements and `Intl.DateTimeFormat`; no Swiper or dayjs plugin is registered.
 - Tailwind CSS 4 uses `@tailwindcss/vite`, the supported Nuxt 4 integration; the older Nuxt Tailwind module targets the previous setup.
-
-`experimental.nitroAutoImports` stays enabled because `@nuxtjs/i18n` 10.6.0 still imports `useRuntimeConfig` from Nitro's `#imports`; remove it once i18n supports the Nuxt 5 defaults.
 
 DevTools 4 requires Vite 8 and therefore Nuxt 4.5+. It only exists in development; press `Shift` + `Alt` + `D` in the browser to open it.
 
@@ -44,6 +42,7 @@ Useful checks:
 
 ```bash
 pnpm lint
+pnpm check:knip
 pnpm typecheck
 pnpm test
 pnpm build
@@ -59,7 +58,7 @@ pnpm test:e2e
 The collections are defined in `content.config.ts`:
 
 - `docs` — `content/docs/<locale>/*.md`
-- `blog` — `content/blog/<locale>/<slug>.md`, one canonical file per post; the `/articles` page is a second view of this collection
+- `blog` — `content/blog/<locale>/<slug>.md`, one canonical file per post; `/blog` is the only blog list
 
 The public site reads docs and blog posts through `queryCollection`.
 
@@ -69,7 +68,7 @@ Editors sign in at `/_studio` with GitHub. Register both callback URLs on the OA
 
 Create a file in `content/blog/<locale>/` from Studio's document menu, or edit an existing post. Use a lowercase kebab-case slug as the filename and keep `title`, `description`, `locale`, `publishedAt`, `updatedAt`, `authors`, `tags`, `cover`, `draft` and `sponsored` in the frontmatter.
 
-Studio saves unpublished edits as browser-local drafts, checks them against Git, and publishes all changed files as one commit. Previous revisions are Git commits; the article links to its GitHub commit history. The old `/blog/<slug>/versions` URLs permanently redirect to the article.
+Studio saves unpublished edits as browser-local drafts, checks them against Git, and publishes all changed files as one commit. Previous revisions are Git commits; the article links to its GitHub commit history.
 
 ## Support checkout
 
@@ -117,8 +116,8 @@ The production host runs OpenResty in front of the `axlmc-website` systemd servi
    The deploy workflow writes them to `/www/wwwroot/axlmc.org/studio.env`, which the systemd unit reads after `/etc/axlmc-website.env`.
 
 4. Allow the deployment user to restart the service without a password, for example with a sudoers rule limited to `systemctl restart axlmc-website`.
-5. Run a first deploy. Until OpenResty is changed, the old configuration keeps serving the release through the compatibility links created by the activation script.
-6. Install `deploy/openresty/axlmc.org.conf` and reload OpenResty. Prerendered files are served from `current/public`, Studio/API requests proxy to `127.0.0.1:3000`, and unknown routes fall back to Nitro.
+5. Install `deploy/openresty/axlmc.org.conf` and reload OpenResty, then run the first deploy.
+6. Confirm the release is active and the Node service is healthy. Prerendered files are served from `current/public`, Studio/API requests proxy to `127.0.0.1:3000`, and unknown routes fall back to Nitro.
 7. `systemctl enable --now axlmc-website` once the first release is active.
 
 `scripts/activate-website.sh` validates the new release, switches the `current` symlink, restarts the service and waits for its health check. If the restart or check fails, it restores the previous release and restarts again.
@@ -130,7 +129,7 @@ The production host runs OpenResty in front of the `axlmc-website` systemd servi
 | `app/`              | Pages, components, composables and styles                           |
 | `content/`          | Docs and blog posts                                                 |
 | `content.config.ts` | Nuxt Content collections and Studio form schemas                    |
-| `server/`           | Nitro API routes and redirects for retired blog version URLs        |
+| `server/`           | Nitro API routes                                                    |
 | `shared/`           | Types, constants and pure helpers shared by app, server and scripts |
 | `scripts/`          | Index generation, media checks, deployment activation               |
 | `deploy/`           | OpenResty and systemd configuration                                 |

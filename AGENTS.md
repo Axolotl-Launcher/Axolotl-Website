@@ -24,10 +24,11 @@ Read the applicable instruction files before editing, even when your session sta
 - `pnpm check:media` verifies every local image, font and social-preview reference in the prerendered output
 - `pnpm test` for Vitest unit tests
 - `pnpm typecheck`, `pnpm lint`, `pnpm fix`
+- `pnpm check:knip` fails on unused files, exports and dependencies; it runs as a CI gate
 - `pnpm test:e2e` builds and runs Playwright against the prerendered public pages; install browsers once with `pnpm exec playwright install chromium`
-- `pnpm prepr` runs lint, typecheck, unit tests and the production build
+- `pnpm prepr` runs lint, the Knip unused-code gate, typecheck, unit tests and the production build
 
-Nuxt DevTools 4 is installed and enabled in development (`Shift` + `Alt` + `D`). Keep `future.compatibilityVersion: 5`; `experimental.nitroAutoImports` is a temporary compatibility exception for `@nuxtjs/i18n` 10.6.0 and should be removed once i18n supports the Nuxt 5 defaults.
+Nuxt DevTools 4 is installed and enabled in development (`Shift` + `Alt` + `D`). Keep `future.compatibilityVersion: 5`.
 
 The download page uses `@nuxtjs/device` for client-side OS detection. Static prerendering has no request user agent, so `device.defaultUserAgent` is pinned to Windows and the recommendation waits for hydration before switching. Supported desktop systems get a direct download CTA; mobile, crawler and unknown systems fall back to Windows.
 
@@ -44,7 +45,7 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 - `app/utils/` and `app/composables/` — download resolution, i18n helpers, docs navigation and theme state.
 - `content/docs/` — local Markdown documentation, one directory per content locale.
 - `content.config.ts` — Nuxt Content collections and Studio form schemas for docs and blog posts.
-- `server/` — Nitro API routes and legacy URL redirects.
+- `server/` — Nitro API routes.
 - `i18n/locales/` — zh-CN and en-US UI messages (`en` is the URL prefix, `en-US` is the content locale).
 - `public/` — static assets, favicons and the launcher demo build. `public/launcher-demo/` is fetched by `scripts/fetch-launcher-demo.ts` and ignored.
 - `shared/` — types and constants shared by the site and build scripts.
@@ -61,12 +62,12 @@ Node and pnpm versions are pinned in `.nvmrc` and `package.json`. The user perfo
 - Use existing package scripts and relevant tests during development; see the Development section above.
 - Before a frontend commit, run `pnpm fix`; inspect the diff, preserve user changes, and stage corrected files without unrelated formatting changes.
 - Run full pre-PR workflows only when explicitly requested. If the user indicates they are about to create a PR without requesting checks, ask whether to run them. Do not repeat them after each prompt.
-- Pre-PR command: `pnpm prepr`. It runs the site lint, typecheck, tests and production build.
+- Pre-PR command: `pnpm prepr`. It runs the site lint, Knip, typecheck, tests and production build.
 
-Documentation is repository-authored Markdown under `content/docs/<locale>/`; blog posts are `content/blog/<locale>/<slug>.md`, one canonical file per post. Both are Nuxt Content collections defined in `content.config.ts` and edited through Studio at `/_studio`. The `/articles` page lists the blog collection; it is not a separate content source:
+Documentation is repository-authored Markdown under `content/docs/<locale>/`; blog posts are `content/blog/<locale>/<slug>.md`, one canonical file per post. Both are Nuxt Content collections defined in `content.config.ts` and edited through Studio at `/_studio`. The `/blog` page is the only blog list:
 
 - Each docs file keeps `title`, `description`, `locale`, `slug`, `group`, `order` and `updatedAt` in its frontmatter.
-- Nuxt Content uses its own Zod 3 export in `content.config.ts`; application validation uses the Zod 4 schemas in `shared/schemas/`. Do not import the app schema into `content.config.ts`.
+- Nuxt Content uses its own Zod 3 export in `content.config.ts`. Do not import app-level schemas into it.
 - The public docs page queries the collection and renders `rawbody` with Comark, preserving the TOC and Shiki plugins.
 - Studio keeps unpublished edits as browser-local drafts, detects conflicts against Git, and publishes all changed files as a Git commit to the configured branch.
 - Blog history is Git history. Do not add timestamped copies of posts, a generated blog index, or a custom publish endpoint; the article links to the file's GitHub commit history.

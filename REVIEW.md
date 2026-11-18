@@ -109,7 +109,7 @@ When you find a mistake: correct the conclusion → explain what the earlier sta
 
 ## 9. Reusing workflows
 
-- Prefer the existing assets: the project skills under [.agents/skills/](.agents/skills/), the and the existing `pnpm` scripts (`check-agents`, `fix`, `lint`, `test`, `build`, `prepr`).
+- Prefer the existing assets: the project skills under [.agents/skills/](.agents/skills/), the and the existing `pnpm` scripts (`check-agents`, `fix`, `lint`, `check:knip`, `test`, `build`, `prepr`).
 - **Do not create long-term scripts for one-off verification**; clean up temporary artifacts when finishing, and write intermediate and archived artifacts to `.agents/plans/` (see section 10).
 - Proven reusable procedures:
   - **Worktree isolation**: give each parallel task its own worktree so they do not overwrite each other.

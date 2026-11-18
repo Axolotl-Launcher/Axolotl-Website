@@ -14,7 +14,7 @@ The site is a hybrid Nuxt build. OpenResty serves the prerendered files and prox
 └── .deploy.lock
 ```
 
-`scripts/activate-website.sh` creates relative links from the release root to `public/*` so a pre-SSR OpenResty configuration keeps working during the first cutover. New configurations should use `current/public` as the document root.
+OpenResty must use `current/public` as the document root.
 
 ## First-time setup
 
@@ -23,6 +23,7 @@ The site is a hybrid Nuxt build. OpenResty serves the prerendered files and prox
 3. Create `/etc/axlmc-website.env`, owned by root with mode `600`, for optional values:
    - `NUXT_STUDIO_GIT_GITHUB_TOKEN`
    - `NUXT_AFDIAN_USER_ID` / `NUXT_AFDIAN_TOKEN`
+   - `NUXT_PUBLIC_UMAMI_ENABLED`, `NUXT_PUBLIC_UMAMI_SCRIPT_URL`, `NUXT_PUBLIC_UMAMI_WEBSITE_ID` — analytics are opt-in and read at build time; point them at a self-hosted Umami instance. Without them the site loads no third-party analytics script.
 4. Create the GitHub OAuth App with callbacks `https://axlmc.org/__nuxt_studio/auth/github` and `http://localhost:3000/__nuxt_studio/auth/github`. Studio requests `user:email` and, because the repository is private, `repo`.
 5. Add these repository values in GitHub:
    - variable `NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID`
@@ -38,9 +39,8 @@ The site is a hybrid Nuxt build. OpenResty serves the prerendered files and prox
    deploy ALL=(root) NOPASSWD: /usr/bin/systemctl restart axlmc-website
    ```
 
-7. Run a first deploy. The old OpenResty configuration still works because activation links the public files from the release root.
-8. Install `openresty/axlmc.org.conf` with the site's certificate paths and reload OpenResty.
-9. `systemctl enable --now axlmc-website` once the first release is active.
+7. Install `openresty/axlmc.org.conf` with the site's certificate paths and reload OpenResty, then run the first deploy.
+8. `systemctl enable --now axlmc-website` once the first release is active.
 
 ## Deploy flow
 
@@ -56,7 +56,7 @@ A push to `main` that changes app, content, `deploy/` or configuration files run
 
 Production editors sign in at `/_studio`. Publishing commits Markdown to the repository through the GitHub Contents API; it never writes to the production filesystem. The resulting push rebuilds the site.
 
-Blog posts are one file per post at `content/blog/<locale>/<slug>.md`. Create or edit the file in Studio; publishing commits it to Git and triggers the normal deploy. Previous revisions are available from the article's GitHub commit-history link.
+Blog posts are one file per post at `content/blog/<locale>/<slug>.md`. Create or edit the file in Studio; publishing commits it to Git and triggers the normal deploy. The repository's Git history is the revision history.
 
 ## Troubleshooting
 
