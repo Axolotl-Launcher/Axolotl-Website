@@ -48,6 +48,7 @@ function isActive(slug: string) {
   <aside class="hidden lg:block">
     <div class="scroll-area sticky top-24 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
       <DocsSearch />
+      <SponsorSidebarCard v-if="sponsors.length" :sponsors="sponsors" dismissible class="mt-4" />
       <nav class="mt-5 space-y-6" :aria-label="t('docs.title')">
         <div v-for="group in groups" :key="group.name">
           <p class="text-caption font-semibold text-fg-subtle">{{ group.name }}</p>
@@ -68,7 +69,6 @@ function isActive(slug: string) {
           </ul>
         </div>
       </nav>
-      <SponsorSidebarCard v-if="sponsors.length" :sponsors="sponsors" dismissible class="mt-6" />
     </div>
   </aside>
 </template>
