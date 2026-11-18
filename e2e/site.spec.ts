@@ -260,14 +260,23 @@ test.describe('downloads', () => {
     await page.getByRole('button', { name: '继续' }).click()
     await expect(page.getByRole('heading', { name: '确认下载内容' })).toBeVisible()
 
-    // Switching steps must not resize the panel, or the actions move under the
+    // Switching steps must not resize the wizard, or the actions move under the
     // pointer between the click and the next tap.
-    const panel = page.locator('main .rounded-panel').nth(1)
-    const confirmation = await panel.boundingBox()
+    const wizard = page.locator('[data-download-mode="wizard"]')
+    const confirmation = await wizard.boundingBox()
     await page.getByRole('button', { name: '返回' }).click()
-    const options = await panel.boundingBox()
+    const options = await wizard.boundingBox()
     expect(Math.round(options!.height)).toBe(Math.round(confirmation!.height))
 
+    // Stepping back from the first step returns to the confirmation card, which
+    // is its own container and reflows the page below it.
+    await page.getByRole('button', { name: '返回' }).click()
+    await page.getByRole('button', { name: '返回' }).click()
+    await expect(page.locator('[data-download-mode="quick"]')).toBeVisible()
+    await expect(wizard).toHaveCount(0)
+
+    await page.getByRole('button', { name: '更改下载选项' }).click()
+    await page.getByRole('button', { name: '继续' }).click()
     await page.getByRole('button', { name: '继续' }).click()
     await page.getByRole('button', { name: '开始下载' }).click()
     await expect(page).toHaveURL(/\/download\/thanks/)
