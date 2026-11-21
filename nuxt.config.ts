@@ -1,258 +1,342 @@
-import { existsSync, readdirSync, realpathSync } from 'node:fs'
-import { createRequire } from 'node:module'
-import { dirname, join } from 'node:path'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import type { Plugin } from 'vite'
-import svgLoader from 'vite-svg-loader'
+import tailwindcss from '@tailwindcss/vite'
 
-import { SUPPORTED_SITE_LOCALES } from './src/locales/site'
+const themeInit = `(function(){try{var m=localStorage.getItem('axolotl-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var o=m==='oled';var t=o?'oled':d?'dark':'light';document.documentElement.dataset.theme=t;document.documentElement.classList.toggle('dark',d||o);document.documentElement.classList.toggle('light',!d&&!o);document.documentElement.style.colorScheme=d?'dark':'light'}catch(e){}})()`
 
-const UI_PUBLIC_ENTRY = fileURLToPath(new URL('./packages/ui/index.ts', import.meta.url))
-
-/**
- * A prerendered page paints from its HTML and CSS alone, but Nuxt starts the app module
- * (~100 KB compressed, plus everything it imports) from `<head>`, where on slow
- * connections it competed with that first paint. The page now starts it once the
- * document is parsed and its first contentful paint is on screen (at the latest after
- * 3 s, or right away in a background tab, which paints nothing); hydration then
- * proceeds as before.
- */
-function deferAppEntry(html: string) {
-    const entry = html.match(/<script type="module" src="([^"]+)" crossorigin><\/script>/)
-    if (!entry) return html
-    const src = JSON.stringify(entry[1])
-    const loader = `<script>(function(){var d=0;function l(){if(d)return;d=1;var s=document.createElement('script');s.type='module';s.crossOrigin='anonymous';s.src=${src};document.head.appendChild(s)}function g(){if(document.visibilityState==='hidden')return l();var P=window.PerformanceObserver,t=P&&P.supportedEntryTypes;if(t&&t.indexOf('paint')>=0){new P(function(list,o){if(list.getEntriesByName('first-contentful-paint').length){o.disconnect();setTimeout(l,0)}}).observe({type:'paint',buffered:true});setTimeout(l,3000)}else requestAnimationFrame(function(){setTimeout(l,0)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',g);else g()})()</script>`
-    return html
-        .replace(entry[0], loader)
-        .replace(/<link rel="modulepreload"[^>]*>/g, (link) =>
-            link.includes(entry[1]) ? '' : link,
-        )
-}
-
-/** The characters Inter's Latin subset keeps (Google Fonts' `latin` range plus a few symbols). */
-const INTER_LATIN_RANGE =
-    'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2713, U+FEFF, U+FFFD'
-
-/**
- * Serves the Inter weights `@modrinth/assets` loads from Modrinth's CDN (vendored
- * packages/assets/styles/inter.scss) as self-hosted Latin subsets in public/fonts/inter:
- * about 26 KB each instead of about 100 KB from a third-party origin. Chinese text never
- * used Inter's glyphs and still falls back to the system fonts.
- */
-function selfHostedInter(): Plugin {
-    return {
-        name: 'axolotl:self-hosted-inter',
-        // Runs after Sass has compiled the stylesheet that imports inter.scss.
-        transform(code, id) {
-            if (!/\/packages\/assets\/omorphia\.scss(\?|$)/.test(id)) return
-            return code.replace(/@font-face\s*\{[^}]*\}/g, (rule) => {
-                const file = rule.match(/fonts\/inter\/(Inter-\w+)\.woff2/)?.[1]
-                const weight = rule.match(/font-weight:\s*(\d+)/)?.[1]
-                if (!file || !weight) return rule
-                return `@font-face{font-family:inter;font-style:normal;font-weight:${weight};font-display:swap;src:url(/fonts/inter/${file}.latin.woff2) format("woff2");unicode-range:${INTER_LATIN_RANGE}}`
-            })
-        },
-    }
-}
-
-/**
- * The browser build of the vue-router Nuxt itself uses. packages/ui depends on its own
- * 4.x copy, and its composables (useRoute) read that copy's injection keys, so inside
- * the launcher preview, whose router comes from Nuxt's copy, they found no route.
- */
-const NUXT_VUE_ROUTER = join(
-    dirname(
-        createRequire(
-            join(
-                realpathSync(fileURLToPath(new URL('./node_modules/nuxt', import.meta.url))),
-                'package.json',
-            ),
-        ).resolve('vue-router'),
-    ),
-    'dist/vue-router.js',
-)
-/**
- * The entry page of the launcher's web demo build that scripts/fetch-launcher-demo.mjs
- * put in public/launcher-demo/<version>/, which /demo frames; empty when there is none and
- * /demo shows a download link. The script writes the entry page last, so it marks a
- * complete build.
- */
+/** The entry page of the launcher web demo build, or an empty string when none is installed. */
 function launcherDemoEntry() {
-    const directory = fileURLToPath(new URL('./src/public/launcher-demo', import.meta.url))
-    const version = existsSync(directory)
-        ? readdirSync(directory).find((name) =>
-              existsSync(join(directory, name, 'demo/index.html')),
-          )
-        : undefined
-    return version ? `/launcher-demo/${version}/demo/index.html` : ''
+  const directory = fileURLToPath(new URL('./public/launcher-demo', import.meta.url))
+  const version = existsSync(directory)
+    ? readdirSync(directory).find((name) => existsSync(join(directory, name, 'demo/index.html')))
+    : undefined
+  return version ? `/launcher-demo/${version}/demo/index.html` : ''
 }
 
-const SITE_URL = 'https://axlmc.org'
-// The only defaults for infrastructure addresses. Deployments override each one with
-// its NUXT_PUBLIC_* variable; the rest of the source reads runtimeConfig.public.
-const GITHUB_URL = 'https://github.com/Axolotl-Launcher/Axolotl'
-const UPDATE_SERVER_URL = 'https://update.axlmc.org'
-const UPDATE_ARTIFACT_URL = 'https://dist.axlmc.org'
-const GITLINK_RELEASES_URL = 'https://www.gitlink.org.cn/xinvxueyuan/Axolotl/releases/download'
+/** Public blog routes, one per canonical Markdown file. */
+function blogPostRoutes() {
+  const base = fileURLToPath(new URL('./content/blog', import.meta.url))
+  if (!existsSync(base)) return []
+
+  return (
+    [
+      ['zh-cn', '/blog'],
+      ['en-us', '/en/blog'],
+    ] as const
+  ).flatMap(([directory, prefix]) => {
+    const path = join(base, directory)
+    if (!existsSync(path)) return []
+    return readdirSync(path)
+      .filter((name) => name.endsWith('.md'))
+      .filter((name) => !/^draft:\s*true\s*$/m.test(readFileSync(join(path, name), 'utf8')))
+      .map((name) => `${prefix}/${name.slice(0, -3)}`)
+  })
+}
 
 export default defineNuxtConfig({
-    srcDir: 'src/',
-    devtools: { enabled: false },
-    dir: {
-        // Nuxt 4 resolves `dir.public` against the project root, while this site
-        // keeps every source directory (including its static assets) under `src/`.
-        public: 'src/public',
+  compatibilityDate: '2026-11-13',
+  // Opt into the Nuxt 5 behavior preview: Vite Environment API, case-sensitive
+  // routing, normalized page names, client-side payload extraction and the
+  // other v5 defaults documented in the upgrade guide.
+  future: {
+    compatibilityVersion: 5,
+  },
+  devtools: {
+    enabled: true,
+    componentInspector: true,
+    vueDevTools: true,
+    viteInspect: true,
+    dataInspector: true,
+    timeline: { enabled: true },
+    mcp: 'auto',
+  },
+
+  // Nuxt 4.6.4 resolves an unset devServer.host to {} and the CLI then throws
+  // `options.hostname.toLowerCase is not a function`. Pin the local host.
+  devServer: {
+    host: 'localhost',
+  },
+
+  modules: [
+    '@nuxt/devtools',
+    '@nuxtjs/device',
+    '@nuxt/content',
+    'nuxt-studio',
+    '@nuxtjs/i18n',
+    '@nuxtjs/seo',
+    '@nuxt/image',
+    '@nuxt/icon',
+    'nuxt-qrcode',
+    'nuxt-icons',
+    'nuxt-lenis',
+    'motion-v/nuxt',
+    '@nuxt/eslint',
+    '@vueuse/nuxt',
+  ],
+
+  css: ['lenis/dist/lenis.css', '~/assets/css/main.css'],
+
+  alias: {
+    '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      // Vite discovers these on first use in development. Listing them keeps
+      // the optimizer from re-bundling and reloading the page mid-session.
+      include: [
+        '@comark/vue',
+        '@comark/vue/parse',
+        '@comark/vue/plugins/shiki',
+        '@comark/vue/plugins/toc',
+        'minisearch',
+        'nuxt > @nuxt/devtools > @vitejs/devtools-kit/client',
+        'nuxt > @nuxt/devtools > error-stack-parser-es',
+        'nuxt > @nuxt/devtools > vite-plugin-vue-devtools/client',
+        'nuxt > @nuxt/devtools > vite-plugin-vue-tracer/client/overlay',
+        'tailwind-merge',
+        'verkit',
+      ],
     },
-    app: {
-        head: {
-            // Theme classes are applied by the pre-hydration script below. Keeping
-            // them out of htmlAttrs prevents Nuxt from re-adding a stale class.
-            htmlAttrs: {
-                class: 'accent-pink',
-                lang: 'zh-CN',
-            },
-            title: 'Axolotl Launcher - 免费开源的 Minecraft 启动器',
-            // 在 body 渲染前同步应用已保存的主题偏好，避免浅色用户首屏闪深色
-            script: [
-                {
-                    key: 'theme-init',
-                    innerHTML: `(function(){try{var t=localStorage.getItem('axolotl-theme');var r=t;if(!r||r==='system'){r=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark'}var d=document.documentElement;d.classList.remove('light-mode','dark-mode','oled-mode');d.classList.add(r==='light'?'light-mode':r==='oled'?'oled-mode':'dark-mode');d.style.colorScheme=r==='light'?'light':'dark'}catch(e){}})()`,
-                },
-            ],
-            link: [
-                { rel: 'icon', type: 'image/png', href: '/axolotl.png' },
-                { rel: 'apple-touch-icon', type: 'image/png', href: '/axolotl.png' },
-            ],
-        },
+  },
+
+  app: {
+    head: {
+      meta: [
+        { name: 'color-scheme', content: 'light dark' },
+        { name: 'theme-color', content: '#ebebeb', media: '(prefers-color-scheme: light)' },
+        { name: 'theme-color', content: '#101215', media: '(prefers-color-scheme: dark)' },
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      script: [{ innerHTML: themeInit, tagPosition: 'head' }],
     },
-    runtimeConfig: {
-        public: {
-            siteUrl: SITE_URL,
-            launcherDemo: launcherDemoEntry(),
-            githubUrl: process.env.NUXT_PUBLIC_GITHUB_URL || GITHUB_URL,
-            updateServerUrl: process.env.NUXT_PUBLIC_UPDATE_SERVER_URL || UPDATE_SERVER_URL,
-            updateArtifactUrl: process.env.NUXT_PUBLIC_UPDATE_ARTIFACT_URL || UPDATE_ARTIFACT_URL,
-            gitlinkReleasesUrl:
-                process.env.NUXT_PUBLIC_GITLINK_RELEASES_URL || GITLINK_RELEASES_URL,
-        },
+  },
+
+  hooks: {
+    // Nuxt Content derives page paths from the file location, which includes
+    // the locale directory. Studio previews documents at their `path`, so map
+    // those internal paths to the actual public routes.
+    'content:file:afterParse'(ctx) {
+      const content = ctx.content as Record<string, unknown>
+      const stem = typeof content.stem === 'string' ? content.stem : ''
+      const locale = typeof content.locale === 'string' ? content.locale : ''
+      const [collection, directory, ...rest] = stem.split('/')
+      const slug = rest.join('/')
+      if (!slug || (directory !== 'zh-cn' && directory !== 'en-us')) return
+      const prefix = locale === 'en-US' || directory === 'en-us' ? '/en' : ''
+      if (collection === 'docs') content.path = `${prefix}/docs/${slug}`
+      else if (collection === 'blog') content.path = `${prefix}/blog/${slug}`
     },
-    experimental: {
-        // Keep the app manifest disabled for the static website. Nuxt's runtime
-        // composable still contains a server-side `#app-manifest` import, which
-        // Vite tries to resolve during dev even when the feature is disabled.
-        appManifest: false,
+  },
+
+  linkChecker: {
+    failOnError: true,
+    // Studio is served by Node and requires a session, so it is neither
+    // prerendered nor inspectable during the static scan.
+    excludeLinks: ['/_studio', '/_studio/**', '/__nuxt_studio/**'],
+    excludePages: ['/_studio/**', '/__nuxt_studio/**'],
+    report: { json: true, markdown: true },
+  },
+
+  studio: {
+    route: '/_studio',
+    repository: {
+      provider: 'github',
+      owner: 'Axolotl-Launcher',
+      repo: 'Axolotl-Website',
+      branch: 'main',
+      private: true,
     },
-    vite: {
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    silenceDeprecations: ['import'],
-                },
-            },
-        },
-        resolve: {
-            alias: [{ find: /^@modrinth\/ui$/, replacement: UI_PUBLIC_ENTRY }],
-            dedupe: ['vue'],
-        },
-        plugins: [
-            selfHostedInter(),
-            svgLoader({
-                svgoConfig: {
-                    plugins: [
-                        {
-                            name: 'preset-default',
-                            params: {
-                                overrides: {
-                                    removeViewBox: false,
-                                    cleanupIds: { minify: false },
-                                },
-                            },
-                        },
-                    ],
-                },
-            }),
-        ],
+    // Studio's own UI locale codes are its bundled editor locales, not the
+    // site's content locales. It ships `zh`, not `zh-CN`; passing `zh-CN` makes
+    // its lazy loader request a missing `../locales/zh-CN.json`.
+    i18n: { defaultLocale: 'zh' },
+    git: { commit: { messagePrefix: 'content:' } },
+  },
+
+  routeRules: {
+    '/_studio': { ssr: true, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+    '/_studio/**': { ssr: true, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+    '/__nuxt_studio/**': { ssr: true, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
+  },
+
+  i18n: {
+    strategy: 'prefix_except_default',
+    defaultLocale: 'zh-CN',
+    baseUrl: 'https://axlmc.org',
+    locales: [
+      { code: 'zh-CN', language: 'zh-CN', name: '简体中文', file: 'zh-CN.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en-US.json' },
+    ],
+    detectBrowserLanguage: false,
+    compilation: {
+      strictMessage: false,
     },
-    css: ['~/assets/styles/tailwind.css'],
-    postcss: {
-        plugins: {
-            tailwindcss: {},
-            autoprefixer: {},
-        },
+  },
+
+  image: {
+    // ipxStatic only writes variants during prerendering. In dev nothing serves
+    // `/_ipx/*`, so every NuxtImg request would 404; use the on-demand IPX server.
+    provider: process.env.NODE_ENV === 'production' ? 'ipxStatic' : 'ipx',
+    format: ['avif', 'webp'],
+  },
+
+  qrcode: {
+    options: {
+      variant: 'default',
+      radius: 0,
+      blackColor: '#101215',
+      whiteColor: '#ffffff',
+      disableNuxtUiIntegration: true,
     },
-    nitro: {
-        prerender: {
-            crawlLinks: false,
-            // /llms.txt, /robots.txt and /sitemap.xml are server routes, so they need
-            // explicit prerender entries to end up as static files in the generated output.
-            routes: [
-                '/',
-                '/demo',
-                '/changelog',
-                '/terms',
-                '/privacy',
-                '/llms.txt',
-                '/robots.txt',
-                '/sitemap.xml',
-            ],
-        },
-        hooks: {
-            'prerender:generate'(route) {
-                if (typeof route.contents === 'string' && route.fileName?.endsWith('.html')) {
-                    route.contents = deferAppEntry(route.contents)
-                }
-            },
-        },
+  },
+
+  icon: {
+    serverBundle: {
+      collections: ['lucide'],
     },
-    routeRules: {
-        '/': { static: true },
-        '/changelog': { static: true },
-        '/terms': { static: true },
-        '/privacy': { static: true },
-        '/demo': { static: true },
+    clientBundle: {
+      scan: true,
+      sizeLimitKb: 256,
     },
-    typescript: {
-        shim: false,
-        strict: true,
-        typeCheck: false,
+  },
+
+  device: {
+    // Static pages have no request user-agent during prerendering. Render the
+    // Windows fallback first, then let the client detect the real OS after
+    // hydration without changing the server-rendered markup.
+    defaultUserAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  },
+
+  experimental: {
+    viewTransition: true,
+    renderJsonPayloads: true,
+    appManifest: true,
+  },
+
+  typescript: {
+    strict: true,
+    typeCheck: false,
+    shim: false,
+  },
+
+  runtimeConfig: {
+    afdian: {
+      userId: '',
+      token: '',
     },
-    compatibilityDate: '2025-01-01',
-    telemetry: false,
-    hooks: {
-        'vite:extendConfig'(config, { isClient }) {
-            // Client only: server rendering keeps vue-router's Node entry.
-            if (!isClient) return
-            const resolve = (config.resolve ??= {})
-            const alias = resolve.alias ?? []
-            resolve.alias = [
-                { find: /^vue-router$/, replacement: NUXT_VUE_ROUTER },
-                ...(Array.isArray(alias)
-                    ? alias
-                    : Object.entries(alias).map(([find, replacement]) => ({ find, replacement }))),
-            ]
-        },
-        'build:manifest'(manifest) {
-            // The UI package bundles a catalog per language; the site renders only its own.
-            const unprefetched = new Set(
-                Object.keys(manifest)
-                    .filter((id) => {
-                        const code = id.match(
-                            /packages\/ui\/src\/locales\/([^/]+)\/index\.json$/,
-                        )?.[1]
-                        return code && !(SUPPORTED_SITE_LOCALES as readonly string[]).includes(code)
-                    })
-                    // Assets appear twice: under their source path and under their output file.
-                    .map((id) => manifest[id].file),
-            )
-            for (const entry of Object.values(manifest)) {
-                if (unprefetched.has(entry.file)) entry.prefetch = false
-                // The page first paints from its server-rendered HTML and CSS. Preloading
-                // every module the app imports (~80 requests, ~500 KB) made that paint
-                // wait behind them on slow connections; the entry now fetches its
-                // imports itself once it runs.
-                if (!entry.isEntry && entry.file.endsWith('.js')) entry.preload = false
-            }
-        },
+    public: {
+      siteUrl: 'https://axlmc.org',
+      githubUrl: 'https://github.com/Axolotl-Launcher/Axolotl',
+      updateServerUrl: 'https://update.axlmc.org',
+      updateArtifactUrl: 'https://dist.axlmc.org',
+      gitlinkReleasesUrl: 'https://www.gitlink.org.cn/xinvxueyuan/Axolotl/releases/download',
+      launcherDemo: launcherDemoEntry(),
+      // Page-view analytics are opt-in: cloud.umami.is is unreachable from some
+      // regions, so the default build ships without a third-party script. Point
+      // these at a self-hosted instance (and set NUXT_PUBLIC_UMAMI_ENABLED=true)
+      // to enable them.
+      umami: {
+        enabled: process.env.NUXT_PUBLIC_UMAMI_ENABLED === 'true',
+        scriptUrl: process.env.NUXT_PUBLIC_UMAMI_SCRIPT_URL ?? 'https://cloud.umami.is/script.js',
+        websiteId: process.env.NUXT_PUBLIC_UMAMI_WEBSITE_ID ?? '',
+      },
     },
+  },
+
+  site: {
+    url: 'https://axlmc.org',
+    name: 'Axolotl Launcher',
+    description: 'A modern Minecraft launcher for Windows, macOS and Linux.',
+    defaultLocale: 'zh-CN',
+    trailingSlash: false,
+  },
+
+  robots: {
+    allow: '/',
+    disallow: ['/api/', '/_studio', '/_studio/', '/__nuxt_studio/'],
+  },
+
+  sitemap: {
+    autoLastmod: true,
+    exclude: ['/api/**', '/_studio/**', '/__nuxt_studio/**'],
+  },
+
+  schemaOrg: {
+    identity: {
+      type: 'Organization',
+      name: 'Axolotl Launcher',
+      url: 'https://axlmc.org',
+      logo: 'https://axlmc.org/axolotl.png',
+    },
+  },
+
+  ogImage: {
+    enabled: true,
+    zeroRuntime: true,
+    defaults: { width: 1200, height: 630, extension: 'png' },
+  },
+
+  seo: {
+    automaticOgAndTwitterTags: true,
+    automaticTwitterTags: true,
+    metaDataFiles: true,
+  },
+
+  aiReady: {
+    // Project instructions and agent skills stay private.
+    agentSkills: false,
+  },
+
+  nitro: {
+    // nuxt-studio imports these three helpers from Nuxt's virtual #imports.
+    // Export only them explicitly; do not re-enable all Nitro auto-imports.
+    imports: {
+      imports: [
+        { name: 'createError', from: 'h3' },
+        { name: 'useRuntimeConfig', from: 'nitropack/runtime' },
+        { name: 'useStorage', from: 'nitropack/runtime' },
+      ],
+    },
+    prerender: {
+      crawlLinks: true,
+      failOnError: true,
+      // Studio needs a live Nitro server and an authenticated request; it must
+      // never be rendered into the static output.
+      ignore: ['/_studio', '/_studio/**', '/__nuxt_studio/**'],
+      routes: [
+        '/',
+        '/en',
+        '/download',
+        '/en/download',
+        '/download/thanks',
+        '/en/download/thanks',
+        '/docs',
+        '/en/docs',
+        '/changelog',
+        '/en/changelog',
+        '/demo',
+        '/en/demo',
+        '/support',
+        '/en/support',
+        '/blog',
+        '/en/blog',
+        '/blog/terms',
+        '/en/blog/terms',
+        '/blog/privacy',
+        '/en/blog/privacy',
+        ...blogPostRoutes(),
+        '/llms.txt',
+        '/robots.txt',
+        '/sitemap_index.xml',
+        '/api/support/checkout/coffee.json',
+        '/api/support/checkout/token.json',
+        '/api/support/checkout/custom.json',
+      ],
+    },
+  },
 })

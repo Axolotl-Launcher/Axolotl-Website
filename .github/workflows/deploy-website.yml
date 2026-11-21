@@ -15,6 +15,10 @@ on:
 permissions:
   contents: read
 
+env:
+  NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID }}
+  NUXT_STUDIO_AUTH_GITHUB_MODERATORS: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_MODERATORS }}
+
 concurrency:
   group: website-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -59,8 +63,12 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Lint website
         run: pnpm lint
+      - name: Check unused code
+        run: pnpm check:knip
       - name: Test website
         run: pnpm test
+      - name: Typecheck website
+        run: pnpm typecheck
       - name: Check agents
         run: pnpm check-agents
       - name: Check synchronized release data
@@ -68,13 +76,14 @@ jobs:
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
+          import { isValid } from 'verkit'
           const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))
           assert(Array.isArray(catalog.announcements) && catalog.announcements.length > 0, 'Empty release catalog')
           for (const entry of catalog.announcements) {
             assert(typeof entry.version === 'string' && entry.version, `Catalog entry ${entry.id} has no version`)
           }
           const latest = JSON.parse(fs.readFileSync('releases/latest.json', 'utf8'))
-          assert(/^v\d+\.\d+\.\d+$/.test(latest.tag_name), `Unexpected stable tag ${latest.tag_name}`)
+          assert(isValid(latest.tag_name.replace(/^v/, '')), `Unexpected stable tag ${latest.tag_name}`)
           assert(Array.isArray(latest.assets) && latest.assets.length > 0, 'Latest release lists no assets')
           NODE
 
@@ -93,7 +102,7 @@ jobs:
         uses: crate-ci/typos@6ac2ebd1b93eade61faf7e12688ad87a073fea59 # v1.46.0
 
   build:
-    name: Build static website
+    name: Build website
     needs: prepare
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -112,21 +121,23 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Generate static website on GitHub
+      - name: Build website
         env:
-          NITRO_PRESET: static
           # A cold prerender peaks above the runner's roughly 2 GB default
           # old-space limit, while the 8 GB runner has room for a 4 GB ceiling.
           NODE_OPTIONS: --max-old-space-size=4096
           # Looks up the launcher's latest stable release for its web demo package.
           GITHUB_TOKEN: ${{ github.token }}
         run: pnpm build
-      - name: Verify prerendered website
+      - name: Verify website output
         run: |
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict'
           import fs from 'node:fs'
-          assert(fs.existsSync('.output/public/index.html'), 'Missing website homepage')
+          assert(fs.existsSync('.output/server/index.mjs'), 'Missing Nitro server entry: .output/server/index.mjs')
+          for (const page of ['index.html', 'en/index.html', 'download/index.html', 'download/thanks/index.html', 'search-index.json', 'docs/index.html', 'changelog/index.html', 'demo/index.html', 'support/index.html', 'blog/terms/index.html', 'blog/privacy/index.html', 'api/support/checkout/coffee.json', 'api/support/checkout/token.json', 'api/support/checkout/custom.json']) {
+            assert(fs.existsSync(`.output/public/${page}`), `Missing prerendered page: ${page}`)
+          }
           const catalog = JSON.parse(fs.readFileSync('releases/catalog.json', 'utf8'))
           assert(catalog.announcements.length > 0, 'Empty release catalog')
           const html = fs.readFileSync('.output/public/changelog/index.html', 'utf8')
@@ -134,11 +145,37 @@ jobs:
             assert(html.includes(entry.version), `Release ${entry.version} was not prerendered`)
           }
           NODE
-      - name: Save static website artifact
+      - name: Upload link checker report
+        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: website-static-${{ github.run_id }}
-          path: .output/public/
+          name: link-checker-report-${{ github.run_id }}
+          path: .output/link-checker-report.*
+          if-no-files-found: ignore
+          retention-days: 7
+
+      # The page tests run against the artifact that ships, so they belong in the
+      # job that produces it: no second build, no chance of testing a different
+      # output than the one uploaded below.
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run Playwright page tests
+        run: pnpm test:e2e:ci
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Save website artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: website-build-${{ github.run_id }}
+          path: .output/
           include-hidden-files: true
           retention-days: 7
           if-no-files-found: error
@@ -172,13 +209,13 @@ jobs:
               deploy=true
             elif [[ "$EVENT_NAME" == 'push' ]]; then
               if [[ "$BEFORE" == '0000000000000000000000000000000000000000' ]]; then
-                changed=$(git ls-tree -r --name-only "$AFTER" -- releases/)
+                changed=$(git ls-tree -r --name-only "$AFTER" -- releases/ app/ content/ deploy/ i18n/ public/ server/ shared/ scripts/ content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
               else
                 if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
                   git fetch --no-tags --depth=1 origin "$BEFORE" || true
                 fi
                 if git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-                  changed=$(git diff --name-only "$BEFORE" "$AFTER" -- releases/)
+                  changed=$(git diff --name-only "$BEFORE" "$AFTER" -- releases/ app/ content/ deploy/ i18n/ public/ server/ shared/ scripts/ content.config.ts nuxt.config.ts package.json pnpm-lock.yaml pnpm-workspace.yaml)
                 else
                   echo '::warning::The pre-push commit is unavailable after a history rewrite. Automatic deployment is skipped; run this workflow with force-deploy to publish.'
                   changed=''
@@ -196,7 +233,7 @@ jobs:
     needs: [prepare, build, decide-deployment]
     if: needs.decide-deployment.outputs.deploy == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Configure SSH private-key authentication
         env:
@@ -247,11 +284,40 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.sha }}
           persist-credentials: false
-      - name: Download static website artifact
+      - name: Download website artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: website-static-${{ github.run_id }}
-          path: .output/public/
+          name: website-build-${{ github.run_id }}
+          path: .output/
+      - name: Sync Studio environment from repository variables
+        env:
+          STUDIO_CLIENT_ID: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID }}
+          STUDIO_CLIENT_SECRET: ${{ secrets.NUXT_STUDIO_AUTH_GITHUB_CLIENT_SECRET }}
+          STUDIO_MODERATORS: ${{ vars.NUXT_STUDIO_AUTH_GITHUB_MODERATORS }}
+          STUDIO_SESSION_SECRET: ${{ secrets.NUXT_STUDIO_AUTH_SESSION_SECRET }}
+        run: |
+          set -euo pipefail
+          for value in \
+            "$STUDIO_CLIENT_ID" \
+            "$STUDIO_CLIENT_SECRET" \
+            "$STUDIO_MODERATORS" \
+            "$STUDIO_SESSION_SECRET"; do
+            if [[ -z "$value" ]]; then
+              echo '::error::Missing Studio repository variable or secret.'
+              exit 1
+            fi
+            if [[ "$value" == *$'\n'* ]]; then
+              echo '::error::Studio values must be single-line.'
+              exit 1
+            fi
+          done
+          umask 077
+          env_file="$RUNNER_TEMP/studio.env"
+          printf 'NUXT_STUDIO_AUTH_GITHUB_CLIENT_ID=%s\nNUXT_STUDIO_AUTH_GITHUB_CLIENT_SECRET=%s\nNUXT_STUDIO_AUTH_GITHUB_MODERATORS=%s\nNUXT_STUDIO_AUTH_SESSION_SECRET=%s\n' \
+            "$STUDIO_CLIENT_ID" "$STUDIO_CLIENT_SECRET" "$STUDIO_MODERATORS" "$STUDIO_SESSION_SECRET" > "$env_file"
+          ssh_config="$RUNNER_TEMP/website-ssh/config"
+          scp -F "$ssh_config" "$env_file" "website:/www/wwwroot/axlmc.org/studio.env"
+          ssh -F "$ssh_config" website "chmod 600 /www/wwwroot/axlmc.org/studio.env"
       - name: Upload and activate prebuilt website
         env:
           SOURCE_SHA: ${{ needs.prepare.outputs.sha }}
@@ -263,7 +329,7 @@ jobs:
           ssh -F "$ssh_config" website "umask 022; mkdir -p '$release_directory'"
           rsync -rptz --chmod=D755,F644 \
             -e "ssh -F $ssh_config" \
-            .output/public/ "website:$release_directory/"
+            .output/ "website:$release_directory/"
           ssh -F "$ssh_config" website "bash -s -- '$release_id'" < scripts/activate-website.sh
       - name: Remove SSH credentials
         if: always()

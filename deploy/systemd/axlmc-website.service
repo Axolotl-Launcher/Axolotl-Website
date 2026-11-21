@@ -1,0 +1,39 @@
+[Unit]
+Description=Axolotl Launcher website (Nuxt/Nitro)
+Documentation=https://github.com/Axolotl-Launcher/Axolotl-Website
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www
+Group=www
+WorkingDirectory=/www/wwwroot/axlmc.org/current
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3000
+# Studio OAuth secrets live here (mode 600, root-owned). The leading dash keeps
+# the service bootable before Studio is configured.
+EnvironmentFile=-/etc/axlmc-website.env
+# Studio OAuth values are refreshed from repository variables/secrets by the
+# deploy workflow. This file is outside the release symlink and persists.
+EnvironmentFile=-/www/wwwroot/axlmc.org/studio.env
+ExecStart=/usr/bin/node server/index.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+KillSignal=SIGINT
+
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

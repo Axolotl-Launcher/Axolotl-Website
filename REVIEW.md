@@ -1,13 +1,11 @@
 # REVIEW.md — Agent commit, push, review and archiving discipline
 
-> This file is the single home for **all Agent delivery work** in this repository: commits, pushes, pull requests, commit and PR messages, code review, self-review, workflow reuse and archiving of carried-over work.
-> Read it before starting. It is used **together with** [AGENTS.md](AGENTS.md) and [.agents/AGENTS.md](.agents/AGENTS.md) and does not replace them; technical standards live under [standards/frontend/](standards/frontend/DEVELOPMENT.md), environment and site conventions in [README.md](README.md).
-> The file was migrated from the same-named file in the Axolotl Launcher monorepo and keeps only the parts that apply to this website repository.
+> This file is the single home for **all Agent delivery work** in this repository: commits, pushes, pull requests, commit and PR messages, code review, self-review, workflow reuse and archiving of carried-over work. Read it before starting. It is used **together with** [AGENTS.md](AGENTS.md) and [.agents/AGENTS.md](.agents/AGENTS.md) and does not replace them; technical standards and site conventions live in [AGENTS.md](AGENTS.md) and [README.md](README.md). The file was migrated from the same-named file in the Axolotl Launcher monorepo and keeps only the parts that apply to this website repository.
 
 ## 1. Scope and priority
 
 - Applies to **all** delivery actions executed or assisted by an Agent in this repository, whether by the main Agent or by a delegated sub-agent.
-- Priority: the operator's explicit instruction for the current action > this file > [AGENTS.md](AGENTS.md) and scoped instructions > [standards/](standards/frontend/DEVELOPMENT.md). On a conflict at the same level, **the more specific rule wins**.
+- Priority: the operator's explicit instruction for the current action > this file > [AGENTS.md](AGENTS.md) and scoped instructions. On a conflict at the same level, **the more specific rule wins**.
 - **This file is not implementation authorization.** It governs "how", not "what": a review request stays read-only, and skills ([.agents/skills/](.agents/skills/)) do not authorize implementation, dependency changes, commits, messages or remote actions.
 - When an operator instruction conflicts with this file, the operator wins; **record that deviation in the delivery notes**.
 
@@ -26,7 +24,7 @@
 - **Message format**: always [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/); types, scopes and the use of `!`/`BREAKING CHANGE:` are defined in [AGENTS.md](AGENTS.md) under "Verification and Commits". This file does not repeat that table.
 - **The body states the "why"**: the motivation, the misconception being corrected and the trade-offs taken. Do not write a changelog of "changed A, changed B" — that is `git show`'s job.
 - **Run the gates that belong to the changed file type before committing**, not one blanket pass:
-  - Frontend changes → the affected package's `fix` and `lint` (the site's `pnpm fix`, `pnpm lint`; shared packages through their matching `--filter` scripts), see [frontend development](standards/frontend/DEVELOPMENT.md). Frontend behavior changes also run that package's `test` (the site's `pnpm test`). Visual and interaction acceptance is performed by the operator; do not run excessive browser automation unless explicitly requested.
+  - Frontend changes → `pnpm fix` and `pnpm lint`; frontend behavior changes also run `pnpm test`. Visual and interaction acceptance is performed by the operator; do not run excessive browser automation unless explicitly requested.
   - Agent instruction or skill changes → `pnpm check-agents`.
   - `_typos.toml` or bulk copy changes → verify spelling with `typos` (exclusion semantics in section 11); CI's Check spelling job runs the same check.
   - Build script changes → run `pnpm build` once to prove the pipeline works (the two build scripts' failure semantics are in section 11).
@@ -90,7 +88,7 @@ git rev-parse origin/main       # must equal the local HEAD
 ## 7. Reviewing code changes
 
 - **A review request stays read-only**; a review does not imply authorization to implement.
-- A review covers at least: whether contracts and interfaces are broken, boundaries and error paths, concurrency and races, brand-name compliance, i18n (`src/locales/` and shared package messages), whether gate coverage is sufficient, and whether the change actually solves the stated problem.
+- A review covers at least: whether contracts and interfaces are broken, boundaries and error paths, concurrency and races, brand-name compliance, i18n (`i18n/locales/`), whether gate coverage is sufficient, and whether the change actually solves the stated problem.
 - **Conclusions need evidence**: give `file:line` and a reproduction command; "looks fine to me" is not a conclusion.
 - **Independently verify** other people's and sub-agents' conclusions (section 2.1). Prefer **controlled comparisons**: re-run on a clean baseline, reproduce through a different entry point, or use mutation verification.
 - **Require mutation verification**: every new guard (test, assertion, gate) must be proven **able to fail** — break the guarded object, the guard must report; restore it, the guard must pass.
@@ -111,7 +109,7 @@ When you find a mistake: correct the conclusion → explain what the earlier sta
 
 ## 9. Reusing workflows
 
-- Prefer the existing assets: the project skills under [.agents/skills/](.agents/skills/), the technical standards under [standards/](standards/frontend/DEVELOPMENT.md), and the existing `pnpm` scripts (`check-agents`, `fix`, `lint`, `test`, `build`, `prepr`).
+- Prefer the existing assets: the project skills under [.agents/skills/](.agents/skills/), the and the existing `pnpm` scripts (`check-agents`, `fix`, `lint`, `check:knip`, `test`, `build`, `prepr`).
 - **Do not create long-term scripts for one-off verification**; clean up temporary artifacts when finishing, and write intermediate and archived artifacts to `.agents/plans/` (see section 10).
 - Proven reusable procedures:
   - **Worktree isolation**: give each parallel task its own worktree so they do not overwrite each other.
@@ -132,8 +130,8 @@ When you find a mistake: correct the conclusion → explain what the earlier sta
 
 Each item is a criterion obtained from this repository's actual behavior or current configuration:
 
-- **Instruction validation scope**: `pnpm check-agents` validates only the files listed in `trackedGuidance` in [scripts/check-agents.mjs](scripts/check-agents.mjs) (the `AGENTS.md` files, `.agents/`, `standards/`, `.github/instructions/` and the root `REVIEW.md`); add a new root instruction file there.
-- **Frontend gate split**: ESLint ignores `scripts/**` and `packages/**` (vendored packages run their own `lint`); Prettier checks every file not ignored by `.gitignore`. `pnpm fix` writes formatting; `pnpm lint` is read-only.
+- **Instruction validation scope**: `pnpm check-agents` validates only the files listed in `trackedGuidance` in [scripts/check-agents.ts](scripts/check-agents.ts) (the `AGENTS.md` files, `.agents/`, `AGENTS.md`, `.github/instructions/` and the root `REVIEW.md`); add a new root instruction file there.
+- **Frontend gate split**: ESLint checks the site and tooling code; `scripts/check-typescript.ts` rejects JavaScript files. Prettier checks every file not ignored by `.gitignore`. `pnpm fix` writes formatting; `pnpm lint` is read-only.
 - **typos exclusion semantics**: to judge whether an exclusion applies you must run `typos` **without path arguments**; to check a specific path against the exclusion rules add `--force-exclude` (an explicit path bypasses `extend-exclude`). CI's Check spelling job invokes it without paths.
 - **Dependency install threshold**: [pnpm-workspace.yaml](pnpm-workspace.yaml) sets `minimumReleaseAge: 10080` (7 days), so versions inside the window are rejected by the repository's own gate; the only workaround is the request-level `--config.minimumReleaseAgeExclude`, never a repository setting change.
-- **Build script failure semantics**: `scripts/fetch-launcher-demo.mjs` and `scripts/generate-contributors.mjs` exit with code 1 on failure in CI (the `CI` environment variable) and only warn locally while keeping the existing artifacts; contributor data and avatars are cached in `.cache/contributors-img/` for 3 days.
+- **Build script failure semantics**: `scripts/fetch-launcher-demo.ts` and `scripts/generate-contributors.ts` exit with code 1 on failure in CI (the `CI` environment variable) and only warn locally while keeping the existing artifacts; contributor data and avatars are cached in `.cache/contributors-img/` for 3 days.
