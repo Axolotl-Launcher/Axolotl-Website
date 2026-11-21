@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DownloadHelpModal from '~/components/download-help/DownloadHelpModal.vue'
 import type { DownloadSource, ReleaseChannel } from '~/utils/download-sources'
 import { isDownloadSource } from '~/utils/download-sources'
 import {
@@ -22,6 +23,8 @@ const platform = ref<DownloadPlatform>('windows')
 const format = ref<DownloadFormat>('installer')
 const channel = ref<ReleaseChannel>('release')
 const copied = ref(false)
+const downloadHelp = useTemplateRef('downloadHelp')
+const helpAvailable = ref(false)
 let copyTimer: ReturnType<typeof setTimeout> | undefined
 let downloadStarted = false
 
@@ -159,6 +162,12 @@ function maybeStartDownload() {
   if (!ready.value || !selectionValid.value || downloadStarted || !link.value) return
   downloadStarted = true
   startDownloadFrame(link.value)
+  openDownloadHelp()
+}
+
+function openDownloadHelp() {
+  if (platform.value !== 'windows' || !fileName.value) return
+  helpAvailable.value = downloadHelp.value?.openForDownload(fileName.value, format.value === 'installer') ?? false
 }
 
 function goBack() {
@@ -296,6 +305,16 @@ useSeoMeta({
               {{ t('download.retry') }}
             </button>
           </p>
+          <button
+            v-if="helpAvailable"
+            type="button"
+            class="mt-3 inline-flex items-center gap-1.5 text-caption font-semibold text-accent-strong underline underline-offset-4"
+            aria-haspopup="dialog"
+            @click="openDownloadHelp"
+          >
+            <Icon name="lucide:circle-help" class="size-4" aria-hidden="true" />
+            {{ t('downloadHelp.reopen') }}
+          </button>
         </div>
 
         <dl class="mx-auto mt-4 grid max-w-[43.5rem] gap-3 text-left sm:grid-cols-2">
@@ -404,5 +423,6 @@ useSeoMeta({
         </BaseButton>
       </div>
     </div>
+    <DownloadHelpModal ref="downloadHelp" />
   </div>
 </template>

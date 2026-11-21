@@ -224,6 +224,7 @@ test.describe('support', () => {
 test.describe('downloads', () => {
   test('renders download links from the update-server catalogue', async ({ page }) => {
     let artifactHits = 0
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
     await page.route('**/api/downloads/latest?channel=*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
     )
@@ -235,13 +236,65 @@ test.describe('downloads', () => {
     await expect(page.getByText('最新版本 1.11.0')).toBeVisible()
     await page.getByRole('button', { name: '下载 Windows 版' }).click()
     await expect(page).toHaveURL(/\/download\/thanks/)
+
+    const help = page.getByRole('dialog', { name: '下载已开始' })
+    await expect(help).toBeVisible()
+    await expect(help.getByRole('tab')).toHaveCount(1)
+    await expect(help.getByRole('tab', { name: /VCRUNTIME140_1\.dll/ })).toBeVisible()
+    const stage = help.locator('.windows-screen')
+    const cursor = stage.locator('[data-walkthrough-cursor]')
+    await help.getByRole('button', { name: '第 1 步' }).click()
+    await expect(cursor).toBeVisible({ timeout: 2500 })
+    const cursorStart = await cursor.evaluate((element) => getComputedStyle(element).transform)
+    await expect(cursor).not.toHaveCSS('transform', cursorStart, { timeout: 2500 })
+    const cameraStart = await stage.evaluate((element) => getComputedStyle(element).transform)
+    await help.getByRole('button', { name: '第 2 步' }).click()
+    await expect(stage).not.toHaveCSS('transform', cameraStart, { timeout: 5000 })
+    // The thank-you page starts the download itself; no second confirmation.
+    await expect.poll(() => artifactHits).toBe(1)
+    await help.getByRole('button', { name: '暂停' }).click()
+    await expect(help.getByRole('button', { name: '播放' })).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(help).toBeHidden()
     await expect(page.getByRole('heading', { name: '感谢下载 Axolotl' })).toBeVisible()
     await expect(page.getByRole('link', { name: '直接下载链接' })).toHaveAttribute(
       'href',
       'https://dist.axlmc.org/dist/1.11.0/Axolotl_1.11.0_x64-setup.exe',
     )
-    // The thank-you page starts the download itself; no second confirmation.
-    await expect.poll(() => artifactHits).toBeGreaterThan(0)
+    await page.getByRole('button', { name: '下载帮助', exact: true }).click()
+    await expect(help).toBeVisible()
+    expect(artifactHits).toBe(1)
+  })
+
+  test.describe('Edge download help', () => {
+    test.use({
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0',
+      reducedMotion: 'reduce',
+    })
+
+    test('offers both walkthroughs and lets visitors choose static steps', async ({ page }) => {
+      await page.route('**/api/downloads/latest?channel=*', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
+      )
+      await page.route('**/dist/1.11.0/**', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' }),
+      )
+      await page.goto('/en/download/thanks?platform=windows&format=installer&channel=release&source=update-server')
+      const help = page.getByRole('dialog', { name: 'Your download has started' })
+      const edge = help.getByRole('tab', { name: /Edge says/ })
+      await expect(edge).toHaveAttribute('aria-selected', 'true')
+      await expect(help.getByRole('button', { name: /^(Play|Pause)$/ })).toHaveCount(0)
+      await help.getByRole('button', { name: 'Step 3' }).click()
+      await expect(help.getByRole('button', { name: 'Step 3' })).toHaveAttribute('aria-current', 'step')
+      await edge.focus()
+      await page.keyboard.press('ArrowRight')
+      await expect(help.getByRole('tab', { name: /VCRUNTIME140_1\.dll/ })).toHaveAttribute('aria-selected', 'true')
+      await expect(help.getByRole('link', { name: 'aka.ms/vc14/vc_redist.x64.exe' })).toHaveAttribute(
+        'href',
+        'https://aka.ms/vc14/vc_redist.x64.exe',
+      )
+    })
   })
 
   test('opens the step-by-step wizard from the quick card', async ({ page }) => {
@@ -303,6 +356,7 @@ test.describe('downloads', () => {
       await page.getByRole('button', { name: '下载 Windows 版' }).click()
       await expect(page).toHaveURL(/\/download\/thanks/)
       await expect(page.getByRole('heading', { name: '感谢下载 Axolotl' })).toBeVisible()
+      await expect(page.getByRole('dialog', { name: '下载已开始' })).toHaveCount(0)
     })
   })
 })
