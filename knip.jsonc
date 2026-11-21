@@ -1,6 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": ["content.config.ts", "e2e/**/*.ts", "scripts/**/*.ts"],
+  "ignoreFiles": ["app/components/BaseTabs.vue"],
   "ignoreDependencies": [
     "@eslint/js",
     "@iconify-json/lucide",
