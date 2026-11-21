@@ -20,7 +20,7 @@ defineProps<{ sponsors: Sponsor[] }>()
           height="30"
           loading="lazy"
           decoding="async"
-          class="h-5 w-auto max-w-[7.5rem] block dark:hidden"
+          class="block h-5 w-auto max-w-[7.5rem] dark:hidden"
         />
         <img
           :src="sponsor.logoDark"
@@ -29,7 +29,7 @@ defineProps<{ sponsors: Sponsor[] }>()
           height="30"
           loading="lazy"
           decoding="async"
-          class="h-5 w-auto max-w-[7.5rem] hidden dark:block"
+          class="hidden h-5 w-auto max-w-[7.5rem] dark:block"
         />
       </a>
     </li>

@@ -28,10 +28,7 @@ const allAnnouncements = (catalog.announcements as Announcement[])
   .slice()
   .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
 
-// Tabs and filtering come from the channel registry, so a new channel only
-// needs a definition there and a label in the locale files.
 const channel = ref(changelogChannels[0].value)
-const channelTabs = computed(() => changelogChannels.map((item) => ({ value: item.value, label: t(item.labelKey) })))
 const activeChannel = computed(
   () => changelogChannels.find((item) => item.value === channel.value) ?? changelogChannels[0],
 )
@@ -83,8 +80,6 @@ useSeoMeta({
       <h1 class="mt-4 text-section">{{ t('changelog.title') }}</h1>
       <p class="mt-4 text-lead text-fg-muted">{{ t('changelog.lead') }}</p>
     </header>
-
-    <!-- <BaseTabs v-model="channel" class="mt-8" :options="channelTabs" :label="t('changelog.channelLabel')" /> -->
 
     <Transition
       mode="out-in"

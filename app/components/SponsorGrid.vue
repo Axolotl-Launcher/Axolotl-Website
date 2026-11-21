@@ -25,14 +25,14 @@ const { t } = useI18n()
         alt=""
         loading="lazy"
         decoding="async"
-        class="h-14 object-contain block dark:hidden"
+        class="block h-14 object-contain dark:hidden"
       />
       <img
         :src="sponsor.logoDark"
         alt=""
         loading="lazy"
         decoding="async"
-        class="h-14 object-contain hidden dark:block"
+        class="hidden h-14 object-contain dark:block"
       />
       <h3 class="mt-5 text-card font-semibold">{{ sponsor.name }}</h3>
       <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ sponsor.description }}</p>
