@@ -387,12 +387,12 @@ useSeoMeta({
         </div>
       </section>
 
-      <section class="mx-auto mt-14 max-w-[58rem]">
+      <!-- <section class="mx-auto mt-14 max-w-[58rem]">
         <p class="eyebrow text-center text-fg-subtle">
           {{ t('sponsors.thanks') }}
         </p>
         <SponsorInline :sponsors="sponsors" class="mt-4" />
-      </section>
+      </section> -->
 
       <div class="mx-auto mt-10 flex max-w-[58rem] flex-wrap items-center justify-center gap-3">
         <BaseButton :to="localePath({ path: '/' })" variant="secondary">

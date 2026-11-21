@@ -21,13 +21,18 @@ const { t } = useI18n()
         aria-hidden="true"
       />
       <img
-        :src="sponsor.logo"
+        :src="sponsor.logoLight"
         alt=""
-        width="160"
-        height="40"
         loading="lazy"
         decoding="async"
-        class="h-10 w-auto max-w-[10rem] opacity-80 dark:brightness-0 dark:invert"
+        class="h-14 object-contain block dark:hidden"
+      />
+      <img
+        :src="sponsor.logoDark"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="h-14 object-contain hidden dark:block"
       />
       <h3 class="mt-5 text-card font-semibold">{{ sponsor.name }}</h3>
       <p class="mt-2 text-caption leading-relaxed text-fg-muted">{{ sponsor.description }}</p>

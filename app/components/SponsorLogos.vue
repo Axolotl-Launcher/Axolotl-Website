@@ -14,13 +14,22 @@ defineProps<{ sponsors: Sponsor[] }>()
         class="inline-flex opacity-70 transition-opacity hover:opacity-100"
       >
         <img
-          :src="sponsor.logo"
+          :src="sponsor.logoLight"
           :alt="sponsor.name"
           width="120"
           height="30"
           loading="lazy"
           decoding="async"
-          class="h-5 w-auto max-w-[7.5rem] dark:brightness-0 dark:invert"
+          class="h-5 w-auto max-w-[7.5rem] block dark:hidden"
+        />
+        <img
+          :src="sponsor.logoDark"
+          :alt="sponsor.name"
+          width="120"
+          height="30"
+          loading="lazy"
+          decoding="async"
+          class="h-5 w-auto max-w-[7.5rem] hidden dark:block"
         />
       </a>
     </li>

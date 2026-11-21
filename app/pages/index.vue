@@ -26,9 +26,12 @@ const platforms = [
 ]
 
 const pillars = computed(() => [
-  { icon: 'lucide:layers', title: t('home.sections.isolationTitle'), body: t('home.sections.isolationBody') },
-  { icon: 'lucide:shield-check', title: t('home.sections.repairTitle'), body: t('home.sections.repairBody') },
-  { icon: 'lucide:network', title: t('home.sections.sourcesTitle'), body: t('home.sections.sourcesBody') },
+  { icon: 'lucide:git-graph', title: t('home.sections.freeOSTitle'), body: t('home.sections.freeOSBody') },
+  { icon: 'lucide:boxes', title: t('home.sections.contentManTitle'), body: t('home.sections.contentManBody') },
+  { icon: 'lucide:gauge', title: t('home.sections.gaugeTitle'), body: t('home.sections.gaugeBody') },
+  { icon: 'lucide:search', title: t('home.sections.dohTitle'), body: t('home.sections.dohBody') },
+  { icon: 'lucide:download', title: t('home.sections.downloadTitle'), body: t('home.sections.downloadBody') },
+  { icon: 'lucide:folder-input', title: t('home.sections.dotmcTitle'), body: t('home.sections.dotmcBody') },
 ])
 
 const gallery = computed(() => [
@@ -56,7 +59,6 @@ const flow = computed(() => [
   { number: '01', title: t('home.sections.flowInstall'), body: t('home.sections.flowInstallBody') },
   { number: '02', title: t('home.sections.flowChoose'), body: t('home.sections.flowChooseBody') },
   { number: '03', title: t('home.sections.flowLaunch'), body: t('home.sections.flowLaunchBody') },
-  { number: '04', title: t('home.sections.flowRollback'), body: t('home.sections.flowRollbackBody') },
 ])
 
 const capabilities = computed(() => [
@@ -113,10 +115,9 @@ useHead({
             >
               <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
               {{ t('home.eyebrow') }}
-              <span class="text-fg-subtle">v{{ latestVersion }}</span>
             </p>
 
-            <h1 class="mt-7 text-section leading-[1.15] text-balance">
+            <h1 class="mt-7 text-display leading-[1.1] text-balance">
               {{ t('home.titleLead') }}
               <span class="block text-accent">{{ t('home.titleAccent') }}</span>
             </h1>
@@ -269,7 +270,7 @@ useHead({
         <h2 class="mt-4 text-section-sm text-balance">{{ t('home.sections.flowTitle') }}</h2>
       </header>
 
-      <ol class="relative mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <ol class="relative mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         <div class="absolute inset-x-0 top-5 hidden h-px bg-divider lg:block" aria-hidden="true" />
         <li v-for="step in flow" :key="step.number" class="relative">
           <span
@@ -386,11 +387,11 @@ useHead({
             <p class="mt-3 text-body leading-relaxed text-fg-muted">{{ t('support.lead') }}</p>
           </div>
           <div class="flex flex-wrap gap-3">
-            <BaseButton :to="localePath({ path: '/support' })">
-              <Icon name="lucide:heart" class="size-4" aria-hidden="true" />
+            <BaseButton :to="localePath({ path: '/support' })" variant="secondary">
+              <Icon name="lucide:heart" class="size-4 text-accent" aria-hidden="true" />
               {{ t('nav.support') }}
             </BaseButton>
-            <BaseButton :href="githubUrl" variant="secondary">
+            <BaseButton :href="githubUrl" variant="ghost">
               <Icon name="lucide:github" class="size-4" aria-hidden="true" />
               {{ t('nav.github') }}
             </BaseButton>

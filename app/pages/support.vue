@@ -115,7 +115,7 @@ useHead(() => ({
     <section class="relative overflow-hidden border-b border-divider">
       <div class="grid-lines pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
       <div
-        class="pointer-events-none absolute -top-32 left-1/2 h-80 w-[42rem] -translate-x-1/2 rounded-full bg-accent-glow blur-3xl"
+        class="pointer-events-none absolute -top-32 left-1/2 h-80 w-[42rem] -translate-x-1/2 rounded-full bg-accent-glow opacity-60 blur-3xl dark:opacity-100"
         aria-hidden="true"
       />
       <div class="site-container relative py-16 sm:py-24">
@@ -146,11 +146,11 @@ useHead(() => ({
           class="group flex flex-col rounded-card border border-border bg-surface-1 p-6 text-left transition-colors hover:border-accent/50 hover:bg-surface-2 disabled:cursor-wait disabled:opacity-70"
           @click="startCheckout(plan.id)"
         >
-          <span class="font-mono text-caption text-fg-subtle">{{ plan.period }}</span>
-          <span class="mt-3 text-section-sm font-bold text-heading">{{ plan.amount }}</span>
-          <span class="mt-4 text-card font-semibold">{{ plan.title }}</span>
-          <span class="mt-2 text-body leading-relaxed text-fg-muted">{{ plan.description }}</span>
-          <span class="mt-6 inline-flex items-center gap-1 text-caption font-semibold text-accent-strong">
+          <span class="eyebrow text-fg-subtle">{{ plan.period }}</span>
+          <span class="mt-2 text-section-sm font-bold text-heading tabular-nums">{{ plan.amount }}</span>
+          <span class="mt-5 border-t border-divider pt-5 text-body font-semibold text-fg">{{ plan.title }}</span>
+          <span class="mt-1.5 text-caption leading-relaxed text-fg-muted">{{ plan.description }}</span>
+          <span class="mt-auto inline-flex items-center gap-1 pt-6 text-caption font-semibold text-accent-strong">
             <template v-if="pendingPlan === plan.id">{{ t('support.openingAfdian') }}</template>
             <template v-else>
               {{ t('support.checkoutOnAfdian') }}

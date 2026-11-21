@@ -330,22 +330,26 @@ useSeoMeta({
             </span>
           </div>
 
-          <dl class="mt-6 grid gap-3 sm:grid-cols-2">
-            <div class="rounded-card border border-border bg-surface-2/50 px-4 py-3">
-              <dt class="text-caption text-fg-subtle">{{ t('download.stepPlatform') }}</dt>
-              <dd class="mt-0.5 text-caption font-semibold">{{ selectedPlatform.name }}</dd>
+          <dl
+            class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-card border border-border bg-divider sm:grid-cols-4"
+          >
+            <div class="bg-surface-2 px-4 py-3">
+              <dt class="text-micro text-fg-subtle">{{ t('download.stepPlatform') }}</dt>
+              <dd class="mt-1 text-body font-semibold text-heading">{{ selectedPlatform.name }}</dd>
             </div>
-            <div class="rounded-card border border-border bg-surface-2/50 px-4 py-3">
-              <dt class="text-caption text-fg-subtle">{{ t('download.formatLabel') }}</dt>
-              <dd class="mt-0.5 text-caption font-semibold">{{ formatLabel }}</dd>
+            <div class="bg-surface-2 px-4 py-3">
+              <dt class="text-micro text-fg-subtle">{{ t('download.formatLabel') }}</dt>
+              <dd class="mt-1 text-body font-semibold text-heading">{{ formatLabel }}</dd>
             </div>
-            <div class="rounded-card border border-border bg-surface-2/50 px-4 py-3">
-              <dt class="text-caption text-fg-subtle">{{ t('download.channelLabel') }}</dt>
-              <dd class="mt-0.5 text-caption font-semibold">{{ channelLabel }}</dd>
+            <div class="bg-surface-2 px-4 py-3">
+              <dt class="text-micro text-fg-subtle">{{ t('download.channelLabel') }}</dt>
+              <dd class="mt-1 text-body font-semibold text-heading">{{ channelLabel }}</dd>
             </div>
-            <div class="rounded-card border border-border bg-surface-2/50 px-4 py-3">
-              <dt class="text-caption text-fg-subtle">{{ t('download.versionLabel') }}</dt>
-              <dd class="mt-0.5 font-mono text-caption font-semibold">{{ release?.version ?? '—' }}</dd>
+            <div class="bg-surface-2 px-4 py-3">
+              <dt class="text-micro text-fg-subtle">{{ t('download.versionLabel') }}</dt>
+              <dd class="mt-1 font-mono text-body font-semibold text-heading tabular-nums">
+                {{ release?.version ?? '—' }}
+              </dd>
             </div>
           </dl>
 

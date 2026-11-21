@@ -84,7 +84,7 @@ useSeoMeta({
       <p class="mt-4 text-lead text-fg-muted">{{ t('changelog.lead') }}</p>
     </header>
 
-    <BaseTabs v-model="channel" class="mt-8" :options="channelTabs" :label="t('changelog.channelLabel')" />
+    <!-- <BaseTabs v-model="channel" class="mt-8" :options="channelTabs" :label="t('changelog.channelLabel')" /> -->
 
     <Transition
       mode="out-in"
