@@ -107,13 +107,22 @@ function dismiss() {
         :tabindex="sponsorIndex !== index ? -1 : undefined"
       >
         <img
-          :src="sponsor.logo"
+          :src="sponsor.logoLight"
           :alt="sponsor.name"
           width="120"
           height="30"
           loading="lazy"
           decoding="async"
-          class="h-7 w-auto max-w-[7.5rem] opacity-80 dark:brightness-0 dark:invert"
+          class="block h-7 w-auto max-w-[7.5rem] opacity-80 dark:hidden"
+        />
+        <img
+          :src="sponsor.logoDark"
+          :alt="sponsor.name"
+          width="120"
+          height="30"
+          loading="lazy"
+          decoding="async"
+          class="hidden h-7 w-auto max-w-[7.5rem] opacity-80 dark:block"
         />
         <span class="mt-2 line-clamp-3 block text-micro leading-relaxed text-fg-muted">{{ sponsor.description }}</span>
       </a>

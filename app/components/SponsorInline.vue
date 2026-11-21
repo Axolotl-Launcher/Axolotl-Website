@@ -18,13 +18,22 @@ defineProps<{ sponsors: Sponsor[]; label?: string }>()
           class="group flex h-full items-center gap-3 rounded-card border border-border bg-surface-1 px-4 py-3 transition-colors select-none hover:border-border-strong"
         >
           <img
-            :src="sponsor.logo"
+            :src="sponsor.logoLight"
             alt=""
             width="96"
             height="24"
             loading="lazy"
             decoding="async"
-            class="h-6 w-auto max-w-[6rem] shrink-0 opacity-80 dark:brightness-0 dark:invert"
+            class="block h-6 w-auto max-w-[6rem] shrink-0 opacity-80 dark:hidden"
+          />
+          <img
+            :src="sponsor.logoDark"
+            alt=""
+            width="96"
+            height="24"
+            loading="lazy"
+            decoding="async"
+            class="hidden h-6 w-auto max-w-[6rem] shrink-0 opacity-80 dark:block"
           />
           <span class="min-w-0 flex-1 truncate text-caption font-semibold text-fg">{{ sponsor.name }}</span>
           <Icon
