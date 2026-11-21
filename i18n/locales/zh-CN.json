@@ -332,5 +332,10 @@
     "indexTitle": "博客",
     "readMore": "阅读全文",
     "allArticles": "所有文章"
+  },
+  "pages": {
+    "index": {
+      "title": "为 Minecraft 而生的现代启动器"
+    }
   }
 }

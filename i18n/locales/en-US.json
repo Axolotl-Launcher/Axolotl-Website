@@ -332,5 +332,10 @@
     "indexTitle": "Blog",
     "readMore": "Read the article",
     "allArticles": "All articles"
+  },
+  "pages": {
+    "index": {
+      "title": "A modern launcher for Minecraft"
+    }
   }
 }
