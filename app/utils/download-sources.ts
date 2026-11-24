@@ -72,6 +72,11 @@ export function isDownloadSource(value: unknown): value is DownloadSource {
   return value === 'auto' || (DOWNLOAD_SOURCE_IDS as readonly unknown[]).includes(value)
 }
 
+/** A concrete mirror, without the `auto` preference. */
+export function isDownloadSourceId(value: unknown): value is DownloadSourceId {
+  return (DOWNLOAD_SOURCE_IDS as readonly unknown[]).includes(value)
+}
+
 export function getDownloadSource(id: DownloadSource, sources: readonly DownloadSourceDefinition[]) {
   const source = id === 'auto' ? sources[0] : sources.find((candidate) => candidate.id === id)
   if (!source) throw new Error('Unknown download source: ' + id)

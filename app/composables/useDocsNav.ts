@@ -45,20 +45,37 @@ export function useDocsNav() {
     () => `docs-nav-${contentLocale.value}`,
     async () => {
       const entries = await queryCollection('docs').where('locale', '=', contentLocale.value).all()
-      if (entries.length || contentLocale.value === 'zh-CN') {
-        return entries.map((entry) => toNavItem(entry, false))
-      }
+      const translated = entries.map((entry) => toNavItem(entry, false))
+      if (contentLocale.value === 'zh-CN') return translated
 
-      // An untranslated locale still needs a working knowledge base. List the
-      // Chinese originals and let each consumer mark them as such; the detail
-      // page already renders those documents with the same fallback note.
+      // A locale that is only partly translated still needs the rest of the
+      // knowledge base. Fill the gaps slug by slug from the Chinese originals
+      // and let each consumer mark those entries as such; the detail page
+      // already renders them with the same fallback note. Falling back on
+      // "this locale has no documents at all" instead would drop every
+      // untranslated page the moment the first translation landed.
       const originals = await queryCollection('docs').where('locale', '=', 'zh-CN').all()
-      return originals.map((entry) => toNavItem(entry, true))
+      const missing = originals
+        .filter((original) => !translated.some((entry) => entry.slug === original.slug))
+        .map((original) => toNavItem(original, true))
+      return [...translated, ...missing]
     },
     { watch: [contentLocale], default: () => [] as DocsNavItem[] },
   )
 
   const fallback = computed(() => (docs.value ?? []).some((doc) => doc.fallback))
+
+  /**
+   * The search index stores one document per locale, so a locale-wide boolean
+   * cannot express "translated here, original there". These are the exact
+   * search-document IDs this locale renders, translations and fallbacks alike.
+   */
+  const indexIds = computed(
+    () =>
+      new Set(
+        (docs.value ?? []).map((doc) => `doc:${doc.fallback ? 'zh-CN' : contentLocale.value}:${doc.slug}`),
+      ),
+  )
 
   const groups = computed<DocsNavGroup[]>(() => {
     const grouped = new Map<string, DocsNavItem[]>()
@@ -73,5 +90,5 @@ export function useDocsNav() {
     }))
   })
 
-  return { docs, groups, contentLocale, fallback }
+  return { docs, groups, contentLocale, fallback, indexIds }
 }

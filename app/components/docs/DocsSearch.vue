@@ -17,9 +17,9 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const contentLocale = computed(() => toContentLocale(locale.value))
-// When this locale has no translations, the index detail pages fall back to
-// the Chinese originals; search has to follow suit instead of returning zero.
-const { fallback } = useDocsNav()
+// A partly translated locale renders some Chinese originals, so search has to
+// follow the same per-slug mapping instead of filtering by locale alone.
+const { indexIds } = useDocsNav()
 
 const index = shallowRef<MiniSearch<SearchDocument> | null>(null)
 const dialog = ref<HTMLDialogElement | null>(null)
@@ -43,9 +43,9 @@ function runSearch() {
     prefix: true,
   }) as unknown as SearchHit[]
   const documents = hits.filter((hit) => hit.type === 'doc')
-  const pool = fallback.value
-    ? documents.filter((hit) => hit.locale === 'zh-CN')
-    : documents.filter((hit) => hit.locale === contentLocale.value)
+  // Either the translated document or the Chinese original the page falls back
+  // to, never the same page twice and never a document this locale omits.
+  const pool = documents.filter((hit) => indexIds.value.has(hit.id))
   results.value = pool.slice(0, 8)
 }
 

@@ -60,6 +60,14 @@ restart_service() {
     fi
 }
 
+stop_service() {
+    if [[ $EUID -eq 0 ]]; then
+        systemctl stop "$service_name"
+    else
+        sudo -n systemctl stop "$service_name"
+    fi
+}
+
 wait_for_health() {
     for _ in {1..30}; do
         if curl --fail --silent --show-error --max-time 5 "$health_url" >/dev/null; then
@@ -82,12 +90,23 @@ previous_target=$(readlink "$site_directory/current" 2>/dev/null || true)
 ln -s "releases/$release_id" "$site_directory/.current-$release_id"
 mv -Tf "$site_directory/.current-$release_id" "$site_directory/current"
 
+# A failed first deploy must leave no trace: with no previous release there is
+# nothing to roll back to, so remove the symlink and stop the service rather
+# than publishing an unhealthy target and leaving it eligible for restart loops.
+discard_failed_release() {
+    rm -f "$site_directory/current"
+    stop_service || true
+    echo 'Removed the failed release; no previous release to restore.' >&2
+}
+
 if ! restart_service; then
     echo "Failed to restart $service_name." >&2
     if [[ -n "$previous_target" ]]; then
         ln -s "$previous_target" "$site_directory/.current-$release_id"
         mv -Tf "$site_directory/.current-$release_id" "$site_directory/current"
         restart_service || true
+    else
+        discard_failed_release
     fi
     exit 1
 fi
@@ -104,7 +123,7 @@ if ! wait_for_health; then
             echo 'Rollback health check failed as well.' >&2
         fi
     else
-        echo 'No previous release to roll back to.' >&2
+        discard_failed_release
     fi
     exit 1
 fi

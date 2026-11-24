@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DownloadHelpModal from '~/components/download-help/DownloadHelpModal.vue'
-import type { DownloadSource, ReleaseChannel } from '~/utils/download-sources'
-import { isDownloadSource } from '~/utils/download-sources'
+import type { DownloadSource, DownloadSourceId, ReleaseChannel } from '~/utils/download-sources'
+import { isDownloadSourceId } from '~/utils/download-sources'
 import {
   downloadFormatMatches,
   DOWNLOAD_LINK_KEY_BY_FORMAT,
@@ -27,8 +27,12 @@ const helpAvailable = ref(false)
 let copyTimer: ReturnType<typeof setTimeout> | undefined
 let downloadStarted = false
 
-const { release, links, status, refresh } = useLauncherDownloads(channel)
-const { selectedSource, setDownloadSource } = useDownloadSource()
+// The mirror named in the URL is what this visitor downloaded from; it is not
+// necessarily their saved preference. Resolve against it without persisting it,
+// so an automatic download leaves "automatic (fastest)" intact for next time.
+const requestedSource = ref<DownloadSourceId | null>(null)
+const { release, links, status, refresh } = useLauncherDownloads(channel, requestedSource)
+const { selectedSource } = useDownloadSource()
 
 const link = computed(() =>
   selectionValid.value ? (links.value[DOWNLOAD_LINK_KEY_BY_FORMAT[format.value]] ?? null) : null,
@@ -87,7 +91,7 @@ const sourceName = computed(() => {
     github: t('download.sourceGithub'),
     gitlink: t('download.sourceGitlink'),
   }
-  return names[selectedSource.value]
+  return names[requestedSource.value ?? selectedSource.value]
 })
 
 const alternativeLinks = computed(() => {
@@ -116,6 +120,20 @@ const backTo = computed(() => ({
     source: selectedSource.value,
   },
 }))
+
+/**
+ * A reload or a back/forward trip recreates the component, so an in-memory
+ * guard cannot stop it from starting the installer a second time. The document
+ * load type tells those apart from a deliberate navigation: refreshing or
+ * returning to this entry must not restart a large download, while arriving
+ * from the download page — including a second time after changing options —
+ * still starts it automatically, as arriving here is the visitor's confirmation.
+ */
+function isReloadOrHistoryRestore() {
+  if (!import.meta.client) return false
+  const [navigation] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[]
+  return navigation?.type === 'reload' || navigation?.type === 'back_forward'
+}
 
 const steps = computed(() => [
   {
@@ -156,9 +174,11 @@ function startDownloadFrame(url: string) {
 
 function maybeStartDownload() {
   // Arriving here means the visitor confirmed a download, so start it without
-  // asking again. A reload or back/forward does not restart it because the
-  // guard lives for the life of the page; the direct link stays available.
+  // asking again. The direct link stays available either way.
   if (!ready.value || !selectionValid.value || downloadStarted || !link.value) return
+  // The link recomputes while the release loads, so the instance needs its own
+  // one-shot guard on top of the reload check.
+  if (isReloadOrHistoryRestore()) return
   downloadStarted = true
   startDownloadFrame(link.value)
   openDownloadHelp()
@@ -207,7 +227,9 @@ onMounted(() => {
   if (route.query.channel === 'beta' || route.query.channel === 'release') {
     channel.value = route.query.channel
   }
-  if (isDownloadSource(route.query.source)) setDownloadSource(route.query.source)
+  // A concrete mirror names the download that already happened; `auto` carries
+  // no mirror, so it keeps resolving through the stored preference.
+  if (isDownloadSourceId(route.query.source)) requestedSource.value = route.query.source
 
   selectionValid.value = true
   ready.value = true

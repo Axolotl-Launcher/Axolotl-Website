@@ -59,6 +59,15 @@ test.describe('site shell', () => {
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'oled')
   })
 
+  test('reports the dark colour scheme before hydration under OLED', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('axolotl-theme', 'oled'))
+    await page.goto('/')
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'oled')
+    // The inline script must match the theme contract: OLED is a dark scheme,
+    // so native controls and scrollbars start dark instead of flipping later.
+    await expect(page.locator('html')).toHaveCSS('color-scheme', 'dark')
+  })
+
   test('switches locale without leaving the page family', async ({ page }) => {
     await page.goto('/en')
     await expect(page.locator('html')).toHaveAttribute('lang', 'en-US')
@@ -228,8 +237,10 @@ test.describe('downloads', () => {
     await page.route('**/api/downloads/latest?channel=*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
     )
+    // The automatic source probes mirrors with HEAD before it picks one, so
+    // count downloads (GET) only — a HEAD is not a second installer.
     await page.route('**/dist/1.11.0/**', (route) => {
-      artifactHits += 1
+      if (route.request().method() === 'GET') artifactHits += 1
       return route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' })
     })
     await page.goto('/download')
@@ -264,6 +275,49 @@ test.describe('downloads', () => {
     await page.getByRole('button', { name: '下载帮助', exact: true }).click()
     await expect(help).toBeVisible()
     expect(artifactHits).toBe(1)
+  })
+
+  test('does not restart the download when the thank-you page is reloaded', async ({ page }) => {
+    let artifactHits = 0
+    await page.route('**/api/downloads/latest?channel=*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
+    )
+    await page.route('**/dist/1.11.0/**', (route) => {
+      if (route.request().method() === 'GET') artifactHits += 1
+      return route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' })
+    })
+    await page.goto('/download')
+    await expect(page.getByText('最新版本 1.11.0')).toBeVisible()
+    await page.getByRole('button', { name: '下载 Windows 版' }).click()
+    await expect(page).toHaveURL(/\/download\/thanks/)
+    await expect.poll(() => artifactHits).toBe(1)
+
+    await page.reload()
+    await expect(page.getByRole('heading', { name: '感谢下载 Axolotl' })).toBeVisible()
+    // A refresh is not a new confirmation; a large installer must not restart.
+    await page.waitForTimeout(1500)
+    expect(artifactHits).toBe(1)
+    // The direct link stays available after a reload.
+    await expect(page.getByRole('link', { name: '直接下载链接' })).toBeVisible()
+  })
+
+  test('keeps the automatic source preference after an automatic download', async ({ page }) => {
+    await page.route('**/api/downloads/latest?channel=*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(releaseFixture) }),
+    )
+    await page.route('**/dist/1.11.0/**', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'stub' }),
+    )
+    await page.goto('/download')
+    await expect(page.getByText('最新版本 1.11.0')).toBeVisible()
+    await page.getByRole('button', { name: '下载 Windows 版' }).click()
+    await expect(page).toHaveURL(/\/download\/thanks/)
+
+    // The thank-you URL names the concrete mirror that was used; the stored
+    // preference must still be "automatic", or the next visit would pin it.
+    await expect.poll(() => new URL(page.url()).searchParams.get('source')).toBe('update-server')
+    const stored = await page.evaluate(() => localStorage.getItem('axolotl-download-source'))
+    expect(stored === null || stored === 'auto').toBe(true)
   })
 
   test.describe('Edge download help', () => {

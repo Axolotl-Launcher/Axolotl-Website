@@ -3,6 +3,7 @@ import type { NuxtError } from '#app'
 
 const props = defineProps<{ error: NuxtError }>()
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 useSeoMeta({
   title: t('notFound.title'),
@@ -10,7 +11,7 @@ useSeoMeta({
 })
 
 function goHome() {
-  clearError({ redirect: '/' })
+  clearError({ redirect: localePath({ path: '/' }) })
 }
 
 const statusCode = computed(() => props.error.statusCode || 500)

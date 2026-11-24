@@ -67,7 +67,6 @@ const detectedPlatformName = computed(() => platforms.value.find((item) => item.
 
 const stepLabels = computed(() => [t('download.stepPlatform'), t('download.stepOptions'), t('download.stepConfirm')])
 const isLastStep = computed(() => step.value === stepLabels.value.length - 1)
-const sourceStep = computed(() => mode.value === 'wizard' && step.value === stepLabels.value.length - 1)
 
 const selectedPlatform = computed(
   () => platforms.value.find((item) => item.id === platform.value) ?? platforms.value[0]!,
@@ -143,7 +142,10 @@ const selectedLink = computed(() => {
 })
 
 async function refreshProbe() {
-  if (!sourceStep.value || selectedSource.value !== 'auto' || probeCandidates.value.length < 2) {
+  // Probe as soon as the candidates are known, not only on the wizard's last
+  // step: the quick card's default source is "automatic (fastest)", so it has
+  // to measure the mirrors too or that label would be untrue.
+  if (selectedSource.value !== 'auto' || probeCandidates.value.length < 2) {
     probeRun += 1
     probeResults.value = []
     probing.value = false
@@ -158,7 +160,7 @@ async function refreshProbe() {
   probing.value = false
 }
 
-watch([probeCandidates, selectedSource, sourceStep], refreshProbe, { immediate: true })
+watch([probeCandidates, selectedSource], refreshProbe, { immediate: true })
 
 onBeforeUnmount(() => {
   probeRun += 1

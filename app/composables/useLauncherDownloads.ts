@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 import {
   getDownloadCatalogUrl,
+  type DownloadSourceId,
   type LauncherRelease,
   normalizeDownloadCatalog,
   type ReleaseChannel,
@@ -8,7 +9,13 @@ import {
 import { resolveLauncherDownloads } from '~/utils/launcher-downloads'
 import { useDownloadSource } from './useDownloadSource'
 
-export function useLauncherDownloads(channel: Ref<ReleaseChannel>) {
+/**
+ * `sourceOverride` resolves links against one concrete mirror without touching
+ * the stored preference. The thank-you page uses it for the mirror the visitor
+ * actually downloaded from, so an automatic download does not pin that mirror
+ * as their future choice.
+ */
+export function useLauncherDownloads(channel: Ref<ReleaseChannel>, sourceOverride?: Ref<DownloadSourceId | null>) {
   const config = useRuntimeConfig()
   const endpoints = {
     updateServerUrl: config.public.updateServerUrl,
@@ -39,7 +46,9 @@ export function useLauncherDownloads(channel: Ref<ReleaseChannel>) {
   })
 
   const release = computed(() => (status.value === 'success' ? data.value : null))
-  const links = computed(() => resolveLauncherDownloads(release.value, resolvedSource.value.id, sources))
+  const links = computed(
+    () => resolveLauncherDownloads(release.value, sourceOverride?.value ?? resolvedSource.value.id, sources),
+  )
 
   return { release, links, status, refresh, catalogUrl }
 }

@@ -70,6 +70,26 @@ if (!page.value) {
 
 const canonical = computed(() => `${site.url}${localePath({ path: docsPath(locale.value, slug.value) })}`)
 
+/** The subset of Comark's node transform this page relies on. */
+interface MarkdownNodeTransformContext {
+  tag: string
+  props: Record<string, unknown>
+}
+
+/**
+ * A fallback document is the Chinese original: its internal links point at
+ * `/docs/…`, which would switch an English reader to the Chinese site. The
+ * transform must be a stable reference — a new function on every render would
+ * re-render the whole document — so it reads the current locale and fallback
+ * flag itself instead of being rebuilt from them.
+ */
+const linkTransform = ({ tag, props }: MarkdownNodeTransformContext) => {
+  if (!fallback.value || tag !== 'a') return undefined
+  const href = props.href
+  if (typeof href !== 'string') return undefined
+  return { props: { ...props, href: rewriteDocsLink(href, locale.value) } }
+}
+
 useSeoMeta({
   title: () => (page.value ? `${page.value.title}` : t('docs.notFound')),
   description: () => page.value?.description ?? '',
@@ -132,7 +152,7 @@ const updatedLabel = computed(() => {
       </div>
 
       <div class="docs-prose prose mt-9 max-w-none">
-        <MarkdownDocument :value="document" />
+        <MarkdownDocument :value="document" :transform-node="linkTransform" />
       </div>
     </article>
   </DocsShell>
