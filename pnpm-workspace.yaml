@@ -21,6 +21,24 @@ minimumReleaseAgeExclude:
   # Transitive via @nuxt/content; the pinned version predates the rebuild.
   - sanitize-html
 
+# Security holds. Each one raises a transitive dependency to its first patched
+# release; drop an entry once every parent allows the fixed version on its own.
+overrides:
+  # GHSA-3g3m-2fjr-6pw4: @vercel/nft pins glob ^13, which reaches <= 14.0.1.
+  '@vercel/nft': 1.11.5
+  # GHSA-mrhx-c7xc-m3w5: @nuxt/content asks for zod ^3.25.76, and the 3.x line
+  # ends at 3.25.76 — the fix exists only in 4.6.6+. Both consumers use the
+  # classic API (object/enum/string/array/ZodType._def), which 4.x keeps.
+  zod: ^4.6.7
+  # GHSA-g3hv-75wg-m249: the eslint, content and archive chains resolve < 11.0.1.
+  minimatch: ^11.0.9
+  # GHSA-rj75-hqrm-r3gf: @tailwindcss/typography pins 6.0.10 exactly. Scope the
+  # override to the 6.x line so the lint and build chains keep their 7.x.
+  postcss-selector-parser@6: ^6.1.5
+  # GHSA-f88m-g3jw-g9cj / GHSA-rgj7-g3m4-5g8c / GHSA-wq5f-xc86-pv6w: nuxt-studio's
+  # optional ipx@3 allows only sharp ^0.34.
+  ipx@3>sharp: ^0.35.5
+
 # pnpm 12 replaced onlyBuiltDependencies with an explicit allow-list.
 allowBuilds:
   '@parcel/watcher': true
