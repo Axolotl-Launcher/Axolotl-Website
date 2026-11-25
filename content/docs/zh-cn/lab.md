@@ -5,7 +5,7 @@ locale: "zh-CN"
 slug: "lab"
 group: "使用指南"
 order: 24
-updatedAt: "2026-08-13T05:57:51.000Z"
+updatedAt: "2026-11-25T12:37:12.000Z"
 ---
 
 **实验室 \(Lab\)** 是 Axolotl 内置的实用工具箱。
