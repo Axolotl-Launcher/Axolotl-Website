@@ -5,7 +5,7 @@ locale: "zh-CN"
 slug: "lab"
 group: "使用指南"
 order: 24
-updatedAt: "2026-08-13T05:57:51.000Z"
+updatedAt: "2026-11-25T12:37:12.000Z"
 ---
 
 **实验室 \(Lab\)** 是 Axolotl 内置的实用工具箱。
@@ -116,6 +116,40 @@ updatedAt: "2026-08-13T05:57:51.000Z"
 <td>
 
 汉化组、想玩未汉化模组的玩家
+
+</td>
+</tr>
+<tr>
+<td>
+
+[命令生成器](/docs/command-generator)
+
+</td>
+<td>
+
+快捷编辑指令
+
+</td>
+<td>
+
+新手，普通玩家，服务器管理员，指令大佬
+
+</td>
+</tr>
+<tr>
+<td>
+
+[旗帜设计师](/docs/banner-designer)
+
+</td>
+<td>
+
+创作旗帜
+
+</td>
+<td>
+
+想要设计旗帜的玩家
 
 </td>
 </tr>
